@@ -27,8 +27,7 @@ export async function startServer() {
     if (!context.request.url.pathname.startsWith("/static")) {
       console.log('calling next');
       
-      next();
-      return;
+      return await next();
     }
     const filePath = context.request.url.pathname.replace("/static", "");
     await send(context, filePath, {
