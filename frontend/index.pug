@@ -1,7 +1,7 @@
 extends __layout
 
 block head
-  link(rel='stylesheet' href='/css/main.css')
+  link(rel='stylesheet' href='/static/css/main.css')
 
 block body
   .row.center-xs#mods-grid
@@ -39,4 +39,4 @@ block body
               a.button.style-accent.push-right(href=`/mod/${mod.user.slug}/${mod.slug}`) Details
 
 block scripts
-  script(src='/scripts/main.js' type="module")
+  script(src='/static/scripts/main.js' type="module")
