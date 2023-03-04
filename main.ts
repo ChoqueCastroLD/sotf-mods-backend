@@ -1,6 +1,6 @@
-import { config } from "https://deno.land/x/dotenv/mod.ts";
+import { configAsync } from "https://deno.land/x/dotenv/mod.ts";
 
-await config({
+await configAsync({
     export: true,
 });
 
