@@ -22,9 +22,8 @@ export async function decorateMod(mod: Mod & {
     if (!primary_image_url)
         primary_image_url = "https://via.placeholder.com/150";
 
-    console.log('getting latest version');
     const latest_version = mod.versions.find((version) => version.isLatest);
-    console.log('getting downloads');
+
     const downloads = await prisma.modDownload.count({
         where: {
             modVersionId: {
@@ -32,7 +31,6 @@ export async function decorateMod(mod: Mod & {
             }
         }
     });
-    console.log('downloads: '+downloads);
 
     return {
         ...mod,
@@ -44,7 +42,6 @@ export async function decorateMod(mod: Mod & {
 }
 
 export async function getMods() {
-    console.log('getting all mods');
     const mods = await prisma.mod.findMany({
         include: {
             images: true,
@@ -57,12 +54,6 @@ export async function getMods() {
             }
         },
     });
-    const arr = [];
-    console.log('processing all mods');
-    for (const mod of mods) {
-        console.log('processing mod');
-        arr.push(await decorateMod(mod));
-        console.log('processing mod done');
-    }
+    const arr = await Promise.all(mods.map(decorateMod));
     return arr;
 }

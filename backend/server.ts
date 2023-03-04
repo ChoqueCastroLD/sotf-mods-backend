@@ -29,13 +29,14 @@ export async function startServer() {
    */
   router
     .get("/how-to-mod", async (context) => {
-      context.response.body = "hola";
+      context.response.body = renderPug("how-to-mod");
+    })
+    .get("/upload", async (context) => {
+      context.response.body = renderPug("upload");
     })
     .get("/", async (context) => {
-      console.log('got request')
       const mods = await getMods();
-      console.log(mods);
-      context.response.body = await renderPug("index", {
+      context.response.body = renderPug("index", {
         mods,
       });
     })
@@ -58,7 +59,7 @@ export async function startServer() {
           }
         },
       });
-      context.response.body = await renderPug("mod", {
+      context.response.body = renderPug("mod", {
         mod: await decorateMod(mod),
       });
     })
