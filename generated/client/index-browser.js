@@ -98,6 +98,24 @@ exports.Prisma.CategoryScalarFieldEnum = makeEnum({
   updatedAt: 'updatedAt'
 });
 
+exports.Prisma.ModDownloadScalarFieldEnum = makeEnum({
+  id: 'id',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  downloadUrl: 'downloadUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  modVersionId: 'modVersionId'
+});
+
+exports.Prisma.ModFavoriteScalarFieldEnum = makeEnum({
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId',
+  modId: 'modId'
+});
+
 exports.Prisma.ModImageScalarFieldEnum = makeEnum({
   id: 'id',
   url: 'url',
@@ -125,6 +143,7 @@ exports.Prisma.ModScalarFieldEnum = makeEnum({
 exports.Prisma.ModVersionScalarFieldEnum = makeEnum({
   id: 'id',
   version: 'version',
+  isLatest: 'isLatest',
   changelog: 'changelog',
   downloadUrl: 'downloadUrl',
   createdAt: 'createdAt',
@@ -175,7 +194,9 @@ exports.Prisma.ModelName = makeEnum({
   ModImage: 'ModImage',
   ModVersion: 'ModVersion',
   Tag: 'Tag',
-  Category: 'Category'
+  Category: 'Category',
+  ModDownload: 'ModDownload',
+  ModFavorite: 'ModFavorite'
 });
 
 /**

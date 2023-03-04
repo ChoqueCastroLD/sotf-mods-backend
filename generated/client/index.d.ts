@@ -63,6 +63,7 @@ export type ModImage = {
 export type ModVersion = {
   id: number
   version: string
+  isLatest: boolean
   changelog: string
   downloadUrl: string
   createdAt: Date
@@ -94,6 +95,32 @@ export type Category = {
   description: string
   createdAt: Date
   updatedAt: Date
+}
+
+/**
+ * Model ModDownload
+ * 
+ */
+export type ModDownload = {
+  id: number
+  ip: string
+  userAgent: string
+  downloadUrl: string
+  createdAt: Date
+  updatedAt: Date
+  modVersionId: number | null
+}
+
+/**
+ * Model ModFavorite
+ * 
+ */
+export type ModFavorite = {
+  id: number
+  createdAt: Date
+  updatedAt: Date
+  userId: number | null
+  modId: number | null
 }
 
 
@@ -273,6 +300,26 @@ export class PrismaClient<
     * ```
     */
   get category(): Prisma.CategoryDelegate<GlobalReject>;
+
+  /**
+   * `prisma.modDownload`: Exposes CRUD operations for the **ModDownload** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ModDownloads
+    * const modDownloads = await prisma.modDownload.findMany()
+    * ```
+    */
+  get modDownload(): Prisma.ModDownloadDelegate<GlobalReject>;
+
+  /**
+   * `prisma.modFavorite`: Exposes CRUD operations for the **ModFavorite** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ModFavorites
+    * const modFavorites = await prisma.modFavorite.findMany()
+    * ```
+    */
+  get modFavorite(): Prisma.ModFavoriteDelegate<GlobalReject>;
 }
 
 export namespace Prisma {
@@ -747,7 +794,9 @@ export namespace Prisma {
     ModImage: 'ModImage',
     ModVersion: 'ModVersion',
     Tag: 'Tag',
-    Category: 'Category'
+    Category: 'Category',
+    ModDownload: 'ModDownload',
+    ModFavorite: 'ModFavorite'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -915,10 +964,12 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     mods: number
+    favoriteMods: number
   }
 
   export type UserCountOutputTypeSelect = {
     mods?: boolean
+    favoriteMods?: boolean
   }
 
   export type UserCountOutputTypeGetPayload<S extends boolean | null | undefined | UserCountOutputTypeArgs> =
@@ -957,15 +1008,17 @@ export namespace Prisma {
 
 
   export type ModCountOutputType = {
-    modVersions: number
+    versions: number
     tags: number
     images: number
+    favorites: number
   }
 
   export type ModCountOutputTypeSelect = {
-    modVersions?: boolean
+    versions?: boolean
     tags?: boolean
     images?: boolean
+    favorites?: boolean
   }
 
   export type ModCountOutputTypeGetPayload<S extends boolean | null | undefined | ModCountOutputTypeArgs> =
@@ -994,6 +1047,49 @@ export namespace Prisma {
      * Select specific fields to fetch from the ModCountOutputType
      */
     select?: ModCountOutputTypeSelect | null
+  }
+
+
+
+  /**
+   * Count Type ModVersionCountOutputType
+   */
+
+
+  export type ModVersionCountOutputType = {
+    downloads: number
+  }
+
+  export type ModVersionCountOutputTypeSelect = {
+    downloads?: boolean
+  }
+
+  export type ModVersionCountOutputTypeGetPayload<S extends boolean | null | undefined | ModVersionCountOutputTypeArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? ModVersionCountOutputType :
+    S extends undefined ? never :
+    S extends { include: any } & (ModVersionCountOutputTypeArgs)
+    ? ModVersionCountOutputType 
+    : S extends { select: any } & (ModVersionCountOutputTypeArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+    P extends keyof ModVersionCountOutputType ? ModVersionCountOutputType[P] : never
+  } 
+      : ModVersionCountOutputType
+
+
+
+
+  // Custom InputTypes
+
+  /**
+   * ModVersionCountOutputType without action
+   */
+  export type ModVersionCountOutputTypeArgs = {
+    /**
+     * Select specific fields to fetch from the ModVersionCountOutputType
+     */
+    select?: ModVersionCountOutputTypeSelect | null
   }
 
 
@@ -1305,12 +1401,14 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     mods?: boolean | User$modsArgs
+    favoriteMods?: boolean | User$favoriteModsArgs
     _count?: boolean | UserCountOutputTypeArgs
   }
 
 
   export type UserInclude = {
     mods?: boolean | User$modsArgs
+    favoriteMods?: boolean | User$favoriteModsArgs
     _count?: boolean | UserCountOutputTypeArgs
   }
 
@@ -1322,12 +1420,14 @@ export namespace Prisma {
     ? User  & {
     [P in TruthyKeys<S['include']>]:
         P extends 'mods' ? Array < ModGetPayload<S['include'][P]>>  :
+        P extends 'favoriteMods' ? Array < ModFavoriteGetPayload<S['include'][P]>>  :
         P extends '_count' ? UserCountOutputTypeGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (UserArgs | UserFindManyArgs)
       ? {
     [P in TruthyKeys<S['select']>]:
         P extends 'mods' ? Array < ModGetPayload<S['select'][P]>>  :
+        P extends 'favoriteMods' ? Array < ModFavoriteGetPayload<S['select'][P]>>  :
         P extends '_count' ? UserCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof User ? User[P] : never
   } 
       : User
@@ -1701,6 +1801,8 @@ export namespace Prisma {
     constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
 
     mods<T extends User$modsArgs= {}>(args?: Subset<T, User$modsArgs>): Prisma.PrismaPromise<Array<ModGetPayload<T>>| Null>;
+
+    favoriteMods<T extends User$favoriteModsArgs= {}>(args?: Subset<T, User$favoriteModsArgs>): Prisma.PrismaPromise<Array<ModFavoriteGetPayload<T>>| Null>;
 
     private get _document();
     /**
@@ -2079,6 +2181,27 @@ export namespace Prisma {
 
 
   /**
+   * User.favoriteMods
+   */
+  export type User$favoriteModsArgs = {
+    /**
+     * Select specific fields to fetch from the ModFavorite
+     */
+    select?: ModFavoriteSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModFavoriteInclude | null
+    where?: ModFavoriteWhereInput
+    orderBy?: Enumerable<ModFavoriteOrderByWithRelationInput>
+    cursor?: ModFavoriteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<ModFavoriteScalarFieldEnum>
+  }
+
+
+  /**
    * User without action
    */
   export type UserArgs = {
@@ -2352,9 +2475,10 @@ export namespace Prisma {
     categoryId?: boolean
     user?: boolean | UserArgs
     category?: boolean | CategoryArgs
-    modVersions?: boolean | Mod$modVersionsArgs
+    versions?: boolean | Mod$versionsArgs
     tags?: boolean | Mod$tagsArgs
     images?: boolean | Mod$imagesArgs
+    favorites?: boolean | Mod$favoritesArgs
     _count?: boolean | ModCountOutputTypeArgs
   }
 
@@ -2362,9 +2486,10 @@ export namespace Prisma {
   export type ModInclude = {
     user?: boolean | UserArgs
     category?: boolean | CategoryArgs
-    modVersions?: boolean | Mod$modVersionsArgs
+    versions?: boolean | Mod$versionsArgs
     tags?: boolean | Mod$tagsArgs
     images?: boolean | Mod$imagesArgs
+    favorites?: boolean | Mod$favoritesArgs
     _count?: boolean | ModCountOutputTypeArgs
   }
 
@@ -2377,9 +2502,10 @@ export namespace Prisma {
     [P in TruthyKeys<S['include']>]:
         P extends 'user' ? UserGetPayload<S['include'][P]> | null :
         P extends 'category' ? CategoryGetPayload<S['include'][P]> | null :
-        P extends 'modVersions' ? Array < ModVersionGetPayload<S['include'][P]>>  :
+        P extends 'versions' ? Array < ModVersionGetPayload<S['include'][P]>>  :
         P extends 'tags' ? Array < TagGetPayload<S['include'][P]>>  :
         P extends 'images' ? Array < ModImageGetPayload<S['include'][P]>>  :
+        P extends 'favorites' ? Array < ModFavoriteGetPayload<S['include'][P]>>  :
         P extends '_count' ? ModCountOutputTypeGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (ModArgs | ModFindManyArgs)
@@ -2387,9 +2513,10 @@ export namespace Prisma {
     [P in TruthyKeys<S['select']>]:
         P extends 'user' ? UserGetPayload<S['select'][P]> | null :
         P extends 'category' ? CategoryGetPayload<S['select'][P]> | null :
-        P extends 'modVersions' ? Array < ModVersionGetPayload<S['select'][P]>>  :
+        P extends 'versions' ? Array < ModVersionGetPayload<S['select'][P]>>  :
         P extends 'tags' ? Array < TagGetPayload<S['select'][P]>>  :
         P extends 'images' ? Array < ModImageGetPayload<S['select'][P]>>  :
+        P extends 'favorites' ? Array < ModFavoriteGetPayload<S['select'][P]>>  :
         P extends '_count' ? ModCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof Mod ? Mod[P] : never
   } 
       : Mod
@@ -2766,11 +2893,13 @@ export namespace Prisma {
 
     category<T extends CategoryArgs= {}>(args?: Subset<T, CategoryArgs>): Prisma__CategoryClient<CategoryGetPayload<T> | Null>;
 
-    modVersions<T extends Mod$modVersionsArgs= {}>(args?: Subset<T, Mod$modVersionsArgs>): Prisma.PrismaPromise<Array<ModVersionGetPayload<T>>| Null>;
+    versions<T extends Mod$versionsArgs= {}>(args?: Subset<T, Mod$versionsArgs>): Prisma.PrismaPromise<Array<ModVersionGetPayload<T>>| Null>;
 
     tags<T extends Mod$tagsArgs= {}>(args?: Subset<T, Mod$tagsArgs>): Prisma.PrismaPromise<Array<TagGetPayload<T>>| Null>;
 
     images<T extends Mod$imagesArgs= {}>(args?: Subset<T, Mod$imagesArgs>): Prisma.PrismaPromise<Array<ModImageGetPayload<T>>| Null>;
+
+    favorites<T extends Mod$favoritesArgs= {}>(args?: Subset<T, Mod$favoritesArgs>): Prisma.PrismaPromise<Array<ModFavoriteGetPayload<T>>| Null>;
 
     private get _document();
     /**
@@ -3128,9 +3257,9 @@ export namespace Prisma {
 
 
   /**
-   * Mod.modVersions
+   * Mod.versions
    */
-  export type Mod$modVersionsArgs = {
+  export type Mod$versionsArgs = {
     /**
      * Select specific fields to fetch from the ModVersion
      */
@@ -3187,6 +3316,27 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Enumerable<ModImageScalarFieldEnum>
+  }
+
+
+  /**
+   * Mod.favorites
+   */
+  export type Mod$favoritesArgs = {
+    /**
+     * Select specific fields to fetch from the ModFavorite
+     */
+    select?: ModFavoriteSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModFavoriteInclude | null
+    where?: ModFavoriteWhereInput
+    orderBy?: Enumerable<ModFavoriteOrderByWithRelationInput>
+    cursor?: ModFavoriteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<ModFavoriteScalarFieldEnum>
   }
 
 
@@ -4217,6 +4367,7 @@ export namespace Prisma {
   export type ModVersionMinAggregateOutputType = {
     id: number | null
     version: string | null
+    isLatest: boolean | null
     changelog: string | null
     downloadUrl: string | null
     createdAt: Date | null
@@ -4227,6 +4378,7 @@ export namespace Prisma {
   export type ModVersionMaxAggregateOutputType = {
     id: number | null
     version: string | null
+    isLatest: boolean | null
     changelog: string | null
     downloadUrl: string | null
     createdAt: Date | null
@@ -4237,6 +4389,7 @@ export namespace Prisma {
   export type ModVersionCountAggregateOutputType = {
     id: number
     version: number
+    isLatest: number
     changelog: number
     downloadUrl: number
     createdAt: number
@@ -4259,6 +4412,7 @@ export namespace Prisma {
   export type ModVersionMinAggregateInputType = {
     id?: true
     version?: true
+    isLatest?: true
     changelog?: true
     downloadUrl?: true
     createdAt?: true
@@ -4269,6 +4423,7 @@ export namespace Prisma {
   export type ModVersionMaxAggregateInputType = {
     id?: true
     version?: true
+    isLatest?: true
     changelog?: true
     downloadUrl?: true
     createdAt?: true
@@ -4279,6 +4434,7 @@ export namespace Prisma {
   export type ModVersionCountAggregateInputType = {
     id?: true
     version?: true
+    isLatest?: true
     changelog?: true
     downloadUrl?: true
     createdAt?: true
@@ -4377,6 +4533,7 @@ export namespace Prisma {
   export type ModVersionGroupByOutputType = {
     id: number
     version: string
+    isLatest: boolean
     changelog: string
     downloadUrl: string
     createdAt: Date
@@ -4406,17 +4563,22 @@ export namespace Prisma {
   export type ModVersionSelect = {
     id?: boolean
     version?: boolean
+    isLatest?: boolean
     changelog?: boolean
     downloadUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     modId?: boolean
     mod?: boolean | ModArgs
+    downloads?: boolean | ModVersion$downloadsArgs
+    _count?: boolean | ModVersionCountOutputTypeArgs
   }
 
 
   export type ModVersionInclude = {
     mod?: boolean | ModArgs
+    downloads?: boolean | ModVersion$downloadsArgs
+    _count?: boolean | ModVersionCountOutputTypeArgs
   }
 
   export type ModVersionGetPayload<S extends boolean | null | undefined | ModVersionArgs> =
@@ -4426,12 +4588,16 @@ export namespace Prisma {
     S extends { include: any } & (ModVersionArgs | ModVersionFindManyArgs)
     ? ModVersion  & {
     [P in TruthyKeys<S['include']>]:
-        P extends 'mod' ? ModGetPayload<S['include'][P]> | null :  never
+        P extends 'mod' ? ModGetPayload<S['include'][P]> | null :
+        P extends 'downloads' ? Array < ModDownloadGetPayload<S['include'][P]>>  :
+        P extends '_count' ? ModVersionCountOutputTypeGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (ModVersionArgs | ModVersionFindManyArgs)
       ? {
     [P in TruthyKeys<S['select']>]:
-        P extends 'mod' ? ModGetPayload<S['select'][P]> | null :  P extends keyof ModVersion ? ModVersion[P] : never
+        P extends 'mod' ? ModGetPayload<S['select'][P]> | null :
+        P extends 'downloads' ? Array < ModDownloadGetPayload<S['select'][P]>>  :
+        P extends '_count' ? ModVersionCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof ModVersion ? ModVersion[P] : never
   } 
       : ModVersion
 
@@ -4805,6 +4971,8 @@ export namespace Prisma {
 
     mod<T extends ModArgs= {}>(args?: Subset<T, ModArgs>): Prisma__ModClient<ModGetPayload<T> | Null>;
 
+    downloads<T extends ModVersion$downloadsArgs= {}>(args?: Subset<T, ModVersion$downloadsArgs>): Prisma.PrismaPromise<Array<ModDownloadGetPayload<T>>| Null>;
+
     private get _document();
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -5157,6 +5325,27 @@ export namespace Prisma {
      * Filter which ModVersions to delete
      */
     where?: ModVersionWhereInput
+  }
+
+
+  /**
+   * ModVersion.downloads
+   */
+  export type ModVersion$downloadsArgs = {
+    /**
+     * Select specific fields to fetch from the ModDownload
+     */
+    select?: ModDownloadSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModDownloadInclude | null
+    where?: ModDownloadWhereInput
+    orderBy?: Enumerable<ModDownloadOrderByWithRelationInput>
+    cursor?: ModDownloadWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<ModDownloadScalarFieldEnum>
   }
 
 
@@ -7173,6 +7362,1970 @@ export namespace Prisma {
 
 
   /**
+   * Model ModDownload
+   */
+
+
+  export type AggregateModDownload = {
+    _count: ModDownloadCountAggregateOutputType | null
+    _avg: ModDownloadAvgAggregateOutputType | null
+    _sum: ModDownloadSumAggregateOutputType | null
+    _min: ModDownloadMinAggregateOutputType | null
+    _max: ModDownloadMaxAggregateOutputType | null
+  }
+
+  export type ModDownloadAvgAggregateOutputType = {
+    id: number | null
+    modVersionId: number | null
+  }
+
+  export type ModDownloadSumAggregateOutputType = {
+    id: number | null
+    modVersionId: number | null
+  }
+
+  export type ModDownloadMinAggregateOutputType = {
+    id: number | null
+    ip: string | null
+    userAgent: string | null
+    downloadUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    modVersionId: number | null
+  }
+
+  export type ModDownloadMaxAggregateOutputType = {
+    id: number | null
+    ip: string | null
+    userAgent: string | null
+    downloadUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    modVersionId: number | null
+  }
+
+  export type ModDownloadCountAggregateOutputType = {
+    id: number
+    ip: number
+    userAgent: number
+    downloadUrl: number
+    createdAt: number
+    updatedAt: number
+    modVersionId: number
+    _all: number
+  }
+
+
+  export type ModDownloadAvgAggregateInputType = {
+    id?: true
+    modVersionId?: true
+  }
+
+  export type ModDownloadSumAggregateInputType = {
+    id?: true
+    modVersionId?: true
+  }
+
+  export type ModDownloadMinAggregateInputType = {
+    id?: true
+    ip?: true
+    userAgent?: true
+    downloadUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    modVersionId?: true
+  }
+
+  export type ModDownloadMaxAggregateInputType = {
+    id?: true
+    ip?: true
+    userAgent?: true
+    downloadUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    modVersionId?: true
+  }
+
+  export type ModDownloadCountAggregateInputType = {
+    id?: true
+    ip?: true
+    userAgent?: true
+    downloadUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    modVersionId?: true
+    _all?: true
+  }
+
+  export type ModDownloadAggregateArgs = {
+    /**
+     * Filter which ModDownload to aggregate.
+     */
+    where?: ModDownloadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModDownloads to fetch.
+     */
+    orderBy?: Enumerable<ModDownloadOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ModDownloadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModDownloads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModDownloads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ModDownloads
+    **/
+    _count?: true | ModDownloadCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ModDownloadAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ModDownloadSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ModDownloadMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ModDownloadMaxAggregateInputType
+  }
+
+  export type GetModDownloadAggregateType<T extends ModDownloadAggregateArgs> = {
+        [P in keyof T & keyof AggregateModDownload]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateModDownload[P]>
+      : GetScalarType<T[P], AggregateModDownload[P]>
+  }
+
+
+
+
+  export type ModDownloadGroupByArgs = {
+    where?: ModDownloadWhereInput
+    orderBy?: Enumerable<ModDownloadOrderByWithAggregationInput>
+    by: ModDownloadScalarFieldEnum[]
+    having?: ModDownloadScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ModDownloadCountAggregateInputType | true
+    _avg?: ModDownloadAvgAggregateInputType
+    _sum?: ModDownloadSumAggregateInputType
+    _min?: ModDownloadMinAggregateInputType
+    _max?: ModDownloadMaxAggregateInputType
+  }
+
+
+  export type ModDownloadGroupByOutputType = {
+    id: number
+    ip: string
+    userAgent: string
+    downloadUrl: string
+    createdAt: Date
+    updatedAt: Date
+    modVersionId: number | null
+    _count: ModDownloadCountAggregateOutputType | null
+    _avg: ModDownloadAvgAggregateOutputType | null
+    _sum: ModDownloadSumAggregateOutputType | null
+    _min: ModDownloadMinAggregateOutputType | null
+    _max: ModDownloadMaxAggregateOutputType | null
+  }
+
+  type GetModDownloadGroupByPayload<T extends ModDownloadGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickArray<ModDownloadGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ModDownloadGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ModDownloadGroupByOutputType[P]>
+            : GetScalarType<T[P], ModDownloadGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ModDownloadSelect = {
+    id?: boolean
+    ip?: boolean
+    userAgent?: boolean
+    downloadUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    modVersionId?: boolean
+    version?: boolean | ModVersionArgs
+  }
+
+
+  export type ModDownloadInclude = {
+    version?: boolean | ModVersionArgs
+  }
+
+  export type ModDownloadGetPayload<S extends boolean | null | undefined | ModDownloadArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? ModDownload :
+    S extends undefined ? never :
+    S extends { include: any } & (ModDownloadArgs | ModDownloadFindManyArgs)
+    ? ModDownload  & {
+    [P in TruthyKeys<S['include']>]:
+        P extends 'version' ? ModVersionGetPayload<S['include'][P]> | null :  never
+  } 
+    : S extends { select: any } & (ModDownloadArgs | ModDownloadFindManyArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+        P extends 'version' ? ModVersionGetPayload<S['select'][P]> | null :  P extends keyof ModDownload ? ModDownload[P] : never
+  } 
+      : ModDownload
+
+
+  type ModDownloadCountArgs = 
+    Omit<ModDownloadFindManyArgs, 'select' | 'include'> & {
+      select?: ModDownloadCountAggregateInputType | true
+    }
+
+  export interface ModDownloadDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+
+    /**
+     * Find zero or one ModDownload that matches the filter.
+     * @param {ModDownloadFindUniqueArgs} args - Arguments to find a ModDownload
+     * @example
+     * // Get one ModDownload
+     * const modDownload = await prisma.modDownload.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends ModDownloadFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, ModDownloadFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'ModDownload'> extends True ? Prisma__ModDownloadClient<ModDownloadGetPayload<T>> : Prisma__ModDownloadClient<ModDownloadGetPayload<T> | null, null>
+
+    /**
+     * Find one ModDownload that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {ModDownloadFindUniqueOrThrowArgs} args - Arguments to find a ModDownload
+     * @example
+     * // Get one ModDownload
+     * const modDownload = await prisma.modDownload.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends ModDownloadFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, ModDownloadFindUniqueOrThrowArgs>
+    ): Prisma__ModDownloadClient<ModDownloadGetPayload<T>>
+
+    /**
+     * Find the first ModDownload that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModDownloadFindFirstArgs} args - Arguments to find a ModDownload
+     * @example
+     * // Get one ModDownload
+     * const modDownload = await prisma.modDownload.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends ModDownloadFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, ModDownloadFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'ModDownload'> extends True ? Prisma__ModDownloadClient<ModDownloadGetPayload<T>> : Prisma__ModDownloadClient<ModDownloadGetPayload<T> | null, null>
+
+    /**
+     * Find the first ModDownload that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModDownloadFindFirstOrThrowArgs} args - Arguments to find a ModDownload
+     * @example
+     * // Get one ModDownload
+     * const modDownload = await prisma.modDownload.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends ModDownloadFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, ModDownloadFindFirstOrThrowArgs>
+    ): Prisma__ModDownloadClient<ModDownloadGetPayload<T>>
+
+    /**
+     * Find zero or more ModDownloads that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModDownloadFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ModDownloads
+     * const modDownloads = await prisma.modDownload.findMany()
+     * 
+     * // Get first 10 ModDownloads
+     * const modDownloads = await prisma.modDownload.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const modDownloadWithIdOnly = await prisma.modDownload.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends ModDownloadFindManyArgs>(
+      args?: SelectSubset<T, ModDownloadFindManyArgs>
+    ): Prisma.PrismaPromise<Array<ModDownloadGetPayload<T>>>
+
+    /**
+     * Create a ModDownload.
+     * @param {ModDownloadCreateArgs} args - Arguments to create a ModDownload.
+     * @example
+     * // Create one ModDownload
+     * const ModDownload = await prisma.modDownload.create({
+     *   data: {
+     *     // ... data to create a ModDownload
+     *   }
+     * })
+     * 
+    **/
+    create<T extends ModDownloadCreateArgs>(
+      args: SelectSubset<T, ModDownloadCreateArgs>
+    ): Prisma__ModDownloadClient<ModDownloadGetPayload<T>>
+
+    /**
+     * Create many ModDownloads.
+     *     @param {ModDownloadCreateManyArgs} args - Arguments to create many ModDownloads.
+     *     @example
+     *     // Create many ModDownloads
+     *     const modDownload = await prisma.modDownload.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends ModDownloadCreateManyArgs>(
+      args?: SelectSubset<T, ModDownloadCreateManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a ModDownload.
+     * @param {ModDownloadDeleteArgs} args - Arguments to delete one ModDownload.
+     * @example
+     * // Delete one ModDownload
+     * const ModDownload = await prisma.modDownload.delete({
+     *   where: {
+     *     // ... filter to delete one ModDownload
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends ModDownloadDeleteArgs>(
+      args: SelectSubset<T, ModDownloadDeleteArgs>
+    ): Prisma__ModDownloadClient<ModDownloadGetPayload<T>>
+
+    /**
+     * Update one ModDownload.
+     * @param {ModDownloadUpdateArgs} args - Arguments to update one ModDownload.
+     * @example
+     * // Update one ModDownload
+     * const modDownload = await prisma.modDownload.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends ModDownloadUpdateArgs>(
+      args: SelectSubset<T, ModDownloadUpdateArgs>
+    ): Prisma__ModDownloadClient<ModDownloadGetPayload<T>>
+
+    /**
+     * Delete zero or more ModDownloads.
+     * @param {ModDownloadDeleteManyArgs} args - Arguments to filter ModDownloads to delete.
+     * @example
+     * // Delete a few ModDownloads
+     * const { count } = await prisma.modDownload.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends ModDownloadDeleteManyArgs>(
+      args?: SelectSubset<T, ModDownloadDeleteManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModDownloads.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModDownloadUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ModDownloads
+     * const modDownload = await prisma.modDownload.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends ModDownloadUpdateManyArgs>(
+      args: SelectSubset<T, ModDownloadUpdateManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ModDownload.
+     * @param {ModDownloadUpsertArgs} args - Arguments to update or create a ModDownload.
+     * @example
+     * // Update or create a ModDownload
+     * const modDownload = await prisma.modDownload.upsert({
+     *   create: {
+     *     // ... data to create a ModDownload
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ModDownload we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends ModDownloadUpsertArgs>(
+      args: SelectSubset<T, ModDownloadUpsertArgs>
+    ): Prisma__ModDownloadClient<ModDownloadGetPayload<T>>
+
+    /**
+     * Count the number of ModDownloads.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModDownloadCountArgs} args - Arguments to filter ModDownloads to count.
+     * @example
+     * // Count the number of ModDownloads
+     * const count = await prisma.modDownload.count({
+     *   where: {
+     *     // ... the filter for the ModDownloads we want to count
+     *   }
+     * })
+    **/
+    count<T extends ModDownloadCountArgs>(
+      args?: Subset<T, ModDownloadCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ModDownloadCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ModDownload.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModDownloadAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ModDownloadAggregateArgs>(args: Subset<T, ModDownloadAggregateArgs>): Prisma.PrismaPromise<GetModDownloadAggregateType<T>>
+
+    /**
+     * Group by ModDownload.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModDownloadGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ModDownloadGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ModDownloadGroupByArgs['orderBy'] }
+        : { orderBy?: ModDownloadGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ModDownloadGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetModDownloadGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ModDownload.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__ModDownloadClient<T, Null = never> implements Prisma.PrismaPromise<T> {
+    private readonly _dmmf;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+
+    version<T extends ModVersionArgs= {}>(args?: Subset<T, ModVersionArgs>): Prisma__ModVersionClient<ModVersionGetPayload<T> | Null>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * ModDownload base type for findUnique actions
+   */
+  export type ModDownloadFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the ModDownload
+     */
+    select?: ModDownloadSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModDownloadInclude | null
+    /**
+     * Filter, which ModDownload to fetch.
+     */
+    where: ModDownloadWhereUniqueInput
+  }
+
+  /**
+   * ModDownload findUnique
+   */
+  export interface ModDownloadFindUniqueArgs extends ModDownloadFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * ModDownload findUniqueOrThrow
+   */
+  export type ModDownloadFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the ModDownload
+     */
+    select?: ModDownloadSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModDownloadInclude | null
+    /**
+     * Filter, which ModDownload to fetch.
+     */
+    where: ModDownloadWhereUniqueInput
+  }
+
+
+  /**
+   * ModDownload base type for findFirst actions
+   */
+  export type ModDownloadFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the ModDownload
+     */
+    select?: ModDownloadSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModDownloadInclude | null
+    /**
+     * Filter, which ModDownload to fetch.
+     */
+    where?: ModDownloadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModDownloads to fetch.
+     */
+    orderBy?: Enumerable<ModDownloadOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModDownloads.
+     */
+    cursor?: ModDownloadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModDownloads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModDownloads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModDownloads.
+     */
+    distinct?: Enumerable<ModDownloadScalarFieldEnum>
+  }
+
+  /**
+   * ModDownload findFirst
+   */
+  export interface ModDownloadFindFirstArgs extends ModDownloadFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * ModDownload findFirstOrThrow
+   */
+  export type ModDownloadFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the ModDownload
+     */
+    select?: ModDownloadSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModDownloadInclude | null
+    /**
+     * Filter, which ModDownload to fetch.
+     */
+    where?: ModDownloadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModDownloads to fetch.
+     */
+    orderBy?: Enumerable<ModDownloadOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModDownloads.
+     */
+    cursor?: ModDownloadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModDownloads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModDownloads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModDownloads.
+     */
+    distinct?: Enumerable<ModDownloadScalarFieldEnum>
+  }
+
+
+  /**
+   * ModDownload findMany
+   */
+  export type ModDownloadFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the ModDownload
+     */
+    select?: ModDownloadSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModDownloadInclude | null
+    /**
+     * Filter, which ModDownloads to fetch.
+     */
+    where?: ModDownloadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModDownloads to fetch.
+     */
+    orderBy?: Enumerable<ModDownloadOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ModDownloads.
+     */
+    cursor?: ModDownloadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModDownloads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModDownloads.
+     */
+    skip?: number
+    distinct?: Enumerable<ModDownloadScalarFieldEnum>
+  }
+
+
+  /**
+   * ModDownload create
+   */
+  export type ModDownloadCreateArgs = {
+    /**
+     * Select specific fields to fetch from the ModDownload
+     */
+    select?: ModDownloadSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModDownloadInclude | null
+    /**
+     * The data needed to create a ModDownload.
+     */
+    data: XOR<ModDownloadCreateInput, ModDownloadUncheckedCreateInput>
+  }
+
+
+  /**
+   * ModDownload createMany
+   */
+  export type ModDownloadCreateManyArgs = {
+    /**
+     * The data used to create many ModDownloads.
+     */
+    data: Enumerable<ModDownloadCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * ModDownload update
+   */
+  export type ModDownloadUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the ModDownload
+     */
+    select?: ModDownloadSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModDownloadInclude | null
+    /**
+     * The data needed to update a ModDownload.
+     */
+    data: XOR<ModDownloadUpdateInput, ModDownloadUncheckedUpdateInput>
+    /**
+     * Choose, which ModDownload to update.
+     */
+    where: ModDownloadWhereUniqueInput
+  }
+
+
+  /**
+   * ModDownload updateMany
+   */
+  export type ModDownloadUpdateManyArgs = {
+    /**
+     * The data used to update ModDownloads.
+     */
+    data: XOR<ModDownloadUpdateManyMutationInput, ModDownloadUncheckedUpdateManyInput>
+    /**
+     * Filter which ModDownloads to update
+     */
+    where?: ModDownloadWhereInput
+  }
+
+
+  /**
+   * ModDownload upsert
+   */
+  export type ModDownloadUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the ModDownload
+     */
+    select?: ModDownloadSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModDownloadInclude | null
+    /**
+     * The filter to search for the ModDownload to update in case it exists.
+     */
+    where: ModDownloadWhereUniqueInput
+    /**
+     * In case the ModDownload found by the `where` argument doesn't exist, create a new ModDownload with this data.
+     */
+    create: XOR<ModDownloadCreateInput, ModDownloadUncheckedCreateInput>
+    /**
+     * In case the ModDownload was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ModDownloadUpdateInput, ModDownloadUncheckedUpdateInput>
+  }
+
+
+  /**
+   * ModDownload delete
+   */
+  export type ModDownloadDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the ModDownload
+     */
+    select?: ModDownloadSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModDownloadInclude | null
+    /**
+     * Filter which ModDownload to delete.
+     */
+    where: ModDownloadWhereUniqueInput
+  }
+
+
+  /**
+   * ModDownload deleteMany
+   */
+  export type ModDownloadDeleteManyArgs = {
+    /**
+     * Filter which ModDownloads to delete
+     */
+    where?: ModDownloadWhereInput
+  }
+
+
+  /**
+   * ModDownload without action
+   */
+  export type ModDownloadArgs = {
+    /**
+     * Select specific fields to fetch from the ModDownload
+     */
+    select?: ModDownloadSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModDownloadInclude | null
+  }
+
+
+
+  /**
+   * Model ModFavorite
+   */
+
+
+  export type AggregateModFavorite = {
+    _count: ModFavoriteCountAggregateOutputType | null
+    _avg: ModFavoriteAvgAggregateOutputType | null
+    _sum: ModFavoriteSumAggregateOutputType | null
+    _min: ModFavoriteMinAggregateOutputType | null
+    _max: ModFavoriteMaxAggregateOutputType | null
+  }
+
+  export type ModFavoriteAvgAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    modId: number | null
+  }
+
+  export type ModFavoriteSumAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    modId: number | null
+  }
+
+  export type ModFavoriteMinAggregateOutputType = {
+    id: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    userId: number | null
+    modId: number | null
+  }
+
+  export type ModFavoriteMaxAggregateOutputType = {
+    id: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    userId: number | null
+    modId: number | null
+  }
+
+  export type ModFavoriteCountAggregateOutputType = {
+    id: number
+    createdAt: number
+    updatedAt: number
+    userId: number
+    modId: number
+    _all: number
+  }
+
+
+  export type ModFavoriteAvgAggregateInputType = {
+    id?: true
+    userId?: true
+    modId?: true
+  }
+
+  export type ModFavoriteSumAggregateInputType = {
+    id?: true
+    userId?: true
+    modId?: true
+  }
+
+  export type ModFavoriteMinAggregateInputType = {
+    id?: true
+    createdAt?: true
+    updatedAt?: true
+    userId?: true
+    modId?: true
+  }
+
+  export type ModFavoriteMaxAggregateInputType = {
+    id?: true
+    createdAt?: true
+    updatedAt?: true
+    userId?: true
+    modId?: true
+  }
+
+  export type ModFavoriteCountAggregateInputType = {
+    id?: true
+    createdAt?: true
+    updatedAt?: true
+    userId?: true
+    modId?: true
+    _all?: true
+  }
+
+  export type ModFavoriteAggregateArgs = {
+    /**
+     * Filter which ModFavorite to aggregate.
+     */
+    where?: ModFavoriteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModFavorites to fetch.
+     */
+    orderBy?: Enumerable<ModFavoriteOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ModFavoriteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModFavorites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModFavorites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ModFavorites
+    **/
+    _count?: true | ModFavoriteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ModFavoriteAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ModFavoriteSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ModFavoriteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ModFavoriteMaxAggregateInputType
+  }
+
+  export type GetModFavoriteAggregateType<T extends ModFavoriteAggregateArgs> = {
+        [P in keyof T & keyof AggregateModFavorite]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateModFavorite[P]>
+      : GetScalarType<T[P], AggregateModFavorite[P]>
+  }
+
+
+
+
+  export type ModFavoriteGroupByArgs = {
+    where?: ModFavoriteWhereInput
+    orderBy?: Enumerable<ModFavoriteOrderByWithAggregationInput>
+    by: ModFavoriteScalarFieldEnum[]
+    having?: ModFavoriteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ModFavoriteCountAggregateInputType | true
+    _avg?: ModFavoriteAvgAggregateInputType
+    _sum?: ModFavoriteSumAggregateInputType
+    _min?: ModFavoriteMinAggregateInputType
+    _max?: ModFavoriteMaxAggregateInputType
+  }
+
+
+  export type ModFavoriteGroupByOutputType = {
+    id: number
+    createdAt: Date
+    updatedAt: Date
+    userId: number | null
+    modId: number | null
+    _count: ModFavoriteCountAggregateOutputType | null
+    _avg: ModFavoriteAvgAggregateOutputType | null
+    _sum: ModFavoriteSumAggregateOutputType | null
+    _min: ModFavoriteMinAggregateOutputType | null
+    _max: ModFavoriteMaxAggregateOutputType | null
+  }
+
+  type GetModFavoriteGroupByPayload<T extends ModFavoriteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickArray<ModFavoriteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ModFavoriteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ModFavoriteGroupByOutputType[P]>
+            : GetScalarType<T[P], ModFavoriteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ModFavoriteSelect = {
+    id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    userId?: boolean
+    modId?: boolean
+    user?: boolean | UserArgs
+    mod?: boolean | ModArgs
+  }
+
+
+  export type ModFavoriteInclude = {
+    user?: boolean | UserArgs
+    mod?: boolean | ModArgs
+  }
+
+  export type ModFavoriteGetPayload<S extends boolean | null | undefined | ModFavoriteArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? ModFavorite :
+    S extends undefined ? never :
+    S extends { include: any } & (ModFavoriteArgs | ModFavoriteFindManyArgs)
+    ? ModFavorite  & {
+    [P in TruthyKeys<S['include']>]:
+        P extends 'user' ? UserGetPayload<S['include'][P]> | null :
+        P extends 'mod' ? ModGetPayload<S['include'][P]> | null :  never
+  } 
+    : S extends { select: any } & (ModFavoriteArgs | ModFavoriteFindManyArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+        P extends 'user' ? UserGetPayload<S['select'][P]> | null :
+        P extends 'mod' ? ModGetPayload<S['select'][P]> | null :  P extends keyof ModFavorite ? ModFavorite[P] : never
+  } 
+      : ModFavorite
+
+
+  type ModFavoriteCountArgs = 
+    Omit<ModFavoriteFindManyArgs, 'select' | 'include'> & {
+      select?: ModFavoriteCountAggregateInputType | true
+    }
+
+  export interface ModFavoriteDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+
+    /**
+     * Find zero or one ModFavorite that matches the filter.
+     * @param {ModFavoriteFindUniqueArgs} args - Arguments to find a ModFavorite
+     * @example
+     * // Get one ModFavorite
+     * const modFavorite = await prisma.modFavorite.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends ModFavoriteFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, ModFavoriteFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'ModFavorite'> extends True ? Prisma__ModFavoriteClient<ModFavoriteGetPayload<T>> : Prisma__ModFavoriteClient<ModFavoriteGetPayload<T> | null, null>
+
+    /**
+     * Find one ModFavorite that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {ModFavoriteFindUniqueOrThrowArgs} args - Arguments to find a ModFavorite
+     * @example
+     * // Get one ModFavorite
+     * const modFavorite = await prisma.modFavorite.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends ModFavoriteFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, ModFavoriteFindUniqueOrThrowArgs>
+    ): Prisma__ModFavoriteClient<ModFavoriteGetPayload<T>>
+
+    /**
+     * Find the first ModFavorite that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModFavoriteFindFirstArgs} args - Arguments to find a ModFavorite
+     * @example
+     * // Get one ModFavorite
+     * const modFavorite = await prisma.modFavorite.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends ModFavoriteFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, ModFavoriteFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'ModFavorite'> extends True ? Prisma__ModFavoriteClient<ModFavoriteGetPayload<T>> : Prisma__ModFavoriteClient<ModFavoriteGetPayload<T> | null, null>
+
+    /**
+     * Find the first ModFavorite that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModFavoriteFindFirstOrThrowArgs} args - Arguments to find a ModFavorite
+     * @example
+     * // Get one ModFavorite
+     * const modFavorite = await prisma.modFavorite.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends ModFavoriteFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, ModFavoriteFindFirstOrThrowArgs>
+    ): Prisma__ModFavoriteClient<ModFavoriteGetPayload<T>>
+
+    /**
+     * Find zero or more ModFavorites that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModFavoriteFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ModFavorites
+     * const modFavorites = await prisma.modFavorite.findMany()
+     * 
+     * // Get first 10 ModFavorites
+     * const modFavorites = await prisma.modFavorite.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const modFavoriteWithIdOnly = await prisma.modFavorite.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends ModFavoriteFindManyArgs>(
+      args?: SelectSubset<T, ModFavoriteFindManyArgs>
+    ): Prisma.PrismaPromise<Array<ModFavoriteGetPayload<T>>>
+
+    /**
+     * Create a ModFavorite.
+     * @param {ModFavoriteCreateArgs} args - Arguments to create a ModFavorite.
+     * @example
+     * // Create one ModFavorite
+     * const ModFavorite = await prisma.modFavorite.create({
+     *   data: {
+     *     // ... data to create a ModFavorite
+     *   }
+     * })
+     * 
+    **/
+    create<T extends ModFavoriteCreateArgs>(
+      args: SelectSubset<T, ModFavoriteCreateArgs>
+    ): Prisma__ModFavoriteClient<ModFavoriteGetPayload<T>>
+
+    /**
+     * Create many ModFavorites.
+     *     @param {ModFavoriteCreateManyArgs} args - Arguments to create many ModFavorites.
+     *     @example
+     *     // Create many ModFavorites
+     *     const modFavorite = await prisma.modFavorite.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends ModFavoriteCreateManyArgs>(
+      args?: SelectSubset<T, ModFavoriteCreateManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a ModFavorite.
+     * @param {ModFavoriteDeleteArgs} args - Arguments to delete one ModFavorite.
+     * @example
+     * // Delete one ModFavorite
+     * const ModFavorite = await prisma.modFavorite.delete({
+     *   where: {
+     *     // ... filter to delete one ModFavorite
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends ModFavoriteDeleteArgs>(
+      args: SelectSubset<T, ModFavoriteDeleteArgs>
+    ): Prisma__ModFavoriteClient<ModFavoriteGetPayload<T>>
+
+    /**
+     * Update one ModFavorite.
+     * @param {ModFavoriteUpdateArgs} args - Arguments to update one ModFavorite.
+     * @example
+     * // Update one ModFavorite
+     * const modFavorite = await prisma.modFavorite.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends ModFavoriteUpdateArgs>(
+      args: SelectSubset<T, ModFavoriteUpdateArgs>
+    ): Prisma__ModFavoriteClient<ModFavoriteGetPayload<T>>
+
+    /**
+     * Delete zero or more ModFavorites.
+     * @param {ModFavoriteDeleteManyArgs} args - Arguments to filter ModFavorites to delete.
+     * @example
+     * // Delete a few ModFavorites
+     * const { count } = await prisma.modFavorite.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends ModFavoriteDeleteManyArgs>(
+      args?: SelectSubset<T, ModFavoriteDeleteManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ModFavorites.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModFavoriteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ModFavorites
+     * const modFavorite = await prisma.modFavorite.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends ModFavoriteUpdateManyArgs>(
+      args: SelectSubset<T, ModFavoriteUpdateManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one ModFavorite.
+     * @param {ModFavoriteUpsertArgs} args - Arguments to update or create a ModFavorite.
+     * @example
+     * // Update or create a ModFavorite
+     * const modFavorite = await prisma.modFavorite.upsert({
+     *   create: {
+     *     // ... data to create a ModFavorite
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ModFavorite we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends ModFavoriteUpsertArgs>(
+      args: SelectSubset<T, ModFavoriteUpsertArgs>
+    ): Prisma__ModFavoriteClient<ModFavoriteGetPayload<T>>
+
+    /**
+     * Count the number of ModFavorites.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModFavoriteCountArgs} args - Arguments to filter ModFavorites to count.
+     * @example
+     * // Count the number of ModFavorites
+     * const count = await prisma.modFavorite.count({
+     *   where: {
+     *     // ... the filter for the ModFavorites we want to count
+     *   }
+     * })
+    **/
+    count<T extends ModFavoriteCountArgs>(
+      args?: Subset<T, ModFavoriteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ModFavoriteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ModFavorite.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModFavoriteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ModFavoriteAggregateArgs>(args: Subset<T, ModFavoriteAggregateArgs>): Prisma.PrismaPromise<GetModFavoriteAggregateType<T>>
+
+    /**
+     * Group by ModFavorite.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModFavoriteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ModFavoriteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ModFavoriteGroupByArgs['orderBy'] }
+        : { orderBy?: ModFavoriteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ModFavoriteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetModFavoriteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ModFavorite.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__ModFavoriteClient<T, Null = never> implements Prisma.PrismaPromise<T> {
+    private readonly _dmmf;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+
+    user<T extends UserArgs= {}>(args?: Subset<T, UserArgs>): Prisma__UserClient<UserGetPayload<T> | Null>;
+
+    mod<T extends ModArgs= {}>(args?: Subset<T, ModArgs>): Prisma__ModClient<ModGetPayload<T> | Null>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * ModFavorite base type for findUnique actions
+   */
+  export type ModFavoriteFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the ModFavorite
+     */
+    select?: ModFavoriteSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModFavoriteInclude | null
+    /**
+     * Filter, which ModFavorite to fetch.
+     */
+    where: ModFavoriteWhereUniqueInput
+  }
+
+  /**
+   * ModFavorite findUnique
+   */
+  export interface ModFavoriteFindUniqueArgs extends ModFavoriteFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * ModFavorite findUniqueOrThrow
+   */
+  export type ModFavoriteFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the ModFavorite
+     */
+    select?: ModFavoriteSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModFavoriteInclude | null
+    /**
+     * Filter, which ModFavorite to fetch.
+     */
+    where: ModFavoriteWhereUniqueInput
+  }
+
+
+  /**
+   * ModFavorite base type for findFirst actions
+   */
+  export type ModFavoriteFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the ModFavorite
+     */
+    select?: ModFavoriteSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModFavoriteInclude | null
+    /**
+     * Filter, which ModFavorite to fetch.
+     */
+    where?: ModFavoriteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModFavorites to fetch.
+     */
+    orderBy?: Enumerable<ModFavoriteOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModFavorites.
+     */
+    cursor?: ModFavoriteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModFavorites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModFavorites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModFavorites.
+     */
+    distinct?: Enumerable<ModFavoriteScalarFieldEnum>
+  }
+
+  /**
+   * ModFavorite findFirst
+   */
+  export interface ModFavoriteFindFirstArgs extends ModFavoriteFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * ModFavorite findFirstOrThrow
+   */
+  export type ModFavoriteFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the ModFavorite
+     */
+    select?: ModFavoriteSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModFavoriteInclude | null
+    /**
+     * Filter, which ModFavorite to fetch.
+     */
+    where?: ModFavoriteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModFavorites to fetch.
+     */
+    orderBy?: Enumerable<ModFavoriteOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ModFavorites.
+     */
+    cursor?: ModFavoriteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModFavorites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModFavorites.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ModFavorites.
+     */
+    distinct?: Enumerable<ModFavoriteScalarFieldEnum>
+  }
+
+
+  /**
+   * ModFavorite findMany
+   */
+  export type ModFavoriteFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the ModFavorite
+     */
+    select?: ModFavoriteSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModFavoriteInclude | null
+    /**
+     * Filter, which ModFavorites to fetch.
+     */
+    where?: ModFavoriteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ModFavorites to fetch.
+     */
+    orderBy?: Enumerable<ModFavoriteOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ModFavorites.
+     */
+    cursor?: ModFavoriteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ModFavorites from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ModFavorites.
+     */
+    skip?: number
+    distinct?: Enumerable<ModFavoriteScalarFieldEnum>
+  }
+
+
+  /**
+   * ModFavorite create
+   */
+  export type ModFavoriteCreateArgs = {
+    /**
+     * Select specific fields to fetch from the ModFavorite
+     */
+    select?: ModFavoriteSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModFavoriteInclude | null
+    /**
+     * The data needed to create a ModFavorite.
+     */
+    data: XOR<ModFavoriteCreateInput, ModFavoriteUncheckedCreateInput>
+  }
+
+
+  /**
+   * ModFavorite createMany
+   */
+  export type ModFavoriteCreateManyArgs = {
+    /**
+     * The data used to create many ModFavorites.
+     */
+    data: Enumerable<ModFavoriteCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * ModFavorite update
+   */
+  export type ModFavoriteUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the ModFavorite
+     */
+    select?: ModFavoriteSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModFavoriteInclude | null
+    /**
+     * The data needed to update a ModFavorite.
+     */
+    data: XOR<ModFavoriteUpdateInput, ModFavoriteUncheckedUpdateInput>
+    /**
+     * Choose, which ModFavorite to update.
+     */
+    where: ModFavoriteWhereUniqueInput
+  }
+
+
+  /**
+   * ModFavorite updateMany
+   */
+  export type ModFavoriteUpdateManyArgs = {
+    /**
+     * The data used to update ModFavorites.
+     */
+    data: XOR<ModFavoriteUpdateManyMutationInput, ModFavoriteUncheckedUpdateManyInput>
+    /**
+     * Filter which ModFavorites to update
+     */
+    where?: ModFavoriteWhereInput
+  }
+
+
+  /**
+   * ModFavorite upsert
+   */
+  export type ModFavoriteUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the ModFavorite
+     */
+    select?: ModFavoriteSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModFavoriteInclude | null
+    /**
+     * The filter to search for the ModFavorite to update in case it exists.
+     */
+    where: ModFavoriteWhereUniqueInput
+    /**
+     * In case the ModFavorite found by the `where` argument doesn't exist, create a new ModFavorite with this data.
+     */
+    create: XOR<ModFavoriteCreateInput, ModFavoriteUncheckedCreateInput>
+    /**
+     * In case the ModFavorite was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ModFavoriteUpdateInput, ModFavoriteUncheckedUpdateInput>
+  }
+
+
+  /**
+   * ModFavorite delete
+   */
+  export type ModFavoriteDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the ModFavorite
+     */
+    select?: ModFavoriteSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModFavoriteInclude | null
+    /**
+     * Filter which ModFavorite to delete.
+     */
+    where: ModFavoriteWhereUniqueInput
+  }
+
+
+  /**
+   * ModFavorite deleteMany
+   */
+  export type ModFavoriteDeleteManyArgs = {
+    /**
+     * Filter which ModFavorites to delete
+     */
+    where?: ModFavoriteWhereInput
+  }
+
+
+  /**
+   * ModFavorite without action
+   */
+  export type ModFavoriteArgs = {
+    /**
+     * Select specific fields to fetch from the ModFavorite
+     */
+    select?: ModFavoriteSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: ModFavoriteInclude | null
+  }
+
+
+
+  /**
    * Enums
    */
 
@@ -7189,6 +9342,30 @@ export namespace Prisma {
   };
 
   export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
+
+
+  export const ModDownloadScalarFieldEnum: {
+    id: 'id',
+    ip: 'ip',
+    userAgent: 'userAgent',
+    downloadUrl: 'downloadUrl',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    modVersionId: 'modVersionId'
+  };
+
+  export type ModDownloadScalarFieldEnum = (typeof ModDownloadScalarFieldEnum)[keyof typeof ModDownloadScalarFieldEnum]
+
+
+  export const ModFavoriteScalarFieldEnum: {
+    id: 'id',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    userId: 'userId',
+    modId: 'modId'
+  };
+
+  export type ModFavoriteScalarFieldEnum = (typeof ModFavoriteScalarFieldEnum)[keyof typeof ModFavoriteScalarFieldEnum]
 
 
   export const ModImageScalarFieldEnum: {
@@ -7224,6 +9401,7 @@ export namespace Prisma {
   export const ModVersionScalarFieldEnum: {
     id: 'id',
     version: 'version',
+    isLatest: 'isLatest',
     changelog: 'changelog',
     downloadUrl: 'downloadUrl',
     createdAt: 'createdAt',
@@ -7302,6 +9480,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter | Date | string
     updatedAt?: DateTimeFilter | Date | string
     mods?: ModListRelationFilter
+    favoriteMods?: ModFavoriteListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -7313,6 +9492,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     mods?: ModOrderByRelationAggregateInput
+    favoriteMods?: ModFavoriteOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = {
@@ -7366,9 +9546,10 @@ export namespace Prisma {
     categoryId?: IntNullableFilter | number | null
     user?: XOR<UserRelationFilter, UserWhereInput> | null
     category?: XOR<CategoryRelationFilter, CategoryWhereInput> | null
-    modVersions?: ModVersionListRelationFilter
+    versions?: ModVersionListRelationFilter
     tags?: TagListRelationFilter
     images?: ModImageListRelationFilter
+    favorites?: ModFavoriteListRelationFilter
   }
 
   export type ModOrderByWithRelationInput = {
@@ -7385,9 +9566,10 @@ export namespace Prisma {
     categoryId?: SortOrder
     user?: UserOrderByWithRelationInput
     category?: CategoryOrderByWithRelationInput
-    modVersions?: ModVersionOrderByRelationAggregateInput
+    versions?: ModVersionOrderByRelationAggregateInput
     tags?: TagOrderByRelationAggregateInput
     images?: ModImageOrderByRelationAggregateInput
+    favorites?: ModFavoriteOrderByRelationAggregateInput
   }
 
   export type ModWhereUniqueInput = {
@@ -7494,23 +9676,27 @@ export namespace Prisma {
     NOT?: Enumerable<ModVersionWhereInput>
     id?: IntFilter | number
     version?: StringFilter | string
+    isLatest?: BoolFilter | boolean
     changelog?: StringFilter | string
     downloadUrl?: StringFilter | string
     createdAt?: DateTimeFilter | Date | string
     updatedAt?: DateTimeFilter | Date | string
     modId?: IntNullableFilter | number | null
     mod?: XOR<ModRelationFilter, ModWhereInput> | null
+    downloads?: ModDownloadListRelationFilter
   }
 
   export type ModVersionOrderByWithRelationInput = {
     id?: SortOrder
     version?: SortOrder
+    isLatest?: SortOrder
     changelog?: SortOrder
     downloadUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     modId?: SortOrder
     mod?: ModOrderByWithRelationInput
+    downloads?: ModDownloadOrderByRelationAggregateInput
   }
 
   export type ModVersionWhereUniqueInput = {
@@ -7520,6 +9706,7 @@ export namespace Prisma {
   export type ModVersionOrderByWithAggregationInput = {
     id?: SortOrder
     version?: SortOrder
+    isLatest?: SortOrder
     changelog?: SortOrder
     downloadUrl?: SortOrder
     createdAt?: SortOrder
@@ -7538,6 +9725,7 @@ export namespace Prisma {
     NOT?: Enumerable<ModVersionScalarWhereWithAggregatesInput>
     id?: IntWithAggregatesFilter | number
     version?: StringWithAggregatesFilter | string
+    isLatest?: BoolWithAggregatesFilter | boolean
     changelog?: StringWithAggregatesFilter | string
     downloadUrl?: StringWithAggregatesFilter | string
     createdAt?: DateTimeWithAggregatesFilter | Date | string
@@ -7653,6 +9841,114 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter | Date | string
   }
 
+  export type ModDownloadWhereInput = {
+    AND?: Enumerable<ModDownloadWhereInput>
+    OR?: Enumerable<ModDownloadWhereInput>
+    NOT?: Enumerable<ModDownloadWhereInput>
+    id?: IntFilter | number
+    ip?: StringFilter | string
+    userAgent?: StringFilter | string
+    downloadUrl?: StringFilter | string
+    createdAt?: DateTimeFilter | Date | string
+    updatedAt?: DateTimeFilter | Date | string
+    modVersionId?: IntNullableFilter | number | null
+    version?: XOR<ModVersionRelationFilter, ModVersionWhereInput> | null
+  }
+
+  export type ModDownloadOrderByWithRelationInput = {
+    id?: SortOrder
+    ip?: SortOrder
+    userAgent?: SortOrder
+    downloadUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    modVersionId?: SortOrder
+    version?: ModVersionOrderByWithRelationInput
+  }
+
+  export type ModDownloadWhereUniqueInput = {
+    id?: number
+  }
+
+  export type ModDownloadOrderByWithAggregationInput = {
+    id?: SortOrder
+    ip?: SortOrder
+    userAgent?: SortOrder
+    downloadUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    modVersionId?: SortOrder
+    _count?: ModDownloadCountOrderByAggregateInput
+    _avg?: ModDownloadAvgOrderByAggregateInput
+    _max?: ModDownloadMaxOrderByAggregateInput
+    _min?: ModDownloadMinOrderByAggregateInput
+    _sum?: ModDownloadSumOrderByAggregateInput
+  }
+
+  export type ModDownloadScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<ModDownloadScalarWhereWithAggregatesInput>
+    OR?: Enumerable<ModDownloadScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<ModDownloadScalarWhereWithAggregatesInput>
+    id?: IntWithAggregatesFilter | number
+    ip?: StringWithAggregatesFilter | string
+    userAgent?: StringWithAggregatesFilter | string
+    downloadUrl?: StringWithAggregatesFilter | string
+    createdAt?: DateTimeWithAggregatesFilter | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter | Date | string
+    modVersionId?: IntNullableWithAggregatesFilter | number | null
+  }
+
+  export type ModFavoriteWhereInput = {
+    AND?: Enumerable<ModFavoriteWhereInput>
+    OR?: Enumerable<ModFavoriteWhereInput>
+    NOT?: Enumerable<ModFavoriteWhereInput>
+    id?: IntFilter | number
+    createdAt?: DateTimeFilter | Date | string
+    updatedAt?: DateTimeFilter | Date | string
+    userId?: IntNullableFilter | number | null
+    modId?: IntNullableFilter | number | null
+    user?: XOR<UserRelationFilter, UserWhereInput> | null
+    mod?: XOR<ModRelationFilter, ModWhereInput> | null
+  }
+
+  export type ModFavoriteOrderByWithRelationInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+    modId?: SortOrder
+    user?: UserOrderByWithRelationInput
+    mod?: ModOrderByWithRelationInput
+  }
+
+  export type ModFavoriteWhereUniqueInput = {
+    id?: number
+  }
+
+  export type ModFavoriteOrderByWithAggregationInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+    modId?: SortOrder
+    _count?: ModFavoriteCountOrderByAggregateInput
+    _avg?: ModFavoriteAvgOrderByAggregateInput
+    _max?: ModFavoriteMaxOrderByAggregateInput
+    _min?: ModFavoriteMinOrderByAggregateInput
+    _sum?: ModFavoriteSumOrderByAggregateInput
+  }
+
+  export type ModFavoriteScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<ModFavoriteScalarWhereWithAggregatesInput>
+    OR?: Enumerable<ModFavoriteScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<ModFavoriteScalarWhereWithAggregatesInput>
+    id?: IntWithAggregatesFilter | number
+    createdAt?: DateTimeWithAggregatesFilter | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter | Date | string
+    userId?: IntNullableWithAggregatesFilter | number | null
+    modId?: IntNullableWithAggregatesFilter | number | null
+  }
+
   export type UserCreateInput = {
     email: string
     password: string
@@ -7661,6 +9957,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     mods?: ModCreateNestedManyWithoutUserInput
+    favoriteMods?: ModFavoriteCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -7672,6 +9969,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     mods?: ModUncheckedCreateNestedManyWithoutUserInput
+    favoriteMods?: ModFavoriteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -7682,6 +9980,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mods?: ModUpdateManyWithoutUserNestedInput
+    favoriteMods?: ModFavoriteUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -7693,6 +9992,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mods?: ModUncheckedUpdateManyWithoutUserNestedInput
+    favoriteMods?: ModFavoriteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -7735,9 +10035,10 @@ export namespace Prisma {
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutModsInput
     category?: CategoryCreateNestedOneWithoutModsInput
-    modVersions?: ModVersionCreateNestedManyWithoutModInput
+    versions?: ModVersionCreateNestedManyWithoutModInput
     tags?: TagCreateNestedManyWithoutModsInput
     images?: ModImageCreateNestedManyWithoutModInput
+    favorites?: ModFavoriteCreateNestedManyWithoutModInput
   }
 
   export type ModUncheckedCreateInput = {
@@ -7752,9 +10053,10 @@ export namespace Prisma {
     updatedAt?: Date | string
     userId?: number | null
     categoryId?: number | null
-    modVersions?: ModVersionUncheckedCreateNestedManyWithoutModInput
+    versions?: ModVersionUncheckedCreateNestedManyWithoutModInput
     tags?: TagUncheckedCreateNestedManyWithoutModsInput
     images?: ModImageUncheckedCreateNestedManyWithoutModInput
+    favorites?: ModFavoriteUncheckedCreateNestedManyWithoutModInput
   }
 
   export type ModUpdateInput = {
@@ -7768,9 +10070,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutModsNestedInput
     category?: CategoryUpdateOneWithoutModsNestedInput
-    modVersions?: ModVersionUpdateManyWithoutModNestedInput
+    versions?: ModVersionUpdateManyWithoutModNestedInput
     tags?: TagUpdateManyWithoutModsNestedInput
     images?: ModImageUpdateManyWithoutModNestedInput
+    favorites?: ModFavoriteUpdateManyWithoutModNestedInput
   }
 
   export type ModUncheckedUpdateInput = {
@@ -7785,9 +10088,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableIntFieldUpdateOperationsInput | number | null
-    modVersions?: ModVersionUncheckedUpdateManyWithoutModNestedInput
+    versions?: ModVersionUncheckedUpdateManyWithoutModNestedInput
     tags?: TagUncheckedUpdateManyWithoutModsNestedInput
     images?: ModImageUncheckedUpdateManyWithoutModNestedInput
+    favorites?: ModFavoriteUncheckedUpdateManyWithoutModNestedInput
   }
 
   export type ModCreateManyInput = {
@@ -7897,45 +10201,54 @@ export namespace Prisma {
 
   export type ModVersionCreateInput = {
     version: string
+    isLatest: boolean
     changelog: string
     downloadUrl: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    mod?: ModCreateNestedOneWithoutModVersionsInput
+    mod?: ModCreateNestedOneWithoutVersionsInput
+    downloads?: ModDownloadCreateNestedManyWithoutVersionInput
   }
 
   export type ModVersionUncheckedCreateInput = {
     id?: number
     version: string
+    isLatest: boolean
     changelog: string
     downloadUrl: string
     createdAt?: Date | string
     updatedAt?: Date | string
     modId?: number | null
+    downloads?: ModDownloadUncheckedCreateNestedManyWithoutVersionInput
   }
 
   export type ModVersionUpdateInput = {
     version?: StringFieldUpdateOperationsInput | string
+    isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    mod?: ModUpdateOneWithoutModVersionsNestedInput
+    mod?: ModUpdateOneWithoutVersionsNestedInput
+    downloads?: ModDownloadUpdateManyWithoutVersionNestedInput
   }
 
   export type ModVersionUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     version?: StringFieldUpdateOperationsInput | string
+    isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     modId?: NullableIntFieldUpdateOperationsInput | number | null
+    downloads?: ModDownloadUncheckedUpdateManyWithoutVersionNestedInput
   }
 
   export type ModVersionCreateManyInput = {
     id?: number
     version: string
+    isLatest: boolean
     changelog: string
     downloadUrl: string
     createdAt?: Date | string
@@ -7945,6 +10258,7 @@ export namespace Prisma {
 
   export type ModVersionUpdateManyMutationInput = {
     version?: StringFieldUpdateOperationsInput | string
+    isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7954,6 +10268,7 @@ export namespace Prisma {
   export type ModVersionUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     version?: StringFieldUpdateOperationsInput | string
+    isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8089,6 +10404,123 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ModDownloadCreateInput = {
+    ip: string
+    userAgent: string
+    downloadUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    version?: ModVersionCreateNestedOneWithoutDownloadsInput
+  }
+
+  export type ModDownloadUncheckedCreateInput = {
+    id?: number
+    ip: string
+    userAgent: string
+    downloadUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    modVersionId?: number | null
+  }
+
+  export type ModDownloadUpdateInput = {
+    ip?: StringFieldUpdateOperationsInput | string
+    userAgent?: StringFieldUpdateOperationsInput | string
+    downloadUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    version?: ModVersionUpdateOneWithoutDownloadsNestedInput
+  }
+
+  export type ModDownloadUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    ip?: StringFieldUpdateOperationsInput | string
+    userAgent?: StringFieldUpdateOperationsInput | string
+    downloadUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modVersionId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type ModDownloadCreateManyInput = {
+    id?: number
+    ip: string
+    userAgent: string
+    downloadUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    modVersionId?: number | null
+  }
+
+  export type ModDownloadUpdateManyMutationInput = {
+    ip?: StringFieldUpdateOperationsInput | string
+    userAgent?: StringFieldUpdateOperationsInput | string
+    downloadUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModDownloadUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    ip?: StringFieldUpdateOperationsInput | string
+    userAgent?: StringFieldUpdateOperationsInput | string
+    downloadUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modVersionId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type ModFavoriteCreateInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutFavoriteModsInput
+    mod?: ModCreateNestedOneWithoutFavoritesInput
+  }
+
+  export type ModFavoriteUncheckedCreateInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId?: number | null
+    modId?: number | null
+  }
+
+  export type ModFavoriteUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutFavoriteModsNestedInput
+    mod?: ModUpdateOneWithoutFavoritesNestedInput
+  }
+
+  export type ModFavoriteUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    modId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type ModFavoriteCreateManyInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId?: number | null
+    modId?: number | null
+  }
+
+  export type ModFavoriteUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModFavoriteUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    modId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
   export type IntFilter = {
     equals?: number
     in?: Enumerable<number>
@@ -8132,7 +10564,17 @@ export namespace Prisma {
     none?: ModWhereInput
   }
 
+  export type ModFavoriteListRelationFilter = {
+    every?: ModFavoriteWhereInput
+    some?: ModFavoriteWhereInput
+    none?: ModFavoriteWhereInput
+  }
+
   export type ModOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ModFavoriteOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -8401,9 +10843,20 @@ export namespace Prisma {
     modId?: SortOrder
   }
 
+  export type ModDownloadListRelationFilter = {
+    every?: ModDownloadWhereInput
+    some?: ModDownloadWhereInput
+    none?: ModDownloadWhereInput
+  }
+
+  export type ModDownloadOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ModVersionCountOrderByAggregateInput = {
     id?: SortOrder
     version?: SortOrder
+    isLatest?: SortOrder
     changelog?: SortOrder
     downloadUrl?: SortOrder
     createdAt?: SortOrder
@@ -8419,6 +10872,7 @@ export namespace Prisma {
   export type ModVersionMaxOrderByAggregateInput = {
     id?: SortOrder
     version?: SortOrder
+    isLatest?: SortOrder
     changelog?: SortOrder
     downloadUrl?: SortOrder
     createdAt?: SortOrder
@@ -8429,6 +10883,7 @@ export namespace Prisma {
   export type ModVersionMinOrderByAggregateInput = {
     id?: SortOrder
     version?: SortOrder
+    isLatest?: SortOrder
     changelog?: SortOrder
     downloadUrl?: SortOrder
     createdAt?: SortOrder
@@ -8511,6 +10966,87 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type ModVersionRelationFilter = {
+    is?: ModVersionWhereInput | null
+    isNot?: ModVersionWhereInput | null
+  }
+
+  export type ModDownloadCountOrderByAggregateInput = {
+    id?: SortOrder
+    ip?: SortOrder
+    userAgent?: SortOrder
+    downloadUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    modVersionId?: SortOrder
+  }
+
+  export type ModDownloadAvgOrderByAggregateInput = {
+    id?: SortOrder
+    modVersionId?: SortOrder
+  }
+
+  export type ModDownloadMaxOrderByAggregateInput = {
+    id?: SortOrder
+    ip?: SortOrder
+    userAgent?: SortOrder
+    downloadUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    modVersionId?: SortOrder
+  }
+
+  export type ModDownloadMinOrderByAggregateInput = {
+    id?: SortOrder
+    ip?: SortOrder
+    userAgent?: SortOrder
+    downloadUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    modVersionId?: SortOrder
+  }
+
+  export type ModDownloadSumOrderByAggregateInput = {
+    id?: SortOrder
+    modVersionId?: SortOrder
+  }
+
+  export type ModFavoriteCountOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+    modId?: SortOrder
+  }
+
+  export type ModFavoriteAvgOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    modId?: SortOrder
+  }
+
+  export type ModFavoriteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+    modId?: SortOrder
+  }
+
+  export type ModFavoriteMinOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+    modId?: SortOrder
+  }
+
+  export type ModFavoriteSumOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    modId?: SortOrder
+  }
+
   export type ModCreateNestedManyWithoutUserInput = {
     create?: XOR<Enumerable<ModCreateWithoutUserInput>, Enumerable<ModUncheckedCreateWithoutUserInput>>
     connectOrCreate?: Enumerable<ModCreateOrConnectWithoutUserInput>
@@ -8518,11 +11054,25 @@ export namespace Prisma {
     connect?: Enumerable<ModWhereUniqueInput>
   }
 
+  export type ModFavoriteCreateNestedManyWithoutUserInput = {
+    create?: XOR<Enumerable<ModFavoriteCreateWithoutUserInput>, Enumerable<ModFavoriteUncheckedCreateWithoutUserInput>>
+    connectOrCreate?: Enumerable<ModFavoriteCreateOrConnectWithoutUserInput>
+    createMany?: ModFavoriteCreateManyUserInputEnvelope
+    connect?: Enumerable<ModFavoriteWhereUniqueInput>
+  }
+
   export type ModUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<Enumerable<ModCreateWithoutUserInput>, Enumerable<ModUncheckedCreateWithoutUserInput>>
     connectOrCreate?: Enumerable<ModCreateOrConnectWithoutUserInput>
     createMany?: ModCreateManyUserInputEnvelope
     connect?: Enumerable<ModWhereUniqueInput>
+  }
+
+  export type ModFavoriteUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<Enumerable<ModFavoriteCreateWithoutUserInput>, Enumerable<ModFavoriteUncheckedCreateWithoutUserInput>>
+    connectOrCreate?: Enumerable<ModFavoriteCreateOrConnectWithoutUserInput>
+    createMany?: ModFavoriteCreateManyUserInputEnvelope
+    connect?: Enumerable<ModFavoriteWhereUniqueInput>
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -8547,6 +11097,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<ModScalarWhereInput>
   }
 
+  export type ModFavoriteUpdateManyWithoutUserNestedInput = {
+    create?: XOR<Enumerable<ModFavoriteCreateWithoutUserInput>, Enumerable<ModFavoriteUncheckedCreateWithoutUserInput>>
+    connectOrCreate?: Enumerable<ModFavoriteCreateOrConnectWithoutUserInput>
+    upsert?: Enumerable<ModFavoriteUpsertWithWhereUniqueWithoutUserInput>
+    createMany?: ModFavoriteCreateManyUserInputEnvelope
+    set?: Enumerable<ModFavoriteWhereUniqueInput>
+    disconnect?: Enumerable<ModFavoriteWhereUniqueInput>
+    delete?: Enumerable<ModFavoriteWhereUniqueInput>
+    connect?: Enumerable<ModFavoriteWhereUniqueInput>
+    update?: Enumerable<ModFavoriteUpdateWithWhereUniqueWithoutUserInput>
+    updateMany?: Enumerable<ModFavoriteUpdateManyWithWhereWithoutUserInput>
+    deleteMany?: Enumerable<ModFavoriteScalarWhereInput>
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -8567,6 +11131,20 @@ export namespace Prisma {
     update?: Enumerable<ModUpdateWithWhereUniqueWithoutUserInput>
     updateMany?: Enumerable<ModUpdateManyWithWhereWithoutUserInput>
     deleteMany?: Enumerable<ModScalarWhereInput>
+  }
+
+  export type ModFavoriteUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<Enumerable<ModFavoriteCreateWithoutUserInput>, Enumerable<ModFavoriteUncheckedCreateWithoutUserInput>>
+    connectOrCreate?: Enumerable<ModFavoriteCreateOrConnectWithoutUserInput>
+    upsert?: Enumerable<ModFavoriteUpsertWithWhereUniqueWithoutUserInput>
+    createMany?: ModFavoriteCreateManyUserInputEnvelope
+    set?: Enumerable<ModFavoriteWhereUniqueInput>
+    disconnect?: Enumerable<ModFavoriteWhereUniqueInput>
+    delete?: Enumerable<ModFavoriteWhereUniqueInput>
+    connect?: Enumerable<ModFavoriteWhereUniqueInput>
+    update?: Enumerable<ModFavoriteUpdateWithWhereUniqueWithoutUserInput>
+    updateMany?: Enumerable<ModFavoriteUpdateManyWithWhereWithoutUserInput>
+    deleteMany?: Enumerable<ModFavoriteScalarWhereInput>
   }
 
   export type UserCreateNestedOneWithoutModsInput = {
@@ -8601,6 +11179,13 @@ export namespace Prisma {
     connect?: Enumerable<ModImageWhereUniqueInput>
   }
 
+  export type ModFavoriteCreateNestedManyWithoutModInput = {
+    create?: XOR<Enumerable<ModFavoriteCreateWithoutModInput>, Enumerable<ModFavoriteUncheckedCreateWithoutModInput>>
+    connectOrCreate?: Enumerable<ModFavoriteCreateOrConnectWithoutModInput>
+    createMany?: ModFavoriteCreateManyModInputEnvelope
+    connect?: Enumerable<ModFavoriteWhereUniqueInput>
+  }
+
   export type ModVersionUncheckedCreateNestedManyWithoutModInput = {
     create?: XOR<Enumerable<ModVersionCreateWithoutModInput>, Enumerable<ModVersionUncheckedCreateWithoutModInput>>
     connectOrCreate?: Enumerable<ModVersionCreateOrConnectWithoutModInput>
@@ -8619,6 +11204,13 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<ModImageCreateOrConnectWithoutModInput>
     createMany?: ModImageCreateManyModInputEnvelope
     connect?: Enumerable<ModImageWhereUniqueInput>
+  }
+
+  export type ModFavoriteUncheckedCreateNestedManyWithoutModInput = {
+    create?: XOR<Enumerable<ModFavoriteCreateWithoutModInput>, Enumerable<ModFavoriteUncheckedCreateWithoutModInput>>
+    connectOrCreate?: Enumerable<ModFavoriteCreateOrConnectWithoutModInput>
+    createMany?: ModFavoriteCreateManyModInputEnvelope
+    connect?: Enumerable<ModFavoriteWhereUniqueInput>
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -8686,6 +11278,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<ModImageScalarWhereInput>
   }
 
+  export type ModFavoriteUpdateManyWithoutModNestedInput = {
+    create?: XOR<Enumerable<ModFavoriteCreateWithoutModInput>, Enumerable<ModFavoriteUncheckedCreateWithoutModInput>>
+    connectOrCreate?: Enumerable<ModFavoriteCreateOrConnectWithoutModInput>
+    upsert?: Enumerable<ModFavoriteUpsertWithWhereUniqueWithoutModInput>
+    createMany?: ModFavoriteCreateManyModInputEnvelope
+    set?: Enumerable<ModFavoriteWhereUniqueInput>
+    disconnect?: Enumerable<ModFavoriteWhereUniqueInput>
+    delete?: Enumerable<ModFavoriteWhereUniqueInput>
+    connect?: Enumerable<ModFavoriteWhereUniqueInput>
+    update?: Enumerable<ModFavoriteUpdateWithWhereUniqueWithoutModInput>
+    updateMany?: Enumerable<ModFavoriteUpdateManyWithWhereWithoutModInput>
+    deleteMany?: Enumerable<ModFavoriteScalarWhereInput>
+  }
+
   export type NullableIntFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -8735,6 +11341,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<ModImageScalarWhereInput>
   }
 
+  export type ModFavoriteUncheckedUpdateManyWithoutModNestedInput = {
+    create?: XOR<Enumerable<ModFavoriteCreateWithoutModInput>, Enumerable<ModFavoriteUncheckedCreateWithoutModInput>>
+    connectOrCreate?: Enumerable<ModFavoriteCreateOrConnectWithoutModInput>
+    upsert?: Enumerable<ModFavoriteUpsertWithWhereUniqueWithoutModInput>
+    createMany?: ModFavoriteCreateManyModInputEnvelope
+    set?: Enumerable<ModFavoriteWhereUniqueInput>
+    disconnect?: Enumerable<ModFavoriteWhereUniqueInput>
+    delete?: Enumerable<ModFavoriteWhereUniqueInput>
+    connect?: Enumerable<ModFavoriteWhereUniqueInput>
+    update?: Enumerable<ModFavoriteUpdateWithWhereUniqueWithoutModInput>
+    updateMany?: Enumerable<ModFavoriteUpdateManyWithWhereWithoutModInput>
+    deleteMany?: Enumerable<ModFavoriteScalarWhereInput>
+  }
+
   export type ModCreateNestedOneWithoutImagesInput = {
     create?: XOR<ModCreateWithoutImagesInput, ModUncheckedCreateWithoutImagesInput>
     connectOrCreate?: ModCreateOrConnectWithoutImagesInput
@@ -8751,20 +11371,62 @@ export namespace Prisma {
     update?: XOR<ModUpdateWithoutImagesInput, ModUncheckedUpdateWithoutImagesInput>
   }
 
-  export type ModCreateNestedOneWithoutModVersionsInput = {
-    create?: XOR<ModCreateWithoutModVersionsInput, ModUncheckedCreateWithoutModVersionsInput>
-    connectOrCreate?: ModCreateOrConnectWithoutModVersionsInput
+  export type ModCreateNestedOneWithoutVersionsInput = {
+    create?: XOR<ModCreateWithoutVersionsInput, ModUncheckedCreateWithoutVersionsInput>
+    connectOrCreate?: ModCreateOrConnectWithoutVersionsInput
     connect?: ModWhereUniqueInput
   }
 
-  export type ModUpdateOneWithoutModVersionsNestedInput = {
-    create?: XOR<ModCreateWithoutModVersionsInput, ModUncheckedCreateWithoutModVersionsInput>
-    connectOrCreate?: ModCreateOrConnectWithoutModVersionsInput
-    upsert?: ModUpsertWithoutModVersionsInput
+  export type ModDownloadCreateNestedManyWithoutVersionInput = {
+    create?: XOR<Enumerable<ModDownloadCreateWithoutVersionInput>, Enumerable<ModDownloadUncheckedCreateWithoutVersionInput>>
+    connectOrCreate?: Enumerable<ModDownloadCreateOrConnectWithoutVersionInput>
+    createMany?: ModDownloadCreateManyVersionInputEnvelope
+    connect?: Enumerable<ModDownloadWhereUniqueInput>
+  }
+
+  export type ModDownloadUncheckedCreateNestedManyWithoutVersionInput = {
+    create?: XOR<Enumerable<ModDownloadCreateWithoutVersionInput>, Enumerable<ModDownloadUncheckedCreateWithoutVersionInput>>
+    connectOrCreate?: Enumerable<ModDownloadCreateOrConnectWithoutVersionInput>
+    createMany?: ModDownloadCreateManyVersionInputEnvelope
+    connect?: Enumerable<ModDownloadWhereUniqueInput>
+  }
+
+  export type ModUpdateOneWithoutVersionsNestedInput = {
+    create?: XOR<ModCreateWithoutVersionsInput, ModUncheckedCreateWithoutVersionsInput>
+    connectOrCreate?: ModCreateOrConnectWithoutVersionsInput
+    upsert?: ModUpsertWithoutVersionsInput
     disconnect?: boolean
     delete?: boolean
     connect?: ModWhereUniqueInput
-    update?: XOR<ModUpdateWithoutModVersionsInput, ModUncheckedUpdateWithoutModVersionsInput>
+    update?: XOR<ModUpdateWithoutVersionsInput, ModUncheckedUpdateWithoutVersionsInput>
+  }
+
+  export type ModDownloadUpdateManyWithoutVersionNestedInput = {
+    create?: XOR<Enumerable<ModDownloadCreateWithoutVersionInput>, Enumerable<ModDownloadUncheckedCreateWithoutVersionInput>>
+    connectOrCreate?: Enumerable<ModDownloadCreateOrConnectWithoutVersionInput>
+    upsert?: Enumerable<ModDownloadUpsertWithWhereUniqueWithoutVersionInput>
+    createMany?: ModDownloadCreateManyVersionInputEnvelope
+    set?: Enumerable<ModDownloadWhereUniqueInput>
+    disconnect?: Enumerable<ModDownloadWhereUniqueInput>
+    delete?: Enumerable<ModDownloadWhereUniqueInput>
+    connect?: Enumerable<ModDownloadWhereUniqueInput>
+    update?: Enumerable<ModDownloadUpdateWithWhereUniqueWithoutVersionInput>
+    updateMany?: Enumerable<ModDownloadUpdateManyWithWhereWithoutVersionInput>
+    deleteMany?: Enumerable<ModDownloadScalarWhereInput>
+  }
+
+  export type ModDownloadUncheckedUpdateManyWithoutVersionNestedInput = {
+    create?: XOR<Enumerable<ModDownloadCreateWithoutVersionInput>, Enumerable<ModDownloadUncheckedCreateWithoutVersionInput>>
+    connectOrCreate?: Enumerable<ModDownloadCreateOrConnectWithoutVersionInput>
+    upsert?: Enumerable<ModDownloadUpsertWithWhereUniqueWithoutVersionInput>
+    createMany?: ModDownloadCreateManyVersionInputEnvelope
+    set?: Enumerable<ModDownloadWhereUniqueInput>
+    disconnect?: Enumerable<ModDownloadWhereUniqueInput>
+    delete?: Enumerable<ModDownloadWhereUniqueInput>
+    connect?: Enumerable<ModDownloadWhereUniqueInput>
+    update?: Enumerable<ModDownloadUpdateWithWhereUniqueWithoutVersionInput>
+    updateMany?: Enumerable<ModDownloadUpdateManyWithWhereWithoutVersionInput>
+    deleteMany?: Enumerable<ModDownloadScalarWhereInput>
   }
 
   export type ModCreateNestedManyWithoutTagsInput = {
@@ -8845,6 +11507,54 @@ export namespace Prisma {
     update?: Enumerable<ModUpdateWithWhereUniqueWithoutCategoryInput>
     updateMany?: Enumerable<ModUpdateManyWithWhereWithoutCategoryInput>
     deleteMany?: Enumerable<ModScalarWhereInput>
+  }
+
+  export type ModVersionCreateNestedOneWithoutDownloadsInput = {
+    create?: XOR<ModVersionCreateWithoutDownloadsInput, ModVersionUncheckedCreateWithoutDownloadsInput>
+    connectOrCreate?: ModVersionCreateOrConnectWithoutDownloadsInput
+    connect?: ModVersionWhereUniqueInput
+  }
+
+  export type ModVersionUpdateOneWithoutDownloadsNestedInput = {
+    create?: XOR<ModVersionCreateWithoutDownloadsInput, ModVersionUncheckedCreateWithoutDownloadsInput>
+    connectOrCreate?: ModVersionCreateOrConnectWithoutDownloadsInput
+    upsert?: ModVersionUpsertWithoutDownloadsInput
+    disconnect?: boolean
+    delete?: boolean
+    connect?: ModVersionWhereUniqueInput
+    update?: XOR<ModVersionUpdateWithoutDownloadsInput, ModVersionUncheckedUpdateWithoutDownloadsInput>
+  }
+
+  export type UserCreateNestedOneWithoutFavoriteModsInput = {
+    create?: XOR<UserCreateWithoutFavoriteModsInput, UserUncheckedCreateWithoutFavoriteModsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFavoriteModsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ModCreateNestedOneWithoutFavoritesInput = {
+    create?: XOR<ModCreateWithoutFavoritesInput, ModUncheckedCreateWithoutFavoritesInput>
+    connectOrCreate?: ModCreateOrConnectWithoutFavoritesInput
+    connect?: ModWhereUniqueInput
+  }
+
+  export type UserUpdateOneWithoutFavoriteModsNestedInput = {
+    create?: XOR<UserCreateWithoutFavoriteModsInput, UserUncheckedCreateWithoutFavoriteModsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFavoriteModsInput
+    upsert?: UserUpsertWithoutFavoriteModsInput
+    disconnect?: boolean
+    delete?: boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<UserUpdateWithoutFavoriteModsInput, UserUncheckedUpdateWithoutFavoriteModsInput>
+  }
+
+  export type ModUpdateOneWithoutFavoritesNestedInput = {
+    create?: XOR<ModCreateWithoutFavoritesInput, ModUncheckedCreateWithoutFavoritesInput>
+    connectOrCreate?: ModCreateOrConnectWithoutFavoritesInput
+    upsert?: ModUpsertWithoutFavoritesInput
+    disconnect?: boolean
+    delete?: boolean
+    connect?: ModWhereUniqueInput
+    update?: XOR<ModUpdateWithoutFavoritesInput, ModUncheckedUpdateWithoutFavoritesInput>
   }
 
   export type NestedIntFilter = {
@@ -9002,9 +11712,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     category?: CategoryCreateNestedOneWithoutModsInput
-    modVersions?: ModVersionCreateNestedManyWithoutModInput
+    versions?: ModVersionCreateNestedManyWithoutModInput
     tags?: TagCreateNestedManyWithoutModsInput
     images?: ModImageCreateNestedManyWithoutModInput
+    favorites?: ModFavoriteCreateNestedManyWithoutModInput
   }
 
   export type ModUncheckedCreateWithoutUserInput = {
@@ -9018,9 +11729,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     categoryId?: number | null
-    modVersions?: ModVersionUncheckedCreateNestedManyWithoutModInput
+    versions?: ModVersionUncheckedCreateNestedManyWithoutModInput
     tags?: TagUncheckedCreateNestedManyWithoutModsInput
     images?: ModImageUncheckedCreateNestedManyWithoutModInput
+    favorites?: ModFavoriteUncheckedCreateNestedManyWithoutModInput
   }
 
   export type ModCreateOrConnectWithoutUserInput = {
@@ -9030,6 +11742,29 @@ export namespace Prisma {
 
   export type ModCreateManyUserInputEnvelope = {
     data: Enumerable<ModCreateManyUserInput>
+    skipDuplicates?: boolean
+  }
+
+  export type ModFavoriteCreateWithoutUserInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    mod?: ModCreateNestedOneWithoutFavoritesInput
+  }
+
+  export type ModFavoriteUncheckedCreateWithoutUserInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    modId?: number | null
+  }
+
+  export type ModFavoriteCreateOrConnectWithoutUserInput = {
+    where: ModFavoriteWhereUniqueInput
+    create: XOR<ModFavoriteCreateWithoutUserInput, ModFavoriteUncheckedCreateWithoutUserInput>
+  }
+
+  export type ModFavoriteCreateManyUserInputEnvelope = {
+    data: Enumerable<ModFavoriteCreateManyUserInput>
     skipDuplicates?: boolean
   }
 
@@ -9066,6 +11801,33 @@ export namespace Prisma {
     categoryId?: IntNullableFilter | number | null
   }
 
+  export type ModFavoriteUpsertWithWhereUniqueWithoutUserInput = {
+    where: ModFavoriteWhereUniqueInput
+    update: XOR<ModFavoriteUpdateWithoutUserInput, ModFavoriteUncheckedUpdateWithoutUserInput>
+    create: XOR<ModFavoriteCreateWithoutUserInput, ModFavoriteUncheckedCreateWithoutUserInput>
+  }
+
+  export type ModFavoriteUpdateWithWhereUniqueWithoutUserInput = {
+    where: ModFavoriteWhereUniqueInput
+    data: XOR<ModFavoriteUpdateWithoutUserInput, ModFavoriteUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ModFavoriteUpdateManyWithWhereWithoutUserInput = {
+    where: ModFavoriteScalarWhereInput
+    data: XOR<ModFavoriteUpdateManyMutationInput, ModFavoriteUncheckedUpdateManyWithoutFavoriteModsInput>
+  }
+
+  export type ModFavoriteScalarWhereInput = {
+    AND?: Enumerable<ModFavoriteScalarWhereInput>
+    OR?: Enumerable<ModFavoriteScalarWhereInput>
+    NOT?: Enumerable<ModFavoriteScalarWhereInput>
+    id?: IntFilter | number
+    createdAt?: DateTimeFilter | Date | string
+    updatedAt?: DateTimeFilter | Date | string
+    userId?: IntNullableFilter | number | null
+    modId?: IntNullableFilter | number | null
+  }
+
   export type UserCreateWithoutModsInput = {
     email: string
     password: string
@@ -9073,6 +11835,7 @@ export namespace Prisma {
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    favoriteMods?: ModFavoriteCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutModsInput = {
@@ -9083,6 +11846,7 @@ export namespace Prisma {
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    favoriteMods?: ModFavoriteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutModsInput = {
@@ -9114,19 +11878,23 @@ export namespace Prisma {
 
   export type ModVersionCreateWithoutModInput = {
     version: string
+    isLatest: boolean
     changelog: string
     downloadUrl: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    downloads?: ModDownloadCreateNestedManyWithoutVersionInput
   }
 
   export type ModVersionUncheckedCreateWithoutModInput = {
     id?: number
     version: string
+    isLatest: boolean
     changelog: string
     downloadUrl: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    downloads?: ModDownloadUncheckedCreateNestedManyWithoutVersionInput
   }
 
   export type ModVersionCreateOrConnectWithoutModInput = {
@@ -9188,6 +11956,29 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ModFavoriteCreateWithoutModInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutFavoriteModsInput
+  }
+
+  export type ModFavoriteUncheckedCreateWithoutModInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId?: number | null
+  }
+
+  export type ModFavoriteCreateOrConnectWithoutModInput = {
+    where: ModFavoriteWhereUniqueInput
+    create: XOR<ModFavoriteCreateWithoutModInput, ModFavoriteUncheckedCreateWithoutModInput>
+  }
+
+  export type ModFavoriteCreateManyModInputEnvelope = {
+    data: Enumerable<ModFavoriteCreateManyModInput>
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutModsInput = {
     update: XOR<UserUpdateWithoutModsInput, UserUncheckedUpdateWithoutModsInput>
     create: XOR<UserCreateWithoutModsInput, UserUncheckedCreateWithoutModsInput>
@@ -9200,6 +11991,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    favoriteMods?: ModFavoriteUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutModsInput = {
@@ -9210,6 +12002,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    favoriteMods?: ModFavoriteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CategoryUpsertWithoutModsInput = {
@@ -9247,7 +12040,7 @@ export namespace Prisma {
 
   export type ModVersionUpdateManyWithWhereWithoutModInput = {
     where: ModVersionScalarWhereInput
-    data: XOR<ModVersionUpdateManyMutationInput, ModVersionUncheckedUpdateManyWithoutModVersionsInput>
+    data: XOR<ModVersionUpdateManyMutationInput, ModVersionUncheckedUpdateManyWithoutVersionsInput>
   }
 
   export type ModVersionScalarWhereInput = {
@@ -9256,6 +12049,7 @@ export namespace Prisma {
     NOT?: Enumerable<ModVersionScalarWhereInput>
     id?: IntFilter | number
     version?: StringFilter | string
+    isLatest?: BoolFilter | boolean
     changelog?: StringFilter | string
     downloadUrl?: StringFilter | string
     createdAt?: DateTimeFilter | Date | string
@@ -9320,6 +12114,22 @@ export namespace Prisma {
     modId?: IntNullableFilter | number | null
   }
 
+  export type ModFavoriteUpsertWithWhereUniqueWithoutModInput = {
+    where: ModFavoriteWhereUniqueInput
+    update: XOR<ModFavoriteUpdateWithoutModInput, ModFavoriteUncheckedUpdateWithoutModInput>
+    create: XOR<ModFavoriteCreateWithoutModInput, ModFavoriteUncheckedCreateWithoutModInput>
+  }
+
+  export type ModFavoriteUpdateWithWhereUniqueWithoutModInput = {
+    where: ModFavoriteWhereUniqueInput
+    data: XOR<ModFavoriteUpdateWithoutModInput, ModFavoriteUncheckedUpdateWithoutModInput>
+  }
+
+  export type ModFavoriteUpdateManyWithWhereWithoutModInput = {
+    where: ModFavoriteScalarWhereInput
+    data: XOR<ModFavoriteUpdateManyMutationInput, ModFavoriteUncheckedUpdateManyWithoutFavoritesInput>
+  }
+
   export type ModCreateWithoutImagesInput = {
     name: string
     slug: string
@@ -9331,8 +12141,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutModsInput
     category?: CategoryCreateNestedOneWithoutModsInput
-    modVersions?: ModVersionCreateNestedManyWithoutModInput
+    versions?: ModVersionCreateNestedManyWithoutModInput
     tags?: TagCreateNestedManyWithoutModsInput
+    favorites?: ModFavoriteCreateNestedManyWithoutModInput
   }
 
   export type ModUncheckedCreateWithoutImagesInput = {
@@ -9347,8 +12158,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     userId?: number | null
     categoryId?: number | null
-    modVersions?: ModVersionUncheckedCreateNestedManyWithoutModInput
+    versions?: ModVersionUncheckedCreateNestedManyWithoutModInput
     tags?: TagUncheckedCreateNestedManyWithoutModsInput
+    favorites?: ModFavoriteUncheckedCreateNestedManyWithoutModInput
   }
 
   export type ModCreateOrConnectWithoutImagesInput = {
@@ -9372,8 +12184,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutModsNestedInput
     category?: CategoryUpdateOneWithoutModsNestedInput
-    modVersions?: ModVersionUpdateManyWithoutModNestedInput
+    versions?: ModVersionUpdateManyWithoutModNestedInput
     tags?: TagUpdateManyWithoutModsNestedInput
+    favorites?: ModFavoriteUpdateManyWithoutModNestedInput
   }
 
   export type ModUncheckedUpdateWithoutImagesInput = {
@@ -9388,11 +12201,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableIntFieldUpdateOperationsInput | number | null
-    modVersions?: ModVersionUncheckedUpdateManyWithoutModNestedInput
+    versions?: ModVersionUncheckedUpdateManyWithoutModNestedInput
     tags?: TagUncheckedUpdateManyWithoutModsNestedInput
+    favorites?: ModFavoriteUncheckedUpdateManyWithoutModNestedInput
   }
 
-  export type ModCreateWithoutModVersionsInput = {
+  export type ModCreateWithoutVersionsInput = {
     name: string
     slug: string
     description: string
@@ -9405,9 +12219,10 @@ export namespace Prisma {
     category?: CategoryCreateNestedOneWithoutModsInput
     tags?: TagCreateNestedManyWithoutModsInput
     images?: ModImageCreateNestedManyWithoutModInput
+    favorites?: ModFavoriteCreateNestedManyWithoutModInput
   }
 
-  export type ModUncheckedCreateWithoutModVersionsInput = {
+  export type ModUncheckedCreateWithoutVersionsInput = {
     id?: number
     name: string
     slug: string
@@ -9421,19 +12236,47 @@ export namespace Prisma {
     categoryId?: number | null
     tags?: TagUncheckedCreateNestedManyWithoutModsInput
     images?: ModImageUncheckedCreateNestedManyWithoutModInput
+    favorites?: ModFavoriteUncheckedCreateNestedManyWithoutModInput
   }
 
-  export type ModCreateOrConnectWithoutModVersionsInput = {
+  export type ModCreateOrConnectWithoutVersionsInput = {
     where: ModWhereUniqueInput
-    create: XOR<ModCreateWithoutModVersionsInput, ModUncheckedCreateWithoutModVersionsInput>
+    create: XOR<ModCreateWithoutVersionsInput, ModUncheckedCreateWithoutVersionsInput>
   }
 
-  export type ModUpsertWithoutModVersionsInput = {
-    update: XOR<ModUpdateWithoutModVersionsInput, ModUncheckedUpdateWithoutModVersionsInput>
-    create: XOR<ModCreateWithoutModVersionsInput, ModUncheckedCreateWithoutModVersionsInput>
+  export type ModDownloadCreateWithoutVersionInput = {
+    ip: string
+    userAgent: string
+    downloadUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type ModUpdateWithoutModVersionsInput = {
+  export type ModDownloadUncheckedCreateWithoutVersionInput = {
+    id?: number
+    ip: string
+    userAgent: string
+    downloadUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ModDownloadCreateOrConnectWithoutVersionInput = {
+    where: ModDownloadWhereUniqueInput
+    create: XOR<ModDownloadCreateWithoutVersionInput, ModDownloadUncheckedCreateWithoutVersionInput>
+  }
+
+  export type ModDownloadCreateManyVersionInputEnvelope = {
+    data: Enumerable<ModDownloadCreateManyVersionInput>
+    skipDuplicates?: boolean
+  }
+
+  export type ModUpsertWithoutVersionsInput = {
+    update: XOR<ModUpdateWithoutVersionsInput, ModUncheckedUpdateWithoutVersionsInput>
+    create: XOR<ModCreateWithoutVersionsInput, ModUncheckedCreateWithoutVersionsInput>
+  }
+
+  export type ModUpdateWithoutVersionsInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
@@ -9446,9 +12289,10 @@ export namespace Prisma {
     category?: CategoryUpdateOneWithoutModsNestedInput
     tags?: TagUpdateManyWithoutModsNestedInput
     images?: ModImageUpdateManyWithoutModNestedInput
+    favorites?: ModFavoriteUpdateManyWithoutModNestedInput
   }
 
-  export type ModUncheckedUpdateWithoutModVersionsInput = {
+  export type ModUncheckedUpdateWithoutVersionsInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -9462,6 +12306,36 @@ export namespace Prisma {
     categoryId?: NullableIntFieldUpdateOperationsInput | number | null
     tags?: TagUncheckedUpdateManyWithoutModsNestedInput
     images?: ModImageUncheckedUpdateManyWithoutModNestedInput
+    favorites?: ModFavoriteUncheckedUpdateManyWithoutModNestedInput
+  }
+
+  export type ModDownloadUpsertWithWhereUniqueWithoutVersionInput = {
+    where: ModDownloadWhereUniqueInput
+    update: XOR<ModDownloadUpdateWithoutVersionInput, ModDownloadUncheckedUpdateWithoutVersionInput>
+    create: XOR<ModDownloadCreateWithoutVersionInput, ModDownloadUncheckedCreateWithoutVersionInput>
+  }
+
+  export type ModDownloadUpdateWithWhereUniqueWithoutVersionInput = {
+    where: ModDownloadWhereUniqueInput
+    data: XOR<ModDownloadUpdateWithoutVersionInput, ModDownloadUncheckedUpdateWithoutVersionInput>
+  }
+
+  export type ModDownloadUpdateManyWithWhereWithoutVersionInput = {
+    where: ModDownloadScalarWhereInput
+    data: XOR<ModDownloadUpdateManyMutationInput, ModDownloadUncheckedUpdateManyWithoutDownloadsInput>
+  }
+
+  export type ModDownloadScalarWhereInput = {
+    AND?: Enumerable<ModDownloadScalarWhereInput>
+    OR?: Enumerable<ModDownloadScalarWhereInput>
+    NOT?: Enumerable<ModDownloadScalarWhereInput>
+    id?: IntFilter | number
+    ip?: StringFilter | string
+    userAgent?: StringFilter | string
+    downloadUrl?: StringFilter | string
+    createdAt?: DateTimeFilter | Date | string
+    updatedAt?: DateTimeFilter | Date | string
+    modVersionId?: IntNullableFilter | number | null
   }
 
   export type ModCreateWithoutTagsInput = {
@@ -9475,8 +12349,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutModsInput
     category?: CategoryCreateNestedOneWithoutModsInput
-    modVersions?: ModVersionCreateNestedManyWithoutModInput
+    versions?: ModVersionCreateNestedManyWithoutModInput
     images?: ModImageCreateNestedManyWithoutModInput
+    favorites?: ModFavoriteCreateNestedManyWithoutModInput
   }
 
   export type ModUncheckedCreateWithoutTagsInput = {
@@ -9491,8 +12366,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     userId?: number | null
     categoryId?: number | null
-    modVersions?: ModVersionUncheckedCreateNestedManyWithoutModInput
+    versions?: ModVersionUncheckedCreateNestedManyWithoutModInput
     images?: ModImageUncheckedCreateNestedManyWithoutModInput
+    favorites?: ModFavoriteUncheckedCreateNestedManyWithoutModInput
   }
 
   export type ModCreateOrConnectWithoutTagsInput = {
@@ -9526,9 +12402,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutModsInput
-    modVersions?: ModVersionCreateNestedManyWithoutModInput
+    versions?: ModVersionCreateNestedManyWithoutModInput
     tags?: TagCreateNestedManyWithoutModsInput
     images?: ModImageCreateNestedManyWithoutModInput
+    favorites?: ModFavoriteCreateNestedManyWithoutModInput
   }
 
   export type ModUncheckedCreateWithoutCategoryInput = {
@@ -9542,9 +12419,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId?: number | null
-    modVersions?: ModVersionUncheckedCreateNestedManyWithoutModInput
+    versions?: ModVersionUncheckedCreateNestedManyWithoutModInput
     tags?: TagUncheckedCreateNestedManyWithoutModsInput
     images?: ModImageUncheckedCreateNestedManyWithoutModInput
+    favorites?: ModFavoriteUncheckedCreateNestedManyWithoutModInput
   }
 
   export type ModCreateOrConnectWithoutCategoryInput = {
@@ -9573,6 +12451,186 @@ export namespace Prisma {
     data: XOR<ModUpdateManyMutationInput, ModUncheckedUpdateManyWithoutModsInput>
   }
 
+  export type ModVersionCreateWithoutDownloadsInput = {
+    version: string
+    isLatest: boolean
+    changelog: string
+    downloadUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    mod?: ModCreateNestedOneWithoutVersionsInput
+  }
+
+  export type ModVersionUncheckedCreateWithoutDownloadsInput = {
+    id?: number
+    version: string
+    isLatest: boolean
+    changelog: string
+    downloadUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    modId?: number | null
+  }
+
+  export type ModVersionCreateOrConnectWithoutDownloadsInput = {
+    where: ModVersionWhereUniqueInput
+    create: XOR<ModVersionCreateWithoutDownloadsInput, ModVersionUncheckedCreateWithoutDownloadsInput>
+  }
+
+  export type ModVersionUpsertWithoutDownloadsInput = {
+    update: XOR<ModVersionUpdateWithoutDownloadsInput, ModVersionUncheckedUpdateWithoutDownloadsInput>
+    create: XOR<ModVersionCreateWithoutDownloadsInput, ModVersionUncheckedCreateWithoutDownloadsInput>
+  }
+
+  export type ModVersionUpdateWithoutDownloadsInput = {
+    version?: StringFieldUpdateOperationsInput | string
+    isLatest?: BoolFieldUpdateOperationsInput | boolean
+    changelog?: StringFieldUpdateOperationsInput | string
+    downloadUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mod?: ModUpdateOneWithoutVersionsNestedInput
+  }
+
+  export type ModVersionUncheckedUpdateWithoutDownloadsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    version?: StringFieldUpdateOperationsInput | string
+    isLatest?: BoolFieldUpdateOperationsInput | boolean
+    changelog?: StringFieldUpdateOperationsInput | string
+    downloadUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type UserCreateWithoutFavoriteModsInput = {
+    email: string
+    password: string
+    name: string
+    slug: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    mods?: ModCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutFavoriteModsInput = {
+    id?: number
+    email: string
+    password: string
+    name: string
+    slug: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    mods?: ModUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutFavoriteModsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFavoriteModsInput, UserUncheckedCreateWithoutFavoriteModsInput>
+  }
+
+  export type ModCreateWithoutFavoritesInput = {
+    name: string
+    slug: string
+    description: string
+    isNSFW: boolean
+    isApproved: boolean
+    isFeatured: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutModsInput
+    category?: CategoryCreateNestedOneWithoutModsInput
+    versions?: ModVersionCreateNestedManyWithoutModInput
+    tags?: TagCreateNestedManyWithoutModsInput
+    images?: ModImageCreateNestedManyWithoutModInput
+  }
+
+  export type ModUncheckedCreateWithoutFavoritesInput = {
+    id?: number
+    name: string
+    slug: string
+    description: string
+    isNSFW: boolean
+    isApproved: boolean
+    isFeatured: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId?: number | null
+    categoryId?: number | null
+    versions?: ModVersionUncheckedCreateNestedManyWithoutModInput
+    tags?: TagUncheckedCreateNestedManyWithoutModsInput
+    images?: ModImageUncheckedCreateNestedManyWithoutModInput
+  }
+
+  export type ModCreateOrConnectWithoutFavoritesInput = {
+    where: ModWhereUniqueInput
+    create: XOR<ModCreateWithoutFavoritesInput, ModUncheckedCreateWithoutFavoritesInput>
+  }
+
+  export type UserUpsertWithoutFavoriteModsInput = {
+    update: XOR<UserUpdateWithoutFavoriteModsInput, UserUncheckedUpdateWithoutFavoriteModsInput>
+    create: XOR<UserCreateWithoutFavoriteModsInput, UserUncheckedCreateWithoutFavoriteModsInput>
+  }
+
+  export type UserUpdateWithoutFavoriteModsInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mods?: ModUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutFavoriteModsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mods?: ModUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ModUpsertWithoutFavoritesInput = {
+    update: XOR<ModUpdateWithoutFavoritesInput, ModUncheckedUpdateWithoutFavoritesInput>
+    create: XOR<ModCreateWithoutFavoritesInput, ModUncheckedCreateWithoutFavoritesInput>
+  }
+
+  export type ModUpdateWithoutFavoritesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    isNSFW?: BoolFieldUpdateOperationsInput | boolean
+    isApproved?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutModsNestedInput
+    category?: CategoryUpdateOneWithoutModsNestedInput
+    versions?: ModVersionUpdateManyWithoutModNestedInput
+    tags?: TagUpdateManyWithoutModsNestedInput
+    images?: ModImageUpdateManyWithoutModNestedInput
+  }
+
+  export type ModUncheckedUpdateWithoutFavoritesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    isNSFW?: BoolFieldUpdateOperationsInput | boolean
+    isApproved?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    categoryId?: NullableIntFieldUpdateOperationsInput | number | null
+    versions?: ModVersionUncheckedUpdateManyWithoutModNestedInput
+    tags?: TagUncheckedUpdateManyWithoutModsNestedInput
+    images?: ModImageUncheckedUpdateManyWithoutModNestedInput
+  }
+
   export type ModCreateManyUserInput = {
     id?: number
     name: string
@@ -9586,6 +12644,13 @@ export namespace Prisma {
     categoryId?: number | null
   }
 
+  export type ModFavoriteCreateManyUserInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    modId?: number | null
+  }
+
   export type ModUpdateWithoutUserInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -9596,9 +12661,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: CategoryUpdateOneWithoutModsNestedInput
-    modVersions?: ModVersionUpdateManyWithoutModNestedInput
+    versions?: ModVersionUpdateManyWithoutModNestedInput
     tags?: TagUpdateManyWithoutModsNestedInput
     images?: ModImageUpdateManyWithoutModNestedInput
+    favorites?: ModFavoriteUpdateManyWithoutModNestedInput
   }
 
   export type ModUncheckedUpdateWithoutUserInput = {
@@ -9612,9 +12678,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categoryId?: NullableIntFieldUpdateOperationsInput | number | null
-    modVersions?: ModVersionUncheckedUpdateManyWithoutModNestedInput
+    versions?: ModVersionUncheckedUpdateManyWithoutModNestedInput
     tags?: TagUncheckedUpdateManyWithoutModsNestedInput
     images?: ModImageUncheckedUpdateManyWithoutModNestedInput
+    favorites?: ModFavoriteUncheckedUpdateManyWithoutModNestedInput
   }
 
   export type ModUncheckedUpdateManyWithoutModsInput = {
@@ -9630,9 +12697,30 @@ export namespace Prisma {
     categoryId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
+  export type ModFavoriteUpdateWithoutUserInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mod?: ModUpdateOneWithoutFavoritesNestedInput
+  }
+
+  export type ModFavoriteUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type ModFavoriteUncheckedUpdateManyWithoutFavoriteModsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    modId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
   export type ModVersionCreateManyModInput = {
     id?: number
     version: string
+    isLatest: boolean
     changelog: string
     downloadUrl: string
     createdAt?: Date | string
@@ -9648,26 +12736,38 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type ModFavoriteCreateManyModInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId?: number | null
+  }
+
   export type ModVersionUpdateWithoutModInput = {
     version?: StringFieldUpdateOperationsInput | string
+    isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    downloads?: ModDownloadUpdateManyWithoutVersionNestedInput
   }
 
   export type ModVersionUncheckedUpdateWithoutModInput = {
     id?: IntFieldUpdateOperationsInput | number
     version?: StringFieldUpdateOperationsInput | string
+    isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    downloads?: ModDownloadUncheckedUpdateManyWithoutVersionNestedInput
   }
 
-  export type ModVersionUncheckedUpdateManyWithoutModVersionsInput = {
+  export type ModVersionUncheckedUpdateManyWithoutVersionsInput = {
     id?: IntFieldUpdateOperationsInput | number
     version?: StringFieldUpdateOperationsInput | string
+    isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9726,6 +12826,61 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ModFavoriteUpdateWithoutModInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutFavoriteModsNestedInput
+  }
+
+  export type ModFavoriteUncheckedUpdateWithoutModInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type ModFavoriteUncheckedUpdateManyWithoutFavoritesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type ModDownloadCreateManyVersionInput = {
+    id?: number
+    ip: string
+    userAgent: string
+    downloadUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ModDownloadUpdateWithoutVersionInput = {
+    ip?: StringFieldUpdateOperationsInput | string
+    userAgent?: StringFieldUpdateOperationsInput | string
+    downloadUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModDownloadUncheckedUpdateWithoutVersionInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    ip?: StringFieldUpdateOperationsInput | string
+    userAgent?: StringFieldUpdateOperationsInput | string
+    downloadUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ModDownloadUncheckedUpdateManyWithoutDownloadsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    ip?: StringFieldUpdateOperationsInput | string
+    userAgent?: StringFieldUpdateOperationsInput | string
+    downloadUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ModUpdateWithoutTagsInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -9737,8 +12892,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutModsNestedInput
     category?: CategoryUpdateOneWithoutModsNestedInput
-    modVersions?: ModVersionUpdateManyWithoutModNestedInput
+    versions?: ModVersionUpdateManyWithoutModNestedInput
     images?: ModImageUpdateManyWithoutModNestedInput
+    favorites?: ModFavoriteUpdateManyWithoutModNestedInput
   }
 
   export type ModUncheckedUpdateWithoutTagsInput = {
@@ -9753,8 +12909,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableIntFieldUpdateOperationsInput | number | null
-    modVersions?: ModVersionUncheckedUpdateManyWithoutModNestedInput
+    versions?: ModVersionUncheckedUpdateManyWithoutModNestedInput
     images?: ModImageUncheckedUpdateManyWithoutModNestedInput
+    favorites?: ModFavoriteUncheckedUpdateManyWithoutModNestedInput
   }
 
   export type ModCreateManyCategoryInput = {
@@ -9780,9 +12937,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutModsNestedInput
-    modVersions?: ModVersionUpdateManyWithoutModNestedInput
+    versions?: ModVersionUpdateManyWithoutModNestedInput
     tags?: TagUpdateManyWithoutModsNestedInput
     images?: ModImageUpdateManyWithoutModNestedInput
+    favorites?: ModFavoriteUpdateManyWithoutModNestedInput
   }
 
   export type ModUncheckedUpdateWithoutCategoryInput = {
@@ -9796,9 +12954,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: NullableIntFieldUpdateOperationsInput | number | null
-    modVersions?: ModVersionUncheckedUpdateManyWithoutModNestedInput
+    versions?: ModVersionUncheckedUpdateManyWithoutModNestedInput
     tags?: TagUncheckedUpdateManyWithoutModsNestedInput
     images?: ModImageUncheckedUpdateManyWithoutModNestedInput
+    favorites?: ModFavoriteUncheckedUpdateManyWithoutModNestedInput
   }
 
 

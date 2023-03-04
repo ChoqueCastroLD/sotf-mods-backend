@@ -1,0 +1,47 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title SOTF-Mods.com - The Best Mods for Sons of The Forest
+    link(href='https://cdn.jsdelivr.net/npm/flatifycss/dist/css/flatify.min.css' rel='stylesheet' crossorigin='anonymous')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css' integrity='sha512-YHuwZabI2zi0k7c9vtg8dK/63QB0hLvD4thw44dFo/TfBFVVQOqEG9WpviaEpbyvgOIYLXF1n7xDUfU3GDs0sw==' crossorigin='anonymous' referrerpolicy='no-referrer')
+    link(rel='stylesheet' href='/css/layout.css')
+    block head
+  body
+    nav.menu-items-wrapper.navbar
+      a.navbar-logo(href='/')
+        img(src='/static/logo.png' alt='logo')
+      ul.links.push-right
+        li.menu-item(style="padding-left: 16px; padding-right: 16px;")
+          label.toggle-wrapper
+            input(type='checkbox' name='the-toggle' role='switch')
+            span.check
+            | NSFW
+        li.menu-item
+          a(href='/how-to-mod')
+            | How to mod
+        li.menu-item
+          a(href='/upload')
+            svg.icon.icon-tabler.icon-tabler-upload(xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' fill='none' stroke-linecap='round' stroke-linejoin='round')
+              path(stroke='none' d='M0 0h24v24H0z' fill='none')
+              path(d='M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2')
+              path(d='M7 9l5 -5l5 5')
+              path(d='M12 4l0 12')
+            | &nbsp;&nbsp;Upload
+        li.menu-item.disabled
+          a Log in
+        li.menu-item.disabled
+          a Register
+        //- li.menu-item
+        //-   label.toggle-wrapper
+        //-     input#checkbox-darkmode(type='checkbox' name='the-toggle' role='switch')
+        //-     span.check
+        //-     | Dark Mode
+        a.button.search-button(aria-label='Search' href='/search')
+    .body-wrapper
+      block body
+    script(src='https://unpkg.com/@popperjs/core@2' crossorigin='anonymous')
+    script(src='https://cdn.jsdelivr.net/npm/flatifycss/dist/js/flatify.min.js' crossorigin='anonymous')
+    block scripts

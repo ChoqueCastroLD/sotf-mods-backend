@@ -5,8 +5,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model User {
@@ -19,7 +20,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  mods Mod[]
+  mods         Mod[]
+  favoriteMods ModFavorite[]
 }
 
 model Mod {
@@ -34,13 +36,14 @@ model Mod {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user        User?        @relation(fields: [userId], references: [id])
-  userId      Int?
-  category    Category?    @relation(fields: [categoryId], references: [id])
-  categoryId  Int?
-  modVersions ModVersion[]
-  tags        Tag[]
-  images      ModImage[]
+  user       User?         @relation(fields: [userId], references: [id])
+  userId     Int?
+  category   Category?     @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+  versions   ModVersion[]
+  tags       Tag[]
+  images     ModImage[]
+  favorites  ModFavorite[]
 }
 
 model ModImage {
@@ -59,14 +62,16 @@ model ModImage {
 model ModVersion {
   id          Int    @id @default(autoincrement())
   version     String
+  isLatest    Boolean
   changelog   String
   downloadUrl String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  mod   Mod? @relation(fields: [modId], references: [id])
-  modId Int?
+  mod       Mod?          @relation(fields: [modId], references: [id])
+  modId     Int?
+  downloads ModDownload[]
 }
 
 model Tag {
@@ -91,4 +96,29 @@ model Category {
   updatedAt DateTime @updatedAt
 
   mods Mod[]
+}
+
+model ModDownload {
+  id          Int    @id @default(autoincrement())
+  ip          String
+  userAgent   String
+  downloadUrl String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  version      ModVersion? @relation(fields: [modVersionId], references: [id])
+  modVersionId Int?
+}
+
+model ModFavorite {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?
+
+  mod   Mod? @relation(fields: [modId], references: [id])
+  modId Int?
 }
