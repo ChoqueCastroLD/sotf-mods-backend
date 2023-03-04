@@ -1,7 +1,7 @@
 import { prisma } from "./prisma.ts";
 import { Mod, ModImage, ModVersion, User } from "../../generated/client/deno/index.d.ts";
 
-export async function decorateMod(mod: Mod & {
+async function decorateMod(mod: Mod & {
     images: ModImage[];
     user: User | null;
     versions: ModVersion[];
@@ -40,19 +40,34 @@ export async function decorateMod(mod: Mod & {
     }
 }
 
+const modInclude = {
+    images: true,
+    user: true,
+    versions: true,
+    _count: {
+        select: {
+            favorites: true,
+        }
+    }
+};
+
 export async function getMods() {
     const mods = await prisma.mod.findMany({
-        include: {
-            images: true,
-            user: true,
-            versions: true,
-            _count: {
-                select: {
-                    favorites: true,
-                }
-            }
-        },
+        include: modInclude,
     });
     const arr = await Promise.all(mods.map(decorateMod));
     return arr;
+}
+
+export async function getMod(mod_slug: string, author_slug: string) {
+    const mod = await prisma.mod.findFirst({
+        where: {
+            slug: mod_slug,
+            user: {
+                slug: author_slug,
+            }
+        },
+        include: modInclude,
+    });
+    return await decorateMod(mod);
 }
