@@ -1,8 +1,8 @@
 // import { prisma } from "./services/prisma.ts";
 import { Application, Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
-import { renderFile } from "https://deno.land/x/pug/mod.ts";
-import * as path from "https://deno.land/std/path/mod.ts";
-import { Options, LocalsObject } from "https://cdn.esm.sh/v56/pug@3.0.2/deno/pug.bundle.js";
+// import { renderFile } from "https://deno.land/x/pug/mod.ts";
+// import * as path from "https://deno.land/std/path/mod.ts";
+// import { Options, LocalsObject } from "https://cdn.esm.sh/v56/pug@3.0.2/deno/pug.bundle.js";
 // import { decorateMod, getMods } from "./services/mods.ts";
 
 /**
@@ -17,10 +17,10 @@ export async function startServer() {
   const app = new Application();
   const router = new Router();
 
-  function renderPug(template_name: string, data: Options & LocalsObject) {
-    const filepath = path.join(Deno.cwd(), "frontend", `${template_name}.pug`);
-    return renderFile(filepath, data);
-  }
+  // function renderPug(template_name: string, data: Options & LocalsObject) {
+  //   const filepath = path.join(Deno.cwd(), "frontend", `${template_name}.pug`);
+  //   return renderFile(filepath, data);
+  // }
 
 
   /**
@@ -28,7 +28,8 @@ export async function startServer() {
    */
   router
     .get("/how-to-mod", async (context) => {
-      context.response.body = renderPug("how-to-mod");
+      context.response.body = "aaa";
+      // context.response.body = renderPug("how-to-mod");
     })
     // .get("/upload", async (context) => {
     //   context.response.body = renderPug("upload");
