@@ -1,4 +1,3 @@
-import env from "./util/env.ts";
 import { prisma } from "./services/prisma.ts";
 import { Application, Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { renderFile } from "https://deno.land/x/pug/mod.ts";
@@ -74,6 +73,6 @@ export async function startServer() {
     console.log('Server started on port 8000');
   });
   await app.listen({
-    port: parseInt(env.PORT) || 8000
+    port: parseInt(Deno.env.get("PORT")) || 8000
   });
 }
