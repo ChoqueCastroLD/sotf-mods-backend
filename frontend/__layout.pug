@@ -19,6 +19,21 @@ html(lang='en')
             input(type='checkbox' name='the-toggle' role='switch')
             span.check
             | NSFW
+        li.menu-item.dropdown-wrapper
+          button.dropdown-toggle.arrow-button#dropdown-tools(aria-expanded="false") Tools
+          ul.dropdown.menu-items-wrapper(aria-labelledby="dropdown-tools")
+            li.menu-item
+              a(href="#") Item List
+            li.menu-item
+              a(href="#") Character List
+            li.menu-item
+              a(href="#") Commands guide
+            li.menu-item
+              a(href="#") World Objects
+            li.menu-item
+              a(href="#") Interactive Map
+            li
+              span.pointer-arrow
         li.menu-item
           a(href='/how-to-mod')
             | How to mod
