@@ -71,3 +71,18 @@ export async function getMod(mod_slug: string, author_slug: string) {
     });
     return await decorateMod(mod);
 }
+
+export async function getModDownloadVersion(mod_slug: string, author_slug: string, version: string) {
+    const modVersion = await prisma.modVersion.findFirst({
+        where: {
+            version: version,
+            mod: {
+                slug: mod_slug,
+                user: {
+                    slug: author_slug,
+                }
+            }
+        }
+    });
+    return modVersion?.downloadUrl;
+}

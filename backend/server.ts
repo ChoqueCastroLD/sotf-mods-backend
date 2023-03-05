@@ -1,43 +1,22 @@
+// deno-lint-ignore-file
 import "./util/env.ts";
-import { Application, Router, send  } from "https://deno.land/x/oak@v11.1.0/mod.ts";
-import { renderFile } from "https://deno.land/x/pug/mod.ts";
-import * as path from "https://deno.land/std/path/mod.ts";
-import { Options, LocalsObject } from "https://cdn.esm.sh/v56/pug@3.0.2/deno/pug.bundle.js";
+import { Application, Router  } from "https://deno.land/x/oak@v11.1.0/mod.ts";
+import { renderFile } from "https://cdn.jsdelivr.net/gh/lumeland/pug@master/mod.ts";
+import * as path from "https://deno.land/std@0.178.0/path/mod.ts";
 import { getMod, getMods } from "./services/mods.ts";
+import { staticAssetsMiddleware } from "./middlewares/static.ts";
 
-
-function renderPug(template_name: string, data: Options & LocalsObject) {
+function renderPug(template_name: string, data: any) {
   const filepath = path.join(Deno.cwd(), "frontend", `${template_name}.pug`);
-  console.log(filepath);
-  const result = renderFile(filepath, data);
-  console.log(result);
-  return result;
+  return renderFile(filepath, data) as string;
 }
 
 export async function startServer() {
-  /**
-   * Initialize.
-   */
-
   const app = new Application();
   const router = new Router();
 
-  app.use(async (context, next) => {
-    console.log({pathname: context.request.url.pathname});
-    if (!context.request.url.pathname.startsWith("/static")) {
-      console.log('calling next');
-      
-      return await next();
-    }
-    const filePath = context.request.url.pathname.replace("/static", "");
-    await send(context, filePath, {
-      root: path.join(Deno.cwd(), "/frontend/static"),
-    });
-  });
+  app.use(staticAssetsMiddleware);
 
-  /**
-   * Setup routes.
-   */
   router
     .get("/how-to-mod", (context) => {
       context.response.body = renderPug("how-to-mod", {});
@@ -46,10 +25,7 @@ export async function startServer() {
       context.response.body = renderPug("upload", {});
     })
     .get("/", async (context) => {
-      console.log('next')
       const mods = await getMods();
-      console.log({mods});
-      
       context.response.body = renderPug("index", {
         mods,
       });
@@ -60,16 +36,21 @@ export async function startServer() {
         mod,
       });
     })
-  /**
-   * Setup middleware.
-   */
+    .get("/mod/:user_slug/:mod_slug/download", async (context) => {
+      const mod = await getMod(context.params.mod_slug, context.params.user_slug);
+      context.response.body = "tba"
+    })
+    .get("/profile/:user_slug", async (context) => {
+      context.response.body = "to be implemented";
+    })
 
   app.use(router.routes());
   app.use(router.allowedMethods());
 
   app.addEventListener('listen', () => {
-    console.log('Server started on port 8000');
+    console.log(`Server started on port ${Deno.env.get("PORT")}`);
   });
+
   await app.listen({
     port: parseInt(Deno.env.get("PORT")),
   });
