@@ -5,7 +5,7 @@ import { renderFileAsync } from "https://deno.land/x/pug_async@1.0.2/mod.ts";
 import * as path from "https://deno.land/std@0.178.0/path/mod.ts";
 import { getMod, getMods, getModDownloadVersion } from "./services/mods.ts";
 import { items } from "./util/items.ts";
-import { characters } from "./util/characters.ts";
+import { characters, characterType } from "./util/characters.ts";
 import { staticAssetsMiddleware } from "./middlewares/static.ts";
 import logger from "https://deno.land/x/oak_logger@1.0.0/mod.ts";
 
@@ -15,21 +15,6 @@ async function renderPug(template_name: string, data: any) {
 }
 
 export async function startServer() {
-  // todo: delete this later
-  let cache_mods: any[] = [];
-  function updateModsCache() {
-    console.log('getting mods for cache');
-    return getMods().then((mods) => {
-      console.log('got mods '+mods.length+' for cache');
-      cache_mods = mods;
-    }).catch((err) => {
-      console.error(err);
-    });
-  }
-  await updateModsCache();
-  setInterval(updateModsCache, 1000 * 60 * 5); // 5 minutes
-  // --------------------
-
   const app = new Application();
   const router = new Router();
 
@@ -58,8 +43,9 @@ export async function startServer() {
       context.response.body = await renderPug("upload", {});
     })
     .get("/", async (context) => {
+      const mods = await getMods();
       context.response.body = await renderPug("index", {
-        mods: cache_mods,
+        mods: mods,
       });
     })
     .get("/mod/:user_slug/:mod_slug", async (context) => {
@@ -88,6 +74,7 @@ export async function startServer() {
     .get("/tools/characters", async (context) => {
       context.response.body = await renderPug("characters", {
         characters,
+        characterType,
       });
     })
 

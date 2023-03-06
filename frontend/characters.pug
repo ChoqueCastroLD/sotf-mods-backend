@@ -22,7 +22,6 @@ block body
                     tbody
                         - for (const character of characters)
                             tr(data-searchstring=`${character.type} ${character.name} ${character.command || "N/A"}`)
-                                - const characterType = { "mutant": "style-danger-light", "cannibal": "style-orange-light", "companion": "style-green-light", "?": "style-purple"}
                                 td(class=characterType[character.type])
                                     | #{character.type.toUpperCase()}
                                 td #{character.name}

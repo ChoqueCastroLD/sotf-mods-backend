@@ -11,14 +11,20 @@ export const characters = [{
         image_url: ""
     },
     {
+        name: "Sponge",
+        command: "addcharacter cannibal Sponge",
+        type: "cannibal",
+        image_url: ""
+    },
+    {
         name: "Danny",
         command: "addcharacter cannibal Danny",
         type: "cannibal",
         image_url: ""
     },
     {
-        name: "Anny",
-        command: "addcharacter cannibal Anny",
+        name: "And  y",
+        command: "addcharacter cannibal Andy",
         type: "cannibal",
         image_url: ""
     },
@@ -36,20 +42,26 @@ export const characters = [{
     },
     {
         name: "Destiny",
-        command: "addcharacter cannibal Destiny",
-        type: "cannibal",
+        command: "addcharacter female Destiny",
+        type: "female",
+        image_url: ""
+    },
+    {
+        name: "Angel",
+        command: "addcharacter female Angel",
+        type: "female",
         image_url: ""
     },
     {
         name: "Crystal",
-        command: "addcharacter cannibal Crystal",
-        type: "cannibal",
+        command: "addcharacter female Crystal",
+        type: "female",
         image_url: ""
     },
     {
         name: "Brandy",
-        command: "addcharacter cannibal Brandy",
-        type: "cannibal",
+        command: "addcharacter female brandy",
+        type: "female",
         image_url: ""
     },
     {
@@ -118,4 +130,33 @@ export const characters = [{
         type: "companion",
         image_url: ""
     },
+    {
+        name: "Faceless",
+        command: "addcharacter heavy faceless",
+        type: "heavy",
+        image_url: ""
+    },
+    {
+        name: "Fat Male",
+        command: "addcharacter fatmale",
+        type: "nsfw",
+        image_url: ""
+    },
+    {
+        name: "Fat Female",
+        command: "addcharacter fatfemale",
+        type: "nsfw",
+        image_url: ""
+    },
 ];
+
+
+export const characterType = {
+    "mutant": "style-danger-light",
+    "cannibal": "style-orange-light",
+    "companion": "style-green-light",
+    "female": "style-red-light",
+    "heavy": "style-purple-light",
+    "nsfw": "style-danger",
+    "?": "style-purple",
+};
