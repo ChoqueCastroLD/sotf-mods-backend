@@ -6,26 +6,15 @@ import * as path from "https://deno.land/std@0.178.0/path/mod.ts";
 import { getMod, getMods, getModDownloadVersion } from "./services/mods.ts";
 import { items } from "./util/items.ts";
 import { staticAssetsMiddleware } from "./middlewares/static.ts";
-import logger from "https://deno.land/x/oak_logger/mod.ts";
+import logger from "https://deno.land/x/oak_logger@1.0.0/mod.ts";
 
 // todo: delete this later
 let cache_mods: any[] = [];
-// create cache file if it doesn't exist
-try {
-  await Deno.stat('cache_mods.json');
-} catch (err) {
-  await Deno.writeTextFile('cache_mods.json', '[]');
-}
-let cache_mods_file = await Deno.readTextFile('cache_mods.json');
-if (cache_mods_file) {
-  cache_mods = JSON.parse(cache_mods_file);
-}
 function updateModsCache() {
   console.log('getting mods for cache');
   getMods().then((mods) => {
     console.log('got mods '+mods.length+' for cache');
     cache_mods = mods;
-    Deno.writeTextFile('cache_mods.json', JSON.stringify(mods));
   }).catch((err) => {
     console.error(err);
   });
