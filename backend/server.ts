@@ -1,10 +1,11 @@
 // deno-lint-ignore-file
 import "./util/env.ts";
-import { Application, Router  } from "https://deno.land/x/oak@v11.1.0/mod.ts";
+import { Application, Router, isHttpError } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { renderFileAsync } from "https://deno.land/x/pug_async@1.0.2/mod.ts";
 import * as path from "https://deno.land/std@0.178.0/path/mod.ts";
-import { getMod, getMods } from "./services/mods.ts";
+import { getMod, getMods, getModDownloadVersion } from "./services/mods.ts";
 import { staticAssetsMiddleware } from "./middlewares/static.ts";
+import logger from "https://deno.land/x/oak_logger/mod.ts";
 
 // todo: delete this later
 let cache_mods: any[] = [];
@@ -30,7 +31,22 @@ export async function startServer() {
   const app = new Application();
   const router = new Router();
 
+  app.use(async (context, next) => {
+    try {
+      await next();
+    } catch (err) {
+      if (isHttpError(err)) {
+        context.response.status = err.status;
+      } else {
+        context.response.status = 500;
+      }
+      context.response.body = "Something went wrong, please try again later. If this problem persists, please contact the developer. with the following error: " + err.message;
+    }
+  });
+
   app.use(staticAssetsMiddleware);
+  app.use(logger.logger);
+  app.use(logger.responseTime);
 
   router
     .get("/how-to-mod", async (context) => {
@@ -50,9 +66,14 @@ export async function startServer() {
         mod,
       });
     })
-    .get("/mod/:user_slug/:mod_slug/download", async (context) => {
-      const mod = await getMod(context.params.mod_slug, context.params.user_slug);
-      context.response.body = "tba"
+    .get("/mod/:user_slug/:mod_slug/download/:version", async (context) => {
+      const downloadURL = await getModDownloadVersion(context.params.mod_slug, context.params.user_slug, context.params.version);
+      if (!downloadURL) {
+        context.response.status = 404;
+        context.response.body = "Download url not found. Contact mod developer.";
+        return;
+      }
+      context.response.redirect(downloadURL);
     })
     .get("/profile/:user_slug", async (context) => {
       context.response.body = "to be implemented";
