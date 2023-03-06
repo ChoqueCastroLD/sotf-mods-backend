@@ -6,6 +6,21 @@ import * as path from "https://deno.land/std@0.178.0/path/mod.ts";
 import { getMod, getMods } from "./services/mods.ts";
 import { staticAssetsMiddleware } from "./middlewares/static.ts";
 
+// todo: delete this later
+let cache_mods: any[] = [];
+function updateModsCache() {
+  console.log('getting mods for cache');
+  getMods().then((mods) => {
+    console.log('got mods '+mods.length+' for cache');
+    cache_mods = mods;
+  }).catch((err) => {
+    console.error(err);
+  });
+}
+updateModsCache();
+setInterval(updateModsCache, 1000 * 60 * 5); // 5 minutes
+// --------------------
+
 async function renderPug(template_name: string, data: any) {
   const filepath = path.join(Deno.cwd(), "frontend", `${template_name}.pug`);
   return await renderFileAsync(filepath, data) as string;
@@ -25,9 +40,8 @@ export async function startServer() {
       context.response.body = await renderPug("upload", {});
     })
     .get("/", async (context) => {
-      const mods = await getMods();
       context.response.body = await renderPug("index", {
-        mods,
+        mods: cache_mods,
       });
     })
     .get("/mod/:user_slug/:mod_slug", async (context) => {
