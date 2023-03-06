@@ -1,5 +1,13 @@
+body {
+    background-image: linear-gradient( 109.6deg,  rgba(223,234,247,1) 11.2%, rgba(244,248,252,1) 91.1% );
+    height: 100%;
+    margin: 0;
+}
+
 .body-wrapper {
     padding: 3%;
-    background-image: linear-gradient( 109.6deg,  rgba(223,234,247,1) 11.2%, rgba(244,248,252,1) 91.1% );
-    height: 100vh;
+}
+
+.hidden {
+    display: none;
 }
