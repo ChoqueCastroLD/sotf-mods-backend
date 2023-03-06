@@ -105,7 +105,6 @@ export type ModDownload = {
   id: number
   ip: string
   userAgent: string
-  downloadUrl: string
   createdAt: Date
   updatedAt: Date
   modVersionId: number | null
@@ -7388,7 +7387,6 @@ export namespace Prisma {
     id: number | null
     ip: string | null
     userAgent: string | null
-    downloadUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
     modVersionId: number | null
@@ -7398,7 +7396,6 @@ export namespace Prisma {
     id: number | null
     ip: string | null
     userAgent: string | null
-    downloadUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
     modVersionId: number | null
@@ -7408,7 +7405,6 @@ export namespace Prisma {
     id: number
     ip: number
     userAgent: number
-    downloadUrl: number
     createdAt: number
     updatedAt: number
     modVersionId: number
@@ -7430,7 +7426,6 @@ export namespace Prisma {
     id?: true
     ip?: true
     userAgent?: true
-    downloadUrl?: true
     createdAt?: true
     updatedAt?: true
     modVersionId?: true
@@ -7440,7 +7435,6 @@ export namespace Prisma {
     id?: true
     ip?: true
     userAgent?: true
-    downloadUrl?: true
     createdAt?: true
     updatedAt?: true
     modVersionId?: true
@@ -7450,7 +7444,6 @@ export namespace Prisma {
     id?: true
     ip?: true
     userAgent?: true
-    downloadUrl?: true
     createdAt?: true
     updatedAt?: true
     modVersionId?: true
@@ -7548,7 +7541,6 @@ export namespace Prisma {
     id: number
     ip: string
     userAgent: string
-    downloadUrl: string
     createdAt: Date
     updatedAt: Date
     modVersionId: number | null
@@ -7577,7 +7569,6 @@ export namespace Prisma {
     id?: boolean
     ip?: boolean
     userAgent?: boolean
-    downloadUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     modVersionId?: boolean
@@ -9348,7 +9339,6 @@ export namespace Prisma {
     id: 'id',
     ip: 'ip',
     userAgent: 'userAgent',
-    downloadUrl: 'downloadUrl',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     modVersionId: 'modVersionId'
@@ -9848,7 +9838,6 @@ export namespace Prisma {
     id?: IntFilter | number
     ip?: StringFilter | string
     userAgent?: StringFilter | string
-    downloadUrl?: StringFilter | string
     createdAt?: DateTimeFilter | Date | string
     updatedAt?: DateTimeFilter | Date | string
     modVersionId?: IntNullableFilter | number | null
@@ -9859,7 +9848,6 @@ export namespace Prisma {
     id?: SortOrder
     ip?: SortOrder
     userAgent?: SortOrder
-    downloadUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     modVersionId?: SortOrder
@@ -9874,7 +9862,6 @@ export namespace Prisma {
     id?: SortOrder
     ip?: SortOrder
     userAgent?: SortOrder
-    downloadUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     modVersionId?: SortOrder
@@ -9892,7 +9879,6 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter | number
     ip?: StringWithAggregatesFilter | string
     userAgent?: StringWithAggregatesFilter | string
-    downloadUrl?: StringWithAggregatesFilter | string
     createdAt?: DateTimeWithAggregatesFilter | Date | string
     updatedAt?: DateTimeWithAggregatesFilter | Date | string
     modVersionId?: IntNullableWithAggregatesFilter | number | null
@@ -10407,7 +10393,6 @@ export namespace Prisma {
   export type ModDownloadCreateInput = {
     ip: string
     userAgent: string
-    downloadUrl: string
     createdAt?: Date | string
     updatedAt?: Date | string
     version?: ModVersionCreateNestedOneWithoutDownloadsInput
@@ -10417,7 +10402,6 @@ export namespace Prisma {
     id?: number
     ip: string
     userAgent: string
-    downloadUrl: string
     createdAt?: Date | string
     updatedAt?: Date | string
     modVersionId?: number | null
@@ -10426,7 +10410,6 @@ export namespace Prisma {
   export type ModDownloadUpdateInput = {
     ip?: StringFieldUpdateOperationsInput | string
     userAgent?: StringFieldUpdateOperationsInput | string
-    downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     version?: ModVersionUpdateOneWithoutDownloadsNestedInput
@@ -10436,7 +10419,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     ip?: StringFieldUpdateOperationsInput | string
     userAgent?: StringFieldUpdateOperationsInput | string
-    downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     modVersionId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -10446,7 +10428,6 @@ export namespace Prisma {
     id?: number
     ip: string
     userAgent: string
-    downloadUrl: string
     createdAt?: Date | string
     updatedAt?: Date | string
     modVersionId?: number | null
@@ -10455,7 +10436,6 @@ export namespace Prisma {
   export type ModDownloadUpdateManyMutationInput = {
     ip?: StringFieldUpdateOperationsInput | string
     userAgent?: StringFieldUpdateOperationsInput | string
-    downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -10464,7 +10444,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     ip?: StringFieldUpdateOperationsInput | string
     userAgent?: StringFieldUpdateOperationsInput | string
-    downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     modVersionId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -10975,7 +10954,6 @@ export namespace Prisma {
     id?: SortOrder
     ip?: SortOrder
     userAgent?: SortOrder
-    downloadUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     modVersionId?: SortOrder
@@ -10990,7 +10968,6 @@ export namespace Prisma {
     id?: SortOrder
     ip?: SortOrder
     userAgent?: SortOrder
-    downloadUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     modVersionId?: SortOrder
@@ -11000,7 +10977,6 @@ export namespace Prisma {
     id?: SortOrder
     ip?: SortOrder
     userAgent?: SortOrder
-    downloadUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     modVersionId?: SortOrder
@@ -12247,7 +12223,6 @@ export namespace Prisma {
   export type ModDownloadCreateWithoutVersionInput = {
     ip: string
     userAgent: string
-    downloadUrl: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12256,7 +12231,6 @@ export namespace Prisma {
     id?: number
     ip: string
     userAgent: string
-    downloadUrl: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12332,7 +12306,6 @@ export namespace Prisma {
     id?: IntFilter | number
     ip?: StringFilter | string
     userAgent?: StringFilter | string
-    downloadUrl?: StringFilter | string
     createdAt?: DateTimeFilter | Date | string
     updatedAt?: DateTimeFilter | Date | string
     modVersionId?: IntNullableFilter | number | null
@@ -12850,7 +12823,6 @@ export namespace Prisma {
     id?: number
     ip: string
     userAgent: string
-    downloadUrl: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12858,7 +12830,6 @@ export namespace Prisma {
   export type ModDownloadUpdateWithoutVersionInput = {
     ip?: StringFieldUpdateOperationsInput | string
     userAgent?: StringFieldUpdateOperationsInput | string
-    downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12867,7 +12838,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     ip?: StringFieldUpdateOperationsInput | string
     userAgent?: StringFieldUpdateOperationsInput | string
-    downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12876,7 +12846,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     ip?: StringFieldUpdateOperationsInput | string
     userAgent?: StringFieldUpdateOperationsInput | string
-    downloadUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

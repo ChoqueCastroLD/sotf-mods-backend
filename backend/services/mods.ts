@@ -85,5 +85,15 @@ export async function getModDownloadVersion(mod_slug: string, author_slug: strin
             }
         }
     });
-    return modVersion?.downloadUrl;
+    return modVersion;
+}
+
+export async function addDownload(modVersionId: number, ip: string, userAgent: string) {
+    return await prisma.modDownload.create({
+        data: {
+            modVersionId: modVersionId,
+            ip,
+            userAgent,
+        }
+    });
 }

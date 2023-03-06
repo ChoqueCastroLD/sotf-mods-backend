@@ -102,7 +102,6 @@ exports.Prisma.ModDownloadScalarFieldEnum = makeEnum({
   id: 'id',
   ip: 'ip',
   userAgent: 'userAgent',
-  downloadUrl: 'downloadUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   modVersionId: 'modVersionId'

@@ -3,7 +3,7 @@ import "./util/env.ts";
 import { Application, Router, isHttpError } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { renderFileAsync } from "https://deno.land/x/pug_async@1.0.2/mod.ts";
 import * as path from "https://deno.land/std@0.178.0/path/mod.ts";
-import { getMod, getMods, getModDownloadVersion } from "./services/mods.ts";
+import { getMod, getMods, getModDownloadVersion, addDownload } from "./services/mods.ts";
 import { items } from "./util/items.ts";
 import { characters, characterType } from "./util/characters.ts";
 import { staticAssetsMiddleware } from "./middlewares/static.ts";
@@ -55,13 +55,20 @@ export async function startServer() {
       });
     })
     .get("/mod/:user_slug/:mod_slug/download/:version", async (context) => {
-      const downloadURL = await getModDownloadVersion(context.params.mod_slug, context.params.user_slug, context.params.version);
-      if (!downloadURL) {
+      const modVersion = await getModDownloadVersion(context.params.mod_slug, context.params.user_slug, context.params.version);
+      if (!modVersion) {
         context.response.status = 404;
         context.response.body = "Download url not found. Contact mod developer.";
         return;
       }
-      context.response.redirect(downloadURL);
+      addDownload(modVersion.id, context.request.ip, context.request.headers.get("user-agent") ?? "")
+        .then(() => {
+          console.log("Download added to mod version id " + modVersion.id);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      context.response.redirect(modVersion.downloadUrl);
     })
     .get("/profile/:user_slug", async (context) => {
       context.response.body = "to be implemented";

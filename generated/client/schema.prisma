@@ -60,7 +60,7 @@ model ModImage {
 }
 
 model ModVersion {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   version     String
   isLatest    Boolean
   changelog   String
@@ -99,10 +99,9 @@ model Category {
 }
 
 model ModDownload {
-  id          Int    @id @default(autoincrement())
-  ip          String
-  userAgent   String
-  downloadUrl String
+  id        Int    @id @default(autoincrement())
+  ip        String
+  userAgent String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
