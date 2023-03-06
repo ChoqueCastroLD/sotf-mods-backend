@@ -49,7 +49,7 @@ export async function startServer() {
       });
     })
     .get("/mod/:user_slug/:mod_slug", async (context) => {
-      const mod = await getMod(context.params.mod_slug, context.params.user_slug);
+      const mod = await getMod(context.params.mod_slug, context.params.user_slug);      
       context.response.body = await renderPug("mod", {
         mod,
       });

@@ -26,8 +26,10 @@ block body
             span(style="margin-left: 6px; margin-right: 6px;") Download
             - if (mod.latest_version)
               span.color-dark-light.text-xs #{mod.latest_version.version}
-          - if (!mod.latest_version)
-              p.color-red-light.text-xs No versions available
+          - if (mod.latest_version)
+            p.color-dark-light.text-xs Total downloads: #{mod.downloads}
+          - else
+            p.color-red-light.text-xs No versions available
 
     .col-xs-6
       .box
