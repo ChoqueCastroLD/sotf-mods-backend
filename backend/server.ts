@@ -5,6 +5,7 @@ import { renderFileAsync } from "https://deno.land/x/pug_async@1.0.2/mod.ts";
 import * as path from "https://deno.land/std@0.178.0/path/mod.ts";
 import { getMod, getMods, getModDownloadVersion } from "./services/mods.ts";
 import { items } from "./util/items.ts";
+import { characters } from "./util/characters.ts";
 import { staticAssetsMiddleware } from "./middlewares/static.ts";
 import logger from "https://deno.land/x/oak_logger@1.0.0/mod.ts";
 
@@ -82,6 +83,11 @@ export async function startServer() {
     .get("/tools/items", async (context) => {
       context.response.body = await renderPug("items", {
         items,
+      });
+    })
+    .get("/tools/characters", async (context) => {
+      context.response.body = await renderPug("characters", {
+        characters,
       });
     })
 
