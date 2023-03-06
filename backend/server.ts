@@ -9,27 +9,27 @@ import { characters } from "./util/characters.ts";
 import { staticAssetsMiddleware } from "./middlewares/static.ts";
 import logger from "https://deno.land/x/oak_logger@1.0.0/mod.ts";
 
-// todo: delete this later
-let cache_mods: any[] = [];
-function updateModsCache() {
-  console.log('getting mods for cache');
-  getMods().then((mods) => {
-    console.log('got mods '+mods.length+' for cache');
-    cache_mods = mods;
-  }).catch((err) => {
-    console.error(err);
-  });
-}
-updateModsCache();
-setInterval(updateModsCache, 1000 * 60 * 5); // 5 minutes
-// --------------------
-
 async function renderPug(template_name: string, data: any) {
   const filepath = path.join(Deno.cwd(), "frontend", `${template_name}.pug`);
   return await renderFileAsync(filepath, data) as string;
 }
 
 export async function startServer() {
+  // todo: delete this later
+  let cache_mods: any[] = [];
+  function updateModsCache() {
+    console.log('getting mods for cache');
+    getMods().then((mods) => {
+      console.log('got mods '+mods.length+' for cache');
+      cache_mods = mods;
+    }).catch((err) => {
+      console.error(err);
+    });
+  }
+  updateModsCache();
+  setInterval(updateModsCache, 1000 * 60 * 5); // 5 minutes
+  // --------------------
+
   const app = new Application();
   const router = new Router();
 
