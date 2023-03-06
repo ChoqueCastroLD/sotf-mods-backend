@@ -1,7 +1,7 @@
 // deno-lint-ignore-file
 import "./util/env.ts";
 import { Application, Router  } from "https://deno.land/x/oak@v11.1.0/mod.ts";
-import { renderFileAsync } from "https://deno.land/x/pug_async@1.0.1/mod.ts";
+import { renderFileAsync } from "https://deno.land/x/pug_async@1.0.2/mod.ts";
 import * as path from "https://deno.land/std@0.178.0/path/mod.ts";
 import { getMod, getMods } from "./services/mods.ts";
 import { staticAssetsMiddleware } from "./middlewares/static.ts";
