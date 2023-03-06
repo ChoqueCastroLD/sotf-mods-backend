@@ -19,14 +19,14 @@ export async function startServer() {
   let cache_mods: any[] = [];
   function updateModsCache() {
     console.log('getting mods for cache');
-    getMods().then((mods) => {
+    return getMods().then((mods) => {
       console.log('got mods '+mods.length+' for cache');
       cache_mods = mods;
     }).catch((err) => {
       console.error(err);
     });
   }
-  updateModsCache();
+  await updateModsCache();
   setInterval(updateModsCache, 1000 * 60 * 5); // 5 minutes
   // --------------------
 
