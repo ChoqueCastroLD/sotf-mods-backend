@@ -4,7 +4,11 @@ import { prisma } from "./backend/services/prisma.ts";
 while (true) {
     try {
         console.log('Starting server...');
-        await startServer();
+        let port = 8000;
+        if (Deno.env.get('PORT')) {
+            port = parseInt(Deno.env.get('PORT')!);
+        }
+        await startServer(port);
     } catch (err) {
         console.log('Server crashed, logging error and restarting in 3 seconds...');
         console.error(err);

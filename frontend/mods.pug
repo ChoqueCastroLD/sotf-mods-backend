@@ -5,7 +5,7 @@ block head
 
 block body
   .row.center-xs#mods-grid
-    - for (const mod of mods)
+    - for (const mod of mods.filter(mod => mod.isApproved))
       .col-xs
         .box.position-relative.margin-auto
           article.card

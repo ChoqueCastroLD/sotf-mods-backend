@@ -1,6 +1,6 @@
 import { prisma } from "./prisma.ts";
 import { Mod, ModImage, ModVersion, User } from "../../generated/client/deno/index.d.ts";
-
+import { getCache, setCache } from "../util/cache.ts";
 
 function decorateMod(mod: Mod & {
     user: User | null;
@@ -14,6 +14,9 @@ function decorateMod(mod: Mod & {
         favorites: number;
     };
 }) {
+    if (!mod) {
+        return mod;
+    }
     const thumbnail_url = mod.images
         ?.find((image) => image.isThumbnail)?.url
         ?? mod.images?.[0].url
@@ -40,6 +43,9 @@ function decorateMod(mod: Mod & {
 }
 
 export async function getMods() {
+    const cachedMods = await getCache("getMods");
+    if (cachedMods) return cachedMods;
+
     const mods = await prisma.mod.findMany({
         include: {
             images: true,
@@ -60,12 +66,20 @@ export async function getMods() {
                 }
             }
         },
+        orderBy: {
+            updatedAt: "desc",
+        }
     });
     const arr = await Promise.all(mods.map(decorateMod));
+
+    setCache("getMods", arr);
     return arr;
 }
 
 export async function getMod(mod_slug: string, author_slug: string) {
+    const cachedMods = await getCache("getMod-" + mod_slug + "-" + author_slug);
+    if (cachedMods) return cachedMods;
+
     const mod = await prisma.mod.findFirst({
         where: {
             slug: mod_slug,
@@ -93,10 +107,21 @@ export async function getMod(mod_slug: string, author_slug: string) {
             }
         },
     });
-    return await decorateMod(mod);
+
+    if (!mod) {
+        return mod;
+    }
+
+    const decoratedMod = await decorateMod(mod);
+
+    setCache("getMod-" + mod_slug + "-" + author_slug, decoratedMod);
+    return decoratedMod;
 }
 
 export async function getModDownloadVersion(mod_slug: string, author_slug: string, version: string) {
+    const cachedModDownloadVersion = await getCache("getModDownloadVersion-" + mod_slug + "-" + author_slug + "-" + version);
+    if (cachedModDownloadVersion) return cachedModDownloadVersion;
+
     const modVersion = await prisma.modVersion.findFirst({
         where: {
             version: version,
@@ -108,6 +133,8 @@ export async function getModDownloadVersion(mod_slug: string, author_slug: strin
             }
         }
     });
+
+    setCache("getModDownloadVersion-" + mod_slug + "-" + author_slug + "-" + version, modVersion, 30);
     return modVersion;
 }
 

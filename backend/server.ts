@@ -32,10 +32,10 @@ export async function startServer(port = 8000) {
   app.use(router.allowedMethods());
 
   app.addEventListener('listen', () => {
-    console.log(`Server started on port ${Deno.env.get("PORT")}`);
+    console.log(`Server started on port ${port}`);
   });
 
   await app.listen({
-    port: parseInt(Deno.env.get("PORT") ?? "8080"),
+    port,
   });
 }
