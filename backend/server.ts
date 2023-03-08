@@ -1,27 +1,18 @@
 // deno-lint-ignore-file
 import "./util/env.ts";
 import { Application, Router, isHttpError } from "https://deno.land/x/oak@v11.1.0/mod.ts";
-import { renderFileAsync } from "https://deno.land/x/pug_async@1.0.2/mod.ts";
-import * as path from "https://deno.land/std@0.178.0/path/mod.ts";
-import { getMod, getMods, getModDownloadVersion, addDownload } from "./services/mods.ts";
-import { items } from "./util/items.ts";
-import { characters, characterType } from "./util/characters.ts";
 import { staticAssetsMiddleware } from "./middlewares/static.ts";
 import logger from "https://deno.land/x/oak_logger@1.0.0/mod.ts";
+import { router } from "./routes/router.ts";
 
-async function renderPug(template_name: string, data: any) {
-  const filepath = path.join(Deno.cwd(), "frontend", `${template_name}.pug`);
-  return await renderFileAsync(filepath, data) as string;
-}
-
-export async function startServer() {
+export async function startServer(port = 8000) {
   const app = new Application();
-  const router = new Router();
 
   app.use(async (context, next) => {
     try {
       await next();
     } catch (err) {
+      console.error(err);
       if (isHttpError(err)) {
         context.response.status = err.status;
       } else {
@@ -35,55 +26,7 @@ export async function startServer() {
   app.use(logger.logger);
   app.use(logger.responseTime);
 
-  router
-    .get("/how-to-mod", async (context) => {
-      context.response.body = await renderPug("how-to-mod", {});
-    })
-    .get("/upload", async (context) => {
-      context.response.body = await renderPug("upload", {});
-    })
-    .get("/", async (context) => {
-      const mods = await getMods();
-      context.response.body = await renderPug("index", {
-        mods: mods,
-      });
-    })
-    .get("/mod/:user_slug/:mod_slug", async (context) => {
-      const mod = await getMod(context.params.mod_slug, context.params.user_slug);      
-      context.response.body = await renderPug("mod", {
-        mod,
-      });
-    })
-    .get("/mod/:user_slug/:mod_slug/download/:version", async (context) => {
-      const modVersion = await getModDownloadVersion(context.params.mod_slug, context.params.user_slug, context.params.version);
-      if (!modVersion) {
-        context.response.status = 404;
-        context.response.body = "Download url not found. Contact mod developer.";
-        return;
-      }
-      addDownload(modVersion.id, context.request.ip, context.request.headers.get("user-agent") ?? "")
-        .then(() => {
-          console.log("Download added to mod version id " + modVersion.id);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-      context.response.redirect(modVersion.downloadUrl);
-    })
-    .get("/profile/:user_slug", async (context) => {
-      context.response.body = "to be implemented";
-    })
-    .get("/tools/items", async (context) => {
-      context.response.body = await renderPug("items", {
-        items,
-      });
-    })
-    .get("/tools/characters", async (context) => {
-      context.response.body = await renderPug("characters", {
-        characters,
-        characterType,
-      });
-    })
+  app.use(router.routes());
 
   app.use(router.routes());
   app.use(router.allowedMethods());
@@ -93,6 +36,6 @@ export async function startServer() {
   });
 
   await app.listen({
-    port: parseInt(Deno.env.get("PORT")),
+    port: parseInt(Deno.env.get("PORT") ?? "8080"),
   });
 }

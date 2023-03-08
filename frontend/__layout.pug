@@ -14,7 +14,7 @@ html(lang='en')
       a.navbar-logo(href='/')
         img(src='/static/images/logo.png' alt='logo')
       ul.links.push-right
-        li.menu-item(style="padding-left: 16px; padding-right: 16px;")
+        li.menu-item.hidden(style="padding-left: 16px; padding-right: 16px;")
           label.toggle-wrapper
             input(type='checkbox' name='the-toggle' role='switch')
             span.check
@@ -28,10 +28,8 @@ html(lang='en')
               a(href="/tools/characters") Character List
             li.menu-item
               a(href="/tools/commands") Commands guide
-            li.menu-item
-              a(href="/tools/objects") World Objects
-            li.menu-item
-              a(href="/tools/map") Interactive Map
+            //- li.menu-item
+            //-   a(href="/tools/objects") World Objects
             li
               span.pointer-arrow
         li.menu-item

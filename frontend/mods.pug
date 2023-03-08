@@ -9,6 +9,10 @@ block body
       .col-xs
         .box.position-relative.margin-auto
           article.card
+            - if (!mod.latest_version)
+              .position-absolute.place-expand(style="background: #00000069; z-index: 100;")
+                span.position-absolute.place-expand.color-light.size-4x(style="top: 20%; text-shadow: #000 1px 0 10px;")
+                  | To be released
             header.card-header
               .card-badges
                 a.badge.style-red(href="#") Scripts

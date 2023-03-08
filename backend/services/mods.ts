@@ -2,35 +2,33 @@ import { prisma } from "./prisma.ts";
 import { Mod, ModImage, ModVersion, User } from "../../generated/client/deno/index.d.ts";
 
 
-async function decorateMod(mod: Mod & {
-    images: ModImage[];
+function decorateMod(mod: Mod & {
     user: User | null;
-    versions: ModVersion[];
+    versions?: (ModVersion & {
+        downloads: {
+            id: number;
+        }[];
+    })[];
+    images: ModImage[];
     _count: {
         favorites: number;
     };
 }) {
-    let thumbnail_url = mod.images.find((image) => image.isThumbnail)?.url;
-    if (!thumbnail_url)
-        thumbnail_url = mod.images[0]?.url;
-    if (!thumbnail_url)
-        thumbnail_url = "https://via.placeholder.com/150";
-    
-    let primary_image_url = mod.images.find((image) => image.isPrimary)?.url;
-    if (!primary_image_url)
-        primary_image_url = mod.images[0]?.url;
-    if (!primary_image_url)
-        primary_image_url = "https://via.placeholder.com/150";
+    const thumbnail_url = mod.images
+        ?.find((image) => image.isThumbnail)?.url
+        ?? mod.images?.[0].url
+        ?? "https://via.placeholder.com/512";
+        
+    const primary_image_url = mod.images
+        ?.find((image) => image.isPrimary)?.url
+        ?? mod.images?.[0].url
+        ?? "https://via.placeholder.com/1024";
 
-    const latest_version = mod.versions.find((version) => version.isLatest);
+    const latest_version = mod.versions?.find((version) => version.isLatest);
 
-    const downloads = await prisma.modDownload.count({
-        where: {
-            modVersionId: {
-                in: mod.versions.map((version) => version.id),
-            }
-        }
-    });
+    const downloads = mod.versions?.reduce((acc, version) => {
+        return acc + version.downloads.length;
+    }, 0) ?? 0;
 
     return {
         ...mod,
@@ -41,20 +39,27 @@ async function decorateMod(mod: Mod & {
     }
 }
 
-const modInclude = {
-    images: true,
-    user: true,
-    versions: true,
-    _count: {
-        select: {
-            favorites: true,
-        }
-    }
-};
-
 export async function getMods() {
     const mods = await prisma.mod.findMany({
-        include: modInclude,
+        include: {
+            images: true,
+            user: true,
+            versions: {
+                include: {
+                    downloads: {
+                        distinct: "ip",
+                        select: {
+                            id: true,
+                        },
+                    },
+                },
+            },
+            _count: {
+                select: {
+                    favorites: true,
+                }
+            }
+        },
     });
     const arr = await Promise.all(mods.map(decorateMod));
     return arr;
@@ -68,7 +73,25 @@ export async function getMod(mod_slug: string, author_slug: string) {
                 slug: author_slug,
             }
         },
-        include: modInclude,
+        include: {
+            images: true,
+            user: true,
+            versions: {
+                include: {
+                    downloads: {
+                        distinct: "ip",
+                        select: {
+                            id: true,
+                        },
+                    },
+                },
+            },
+            _count: {
+                select: {
+                    favorites: true,
+                }
+            }
+        },
     });
     return await decorateMod(mod);
 }
