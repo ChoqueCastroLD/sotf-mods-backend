@@ -36,5 +36,9 @@ router.get("/mod/:user_slug/:mod_slug/download/:version", async (context) => {
 });
 
 router.get("/upload", async (context) => {
-  context.response.body = await render("upload", {});
+    context.response.body = await render("upload", {});
+});
+
+router.get("/search", async (context) => {
+    context.response.body = await render("upload", {});
 });

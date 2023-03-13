@@ -8,6 +8,26 @@ html(lang='en')
     link(href='https://cdn.jsdelivr.net/npm/flatifycss/dist/css/flatify.min.css' rel='stylesheet' crossorigin='anonymous')
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css' integrity='sha512-YHuwZabI2zi0k7c9vtg8dK/63QB0hLvD4thw44dFo/TfBFVVQOqEG9WpviaEpbyvgOIYLXF1n7xDUfU3GDs0sw==' crossorigin='anonymous' referrerpolicy='no-referrer')
     link(rel='stylesheet' href='/static/css/layout.css')
+    link(rel="apple-touch-icon", sizes="180x180", href="/static/images/apple-touch-icon.png")
+    link(rel="icon", type="image/png", sizes="32x32", href="/static/images/favicon-32x32.png")
+    link(rel="icon", type="image/png", sizes="16x16", href="/static/images/favicon-16x16.png")
+    link(rel="manifest", href="/static/images/site.webmanifest")
+    //- block meta
+    //-   meta(charset="UTF-8")
+    //-   meta(name="viewport", content="width=device-width,initial-scale=1")
+    //-   meta(name="description", content="Find the best mods for Sons of The Forest at SOTF-Mods.com")
+    //-   meta(name="keywords", content="Sons of The Forest, mods, game mods, video game mods")
+    //-   meta(name="author", content="SOTF-Mods.com")
+    //-   meta(property="og:title", content="SOTF-Mods.com - The Best Mods for Sons of The Forest")
+    //-   meta(property="og:description", content="Find the best mods for Sons of The Forest at SOTF-Mods.com")
+    //-   meta(property="og:image", content="https://example.com/image.jpg")
+    //-   meta(property="og:url", content="https://sotf-mods.com")
+    //-   meta(property="og:type", content="website")
+    //-   meta(property="twitter:title", content="SOTF-Mods.com - The Best Mods for Sons of The Forest")
+    //-   meta(property="twitter:description", content="Find the best mods for Sons of The Forest at SOTF-Mods.com")
+    //-   meta(property="twitter:image", content="https://example.com/image.jpg")
+    //-   meta(property="twitter:url", content="https://sotf-mods.com")
+    //-   meta(name="robots", content="index, follow")
     block head
   body
     nav.menu-items-wrapper.navbar
@@ -19,6 +39,23 @@ html(lang='en')
             input(type='checkbox' name='the-toggle' role='switch')
             span.check
             | NSFW
+        li.menu-item
+          a(href='/how-to-mod')
+            | How to mod
+        //- li.menu-item
+        //-   a(href='/mod-ideas')
+        //-     | Mod Ideas
+        li.menu-item
+          a(href='https://discord.gg/sonsoftheforest' target='_blank')
+            | Discord
+        //- li.menu-item
+        //-   a(href='/upload')
+        //-     svg.icon.icon-tabler.icon-tabler-upload(xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' fill='none' stroke-linecap='round' stroke-linejoin='round')
+        //-       path(stroke='none' d='M0 0h24v24H0z' fill='none')
+        //-       path(d='M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2')
+        //-       path(d='M7 9l5 -5l5 5')
+        //-       path(d='M12 4l0 12')
+        //-     | &nbsp;&nbsp;Upload
         li.menu-item.dropdown-wrapper
           button.dropdown-toggle.arrow-button#dropdown-tools(aria-expanded="false") Tools
           ul.dropdown.menu-items-wrapper(aria-labelledby="dropdown-tools")
@@ -32,24 +69,17 @@ html(lang='en')
             //-   a(href="/tools/objects") World Objects
             li
               span.pointer-arrow
-        li.menu-item
-          a(href='/how-to-mod')
-            | How to mod
-        li.menu-item
-          a(href='/mod-ideas')
-            | Mod Ideas
-        li.menu-item
-          a(href='/upload')
-            svg.icon.icon-tabler.icon-tabler-upload(xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' fill='none' stroke-linecap='round' stroke-linejoin='round')
-              path(stroke='none' d='M0 0h24v24H0z' fill='none')
-              path(d='M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2')
-              path(d='M7 9l5 -5l5 5')
-              path(d='M12 4l0 12')
-            | &nbsp;&nbsp;Upload
-        li.menu-item.disabled
-          a Log in
-        li.menu-item.disabled
-          a Register
+        li.menu-item.dropdown-wrapper
+          button.dropdown-toggle.arrow-button#dropdown-tools(aria-expanded="false") Account
+          ul.dropdown.menu-items-wrapper(aria-labelledby="dropdown-tools")
+            li.menu-item
+              a(href="/user/login") Login
+            li.menu-item
+              a(href="/user/register") Register
+            //- li.menu-item
+            //-   a(href="/tools/objects") World Objects
+            li
+              span.pointer-arrow
         //- li.menu-item
         //-   label.toggle-wrapper
         //-     input#checkbox-darkmode(type='checkbox' name='the-toggle' role='switch')
