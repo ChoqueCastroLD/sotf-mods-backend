@@ -1,5 +1,11 @@
 extends __layout
 
+block meta
+  meta(content=mod.name, property="og:title")
+  meta(content=(mod.description.length > 120 ? mod.description.substring(0, 120) + "..." : mod.description), property="og:description")
+  meta(content=(mod.primary_image_url || "https://sotf-mods.com/static/images/sotfmods.png"), property="og:image")
+  link(type="application/json+oembed", href=`https://sotf-mods.com/mods/${mod.user.slug}/${mod.slug}.json`)
+
 block head
   span
 
@@ -17,7 +23,7 @@ block body
       .box
         figure
           img(src=mod.primary_image_url, alt="Mod Image", style="margin-bottom: 20px;")
-          a.button.size-2x(href=mod.latest_version ? `/mod/${mod.user.slug}/${mod.slug}/download/${mod.latest_version.version}` : '' target="_blank" class=mod.latest_version ? "" : "disabled")
+          a.button.size-2x(href=mod.latest_version ? `/mods/${mod.user.slug}/${mod.slug}/download/${mod.latest_version.version}` : '' target="_blank" class=mod.latest_version ? "" : "disabled")
             svg.icon.icon-tabler.icon-tabler-download(xmlns="http://www.w3.org/2000/svg", width="48", height="48", viewBox="0 0 24 24", stroke-width="2", stroke="currentColor", fill="none", stroke-linecap="round", stroke-linejoin="round")
               path(stroke="none", d="M0 0h24v24H0z", fill="none")
               path(d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2")

@@ -11,14 +11,25 @@ router.get("/mods", async (context) => {
   });
 });
 
-router.get("/mod/:user_slug/:mod_slug", async (context) => {
-    const mod = await getMod(context.params.mod_slug, context.params.user_slug);
-    context.response.body = await render("mod", {
-        mod,
-    });
+router.get("/mods/:user_slug/:mod_slug", async (context) => {
+    if (context.params.mod_slug.endsWith(".json")) {
+        const modSlug = context.params.mod_slug.replace(".json", "");
+        const mod = await getMod(modSlug, context.params.user_slug);
+        context.response.body = {
+            "author_name": "A mod by " + mod.user.name,
+            "author_url": "https://sotf-mods.com/profile/" + mod.user.slug,
+            "provider_name": "Find the best mods for Sons of The Forest at SOTF-Mods.com",
+            "provider_url": `https://sotf-mods.com/mods/${mod.user.slug}/${mod.slug}`,
+        };
+    } else {
+        const mod = await getMod(context.params.mod_slug, context.params.user_slug);
+        context.response.body = await render("mod", {
+            mod,
+        });
+    }
 });
 
-router.get("/mod/:user_slug/:mod_slug/download/:version", async (context) => {
+router.get("/mods/:user_slug/:mod_slug/download/:version", async (context) => {
     const modVersion = await getModDownloadVersion(context.params.mod_slug, context.params.user_slug, context.params.version);
     if (!modVersion) {
         context.response.status = 404;
