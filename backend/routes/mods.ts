@@ -20,6 +20,7 @@ router.get("/mods/:user_slug/:mod_slug", async (context) => {
             "author_url": "https://sotf-mods.com/profile/" + mod.user.slug,
             "provider_name": "Find the best mods for Sons of The Forest at SOTF-Mods.com",
             "provider_url": `https://sotf-mods.com/mods/${mod.user.slug}/${mod.slug}`,
+            "type": "photo",
         };
     } else {
         const mod = await getMod(context.params.mod_slug, context.params.user_slug);
