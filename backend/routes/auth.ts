@@ -13,6 +13,7 @@ router.post("/user/register", async (context) => {
     } catch (error) {
         context.response.status = 400;
         context.response.body = { error: error.message, status: false };
+        throw error;
     }
 });
 
@@ -28,6 +29,7 @@ router.post("/user/login", async (context) => {
     } catch (error) {
         context.response.status = 400;
         context.response.body = { error: error.message };
+        throw error;
     }
 });
 
