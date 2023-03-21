@@ -4,14 +4,12 @@ import { router as modsRouter } from "./mods.ts";
 import { router as guidesRouter } from "./guides.ts";
 import { router as toolsRouter } from "./tools.ts";
 import { router as usersRouter } from "./users.ts";
+import { router as authRouter } from "./auth.ts";
 import { authMiddleware } from "../middlewares/auth.ts";
 
 export const router = new Router();
 
-router.get("/user/logout", (context) => {
-    context.cookies.delete("token");
-    context.response.redirect("/");
-});
+router.use(authRouter.routes());
 
 router.use(authMiddleware);
 
