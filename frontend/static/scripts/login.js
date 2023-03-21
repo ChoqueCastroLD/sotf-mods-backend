@@ -28,7 +28,7 @@ loginForm.addEventListener('submit', async (event) => {
         });
 
         const { errors, token } = await response.json();
-
+        console.log({errors, token})
         if (errors && errors.length > 0) {
             for (const error of errors) {
                 if (error.field === 'email') {
@@ -41,7 +41,7 @@ loginForm.addEventListener('submit', async (event) => {
         } else {
             loginForm.reset();
             document.cookie = `token=${token}; Path=/`;
-            location.href = '/';
+            // location.href = '/';
         }
     } catch (error) {
         console.error(error);
