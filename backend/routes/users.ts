@@ -13,11 +13,6 @@ router.get("/user/register", async (context) => {
     context.response.body = await render("user/register", {});
 });
 
-router.get("/user/logout", (context) => {
-    context.cookies.delete("token");
-    context.response.redirect("/");
-});
-
 router.post("/user/register", async (context) => {
     try {
         const { email, username, password, confirm_password } = await context.request.body().value;

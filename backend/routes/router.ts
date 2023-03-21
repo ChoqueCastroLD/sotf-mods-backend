@@ -8,6 +8,11 @@ import { authMiddleware } from "../middlewares/auth.ts";
 
 export const router = new Router();
 
+router.get("/user/logout", (context) => {
+    context.cookies.delete("token");
+    context.response.redirect("/");
+});
+
 router.use(authMiddleware);
 
 router.get("/", (context) => {
