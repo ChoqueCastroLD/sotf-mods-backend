@@ -1,6 +1,6 @@
 import { slugify } from "https://deno.land/x/slugify@0.3.0/mod.ts";
 import { prisma } from "./prisma.ts";
-import { hash, verify } from "../util/hash.ts";
+import { hashPassword, verifyPassword } from "../util/hash.ts";
 import { generateToken, verifyToken } from "../util/token.ts";
 import { User } from "../../generated/client/deno/edge.ts";
 
@@ -45,7 +45,7 @@ export async function registerUser(email: string, name: string, password: string
   if (errors.length > 0)
     return { errors, status: false };
   
-  const hashedPassword = await hash(password);
+  const hashedPassword = await hashPassword(password);
 
   const user = await prisma.user.create({
     data: {
@@ -69,7 +69,7 @@ export async function loginUser(email: string, password: string) {
   if (!user) {
     errors.push({ field: 'email', message: "User with this email does not exist" });
   } else {
-    const isPasswordValid = await verify(user.password, password);
+    const isPasswordValid = await verifyPassword(password, user.password);
     if (!isPasswordValid) {
       errors.push({ field: 'password', message: "Incorrect password" });
     }
