@@ -22,6 +22,7 @@ console.log(JWT_SECRET);
 const JWT_EXPIRATION = 60 * 60 * 24 * 7; // 7 days in seconds
 
 export async function generateToken(userId?: number) {
+  console.log({ userId });
   if (!userId) throw new Error("User ID is required to generate token");
 
   const payload: Payload = {
@@ -34,10 +35,12 @@ export async function generateToken(userId?: number) {
   if (!jwt)
     throw new Error("Failed to generate token");
 
+  console.log({ jwt });
   return jwt;
 }
 
 export async function verifyToken(token: string) {
+  console.log({ token, JWT_SECRET });
   const payload = await verify(token, JWT_SECRET);
   if (!payload)
     throw new Error("Failed to verify token");
