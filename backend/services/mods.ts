@@ -2,6 +2,29 @@ import { prisma } from "./prisma.ts";
 import { Mod, ModImage, ModVersion, User } from "../../generated/client/deno/index.d.ts";
 import { getCache, setCache } from "../util/cache.ts";
 
+function timeAgo(date: Date) {
+    const msPerMinute = 60 * 1000;
+    const msPerHour = msPerMinute * 60;
+    const msPerDay = msPerHour * 24;
+    const msPerMonth = msPerDay * 30;
+    const msPerYear = msPerDay * 365;
+    const elapsed = (new Date()).getTime() - date.getTime();
+  
+    if (elapsed < msPerMinute) {
+      return Math.round(elapsed / 1000) + " seconds ago";
+    } else if (elapsed < msPerHour) {
+      return Math.round(elapsed / msPerMinute) + " minutes ago";
+    } else if (elapsed < msPerDay) {
+      return Math.round(elapsed / msPerHour) + " hours ago";
+    } else if (elapsed < msPerMonth) {
+      return Math.round(elapsed / msPerDay) + " days ago";
+    } else if (elapsed < msPerYear) {
+      return Math.round(elapsed / msPerMonth) + " months ago";
+    } else {
+      return Math.round(elapsed / msPerYear) + " years ago";
+    }
+}
+
 function decorateMod(mod: Mod & {
     user: User | null;
     versions?: (ModVersion & {
@@ -35,6 +58,11 @@ function decorateMod(mod: Mod & {
 
     const total_downloads = downloads_arr.length;
 
+    let time_ago = timeAgo(mod.updatedAt);
+    if (latest_version && (new Date(latest_version.createdAt)).getTime() > (new Date(mod.updatedAt)).getTime()) {
+        time_ago = timeAgo(latest_version.createdAt);
+    }
+
     return {
         ...mod,
         thumbnail_url,
@@ -42,6 +70,7 @@ function decorateMod(mod: Mod & {
         latest_version,
         downloads,
         total_downloads,
+        time_ago,
     }
 }
 
