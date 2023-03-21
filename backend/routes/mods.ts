@@ -7,6 +7,7 @@ export const router = new Router();
 router.get("/mods", async (context) => {
   const mods = await getMods();
   context.response.body = await render("mods", {
+    user: context.state.user,
     mods,
   });
 });
@@ -25,6 +26,7 @@ router.get("/mods/:user_slug/:mod_slug", async (context) => {
     } else {
         const mod = await getMod(context.params.mod_slug, context.params.user_slug);
         context.response.body = await render("mod", {
+            user: context.state.user,
             mod,
         });
     }
@@ -47,10 +49,14 @@ router.get("/mods/:user_slug/:mod_slug/download/:version", async (context) => {
     context.response.redirect(modVersion.downloadUrl);
 });
 
-router.get("/upload", async (context) => {
-    context.response.body = await render("upload", {});
+router.get("/mods/upload", async (context) => {
+    context.response.body = await render("upload", {
+        user: context.state.user,
+    });
 });
 
 router.get("/search", async (context) => {
-    context.response.body = await render("upload", {});
+    context.response.body = await render("upload", {
+        user: context.state.user,
+    });
 });

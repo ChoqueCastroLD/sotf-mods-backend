@@ -7,12 +7,14 @@ export const router = new Router();
 
 router.get("/tools/items", async (context) => {
     context.response.body = await render("items", {
+        user: context.state.user,
         items,
     });
 });
 
 router.get("/tools/characters", async (context) => {
     context.response.body = await render("characters", {
+        user: context.state.user,
         characters,
         characterType,
     });
@@ -20,6 +22,7 @@ router.get("/tools/characters", async (context) => {
 
 router.get("/tools/commands", async (context) => {
     context.response.body = await render("characters", {
+        user: context.state.user,
         characters,
         characterType,
     });
@@ -27,6 +30,7 @@ router.get("/tools/commands", async (context) => {
 
 router.get("/tools/objects", async (context) => {
     context.response.body = await render("characters", {
+        user: context.state.user,
         characters,
         characterType,
     });

@@ -6,7 +6,7 @@ function decorateMod(mod: Mod & {
     user: User | null;
     versions?: (ModVersion & {
         downloads: {
-            id: number;
+            ip: string;
         }[];
     })[];
     images: ModImage[];
@@ -29,9 +29,11 @@ function decorateMod(mod: Mod & {
 
     const latest_version = mod.versions?.find((version) => version.isLatest);
 
-    const downloads = mod.versions?.reduce((acc, version) => {
-        return acc + version.downloads.length;
-    }, 0) ?? 0;
+    const downloads_arr = mod.versions?.flatMap(version => version.downloads.map(download => download.ip)) ?? [];
+
+    const downloads = [...new Set(downloads_arr)].length;
+
+    const total_downloads = downloads_arr.length;
 
     return {
         ...mod,
@@ -39,6 +41,7 @@ function decorateMod(mod: Mod & {
         primary_image_url,
         latest_version,
         downloads,
+        total_downloads,
     }
 }
 
@@ -51,11 +54,13 @@ export async function getMods() {
             images: true,
             user: true,
             versions: {
+                orderBy: {
+                    version: "asc",
+                },
                 include: {
                     downloads: {
-                        distinct: "ip",
                         select: {
-                            id: true,
+                            ip: true,
                         },
                     },
                 },
@@ -76,6 +81,47 @@ export async function getMods() {
     return arr;
 }
 
+export async function getModsFromUser(user_slug: string) {
+    const cachedMods = await getCache("getModsFromUser-" + user_slug);
+    if (cachedMods) return cachedMods;
+
+    const mods = await prisma.mod.findMany({
+        where: {
+            user: {
+                slug: user_slug,
+            }
+        },
+        include: {
+            images: true,
+            user: true,
+            versions: {
+                orderBy: {
+                    version: "asc",
+                },
+                include: {
+                    downloads: {
+                        select: {
+                            ip: true,
+                        },
+                    },
+                },
+            },
+            _count: {
+                select: {
+                    favorites: true,
+                }
+            }
+        },
+        orderBy: {
+            updatedAt: "desc",
+        }
+    });
+    const arr = await Promise.all(mods.map(decorateMod));
+
+    setCache("getModsFromUser-" + user_slug, arr);
+    return arr;
+}
+
 export async function getMod(mod_slug: string, author_slug: string) {
     const cachedMods = await getCache("getMod-" + mod_slug + "-" + author_slug);
     if (cachedMods) return cachedMods;
@@ -91,11 +137,13 @@ export async function getMod(mod_slug: string, author_slug: string) {
             images: true,
             user: true,
             versions: {
+                orderBy: {
+                    version: "desc",
+                },
                 include: {
                     downloads: {
-                        distinct: "ip",
                         select: {
-                            id: true,
+                            ip: true,
                         },
                     },
                 },

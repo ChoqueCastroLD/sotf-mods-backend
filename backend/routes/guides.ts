@@ -4,5 +4,5 @@ import { render } from "../util/render.ts";
 export const router = new Router();
 
 router.get("/how-to-mod", async (context) => {
-    context.response.body = await render("how-to-mod", {});
+    context.response.body = await render("how-to-mod", { user: context.state.user });
 });

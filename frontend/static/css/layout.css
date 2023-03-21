@@ -11,3 +11,7 @@ body {
 .hidden {
     display: none !important;
 }
+
+.navbar-logo img {
+    max-width: unset !important;
+}

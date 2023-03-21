@@ -73,16 +73,28 @@ html(lang='en')
             li
               span.pointer-arrow
         li.menu-item.dropdown-wrapper
-          button.dropdown-toggle.arrow-button#dropdown-tools(aria-expanded="false") Account
-          ul.dropdown.menu-items-wrapper(aria-labelledby="dropdown-tools")
-            li.menu-item
-              a(href="/user/login") Login
-            li.menu-item
-              a(href="/user/register") Register
-            //- li.menu-item
-            //-   a(href="/tools/objects") World Objects
-            li
-              span.pointer-arrow
+          - if (user)
+            button.dropdown-toggle.arrow-button#dropdown-tools(aria-expanded="false") #{user.name}
+            ul.dropdown.menu-items-wrapper(aria-labelledby="dropdown-tools")
+              li.menu-item
+                a(href="/profile/"+user.slug) My Profile
+              li.menu-item
+                a(href="/user/mods") My Mods
+              li.menu-item
+                a(href="/user/logout") Logout
+              li
+                span.pointer-arrow
+          - else
+            button.dropdown-toggle.arrow-button#dropdown-tools(aria-expanded="false") Account
+            ul.dropdown.menu-items-wrapper(aria-labelledby="dropdown-tools")
+              li.menu-item
+                a(href="/user/login") Login
+              li.menu-item
+                a(href="/user/register") Register
+              //- li.menu-item
+              //-   a(href="/tools/objects") World Objects
+              li
+                span.pointer-arrow
         //- li.menu-item
         //-   label.toggle-wrapper
         //-     input#checkbox-darkmode(type='checkbox' name='the-toggle' role='switch')

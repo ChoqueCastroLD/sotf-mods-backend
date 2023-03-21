@@ -4,16 +4,30 @@ block head
   link(rel='stylesheet' href='/static/css/main.css')
 
 block body
-  form(action='/user/register' method='post')
-    label(for='username') Username
-    input(type='text' name='username' id='username' placeholder='Username')
-    label(for='email') Email
-    input(type='email' name='email' id='email' placeholder='Email')
-    label(for='password') Password
-    input(type='password' name='password' id='password' placeholder='Password')
-    label(for='password2') Confirm Password
-    input(type='password' name='password2' id='password2' placeholder='Confirm Password')
-    input(type='submit' value='Register')
+  form#register-form(action='/user/register' method='post')
+    article.card(style="max-width: 320px")
+      header.card-header
+        h2.card-title Register
+      .card-body
+        label.form-label(for="email") Email
+        input(type="email", name="email", placeholder="Enter you email")
+        p#email-error.color-red
+
+        label.form-label(for="username") Username
+        input(type="text", name="username", placeholder="Enter you username")
+        p#username-error.color-red
+
+        label.form-label(for="password") Password
+        input(type="password", name="password", placeholder="Enter you password")
+        p#password-error.color-red
+
+        label.form-label(for="confirm_password") Confirm Password
+        input(type="password", name="confirm_password", placeholder="Repeat you password")
+        p#confirm_password-error.color-red
+      footer.card-footer
+        button.button.style-accent Submit
+      p#submit-error.color-red
+      a(href="/user/login") Already have an account? Log In
 
 block scripts
-  script(src='/static/scripts/main.js' type="module")
+  script(src='/static/scripts/register.js' type="module")
