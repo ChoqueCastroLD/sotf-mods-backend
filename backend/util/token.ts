@@ -14,6 +14,11 @@ const JWT_SECRET = await crypto.subtle.importKey(
   false,
   ["sign", "verify"]
 );
+console.log("JWT SECRET")
+console.log(Deno.env.get("JWT_SECRET") || "ABCDEFG");
+console.log(JWT_SECRET);
+
+
 const JWT_EXPIRATION = 60 * 60 * 24 * 7; // 7 days in seconds
 
 export async function generateToken(userId?: number) {
