@@ -31,6 +31,8 @@ router.post("/user/login", async (context) => {
         const { email, password } = await context.request.body().value;
         const { errors, status, token } = await loginUser(email, password);
 
+        context.cookies.set("token", token);
+
         context.response.status = errors.length > 0 ? 400 : 201;
         context.response.body = { errors, status, token };
     } catch (error) {
