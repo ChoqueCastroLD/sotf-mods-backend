@@ -35,7 +35,9 @@ export async function registerUser(email: string, name: string, password: string
   });
   if (existingUserName)
     errors.push({ field: 'username', message: "User with this name already exists" });
-  const slug = slugify(name);
+  const slug = slugify(name, {
+    lower: true,
+  }).trim();
   const existingUserSlug = await prisma.user.findFirst({
     where: { slug },
   });
