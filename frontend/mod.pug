@@ -37,6 +37,8 @@ block body
             p.color-dark-light.text-xs Total downloads: #{mod.total_downloads || mod.downloads}
           - else
             p.color-red-light.text-xs No versions available
+          - if (!mod.isApproved)
+            p.color-red-light.text-xs(style="margin-bottom: 0px;") Pending approval.
     .col-xs-6
       .box
         .tabs-wrapper

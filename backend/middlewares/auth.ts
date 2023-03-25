@@ -12,3 +12,11 @@ export const authMiddleware: Middleware = async function (context, next) {
 
     await next();
 }
+
+export const protectedRoute: Middleware = async function (context, next) {
+    if (!context.state.user) {
+        context.response.redirect("/user/login");
+        return;
+    }
+    await next();
+}

@@ -5,6 +5,9 @@ block head
 
 block body
     h5 My Mods
+    .row.center-xs#mods-grid
+      - for (const mod of mods)
+        +mod-card(mod)
 
 block scripts
   script(src='/static/scripts/main.js' type="module")

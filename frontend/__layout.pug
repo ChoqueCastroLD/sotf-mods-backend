@@ -1,3 +1,5 @@
+include mixins/mod-card
+
 doctype html
 html(lang='en')
   head
@@ -30,6 +32,7 @@ html(lang='en')
     meta(name="robots", content="index, follow")
     block head
   body
+    //- img.background(src="https://prod.assets.earlygamecdn.com/images/sons-of-the-forest-2.jpg?mtime=1677495179")
     nav.menu-items-wrapper.navbar
       a.navbar-logo(href='/')
         img(src='/static/images/logo.png' alt='logo')
@@ -81,6 +84,11 @@ html(lang='en')
               li.menu-item
                 a(href="/user/mods") My Mods
               li.menu-item
+                label.toggle-wrapper
+                  input#checkbox-darkmode(type='checkbox' name='the-toggle' role='switch')
+                  span.check
+                  | Dark Mode
+              li.menu-item
                 a(href="/user/logout") Logout
               li
                 span.pointer-arrow
@@ -95,14 +103,10 @@ html(lang='en')
               //-   a(href="/tools/objects") World Objects
               li
                 span.pointer-arrow
-        //- li.menu-item
-        //-   label.toggle-wrapper
-        //-     input#checkbox-darkmode(type='checkbox' name='the-toggle' role='switch')
-        //-     span.check
-        //-     | Dark Mode
         a.button.search-button(aria-label='Search' href='/search')
     .body-wrapper
       block body
     script(src='https://unpkg.com/@popperjs/core@2' crossorigin='anonymous')
     script(src='https://cdn.jsdelivr.net/npm/flatifycss/dist/js/flatify.min.js' crossorigin='anonymous')
+    script(src='/static/scripts/main.js' type="module")
     block scripts

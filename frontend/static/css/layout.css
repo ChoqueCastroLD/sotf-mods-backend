@@ -1,5 +1,5 @@
 body {
-    background-image: linear-gradient( 109.6deg,  rgba(223,234,247,1) 11.2%, rgba(244,248,252,1) 91.1% );
+    /* background-image: linear-gradient( 109.6deg,  rgba(223,234,247,1) 11.2%, rgba(244,248,252,1) 91.1% ); */
     height: 100%;
     margin: 0;
 }
@@ -14,4 +14,24 @@ body {
 
 .navbar-logo img {
     max-width: unset !important;
+}
+
+html.dark {
+    --flatify__hover-brightness: 110%;
+
+    --flatify__bg-color: #10191c !important;
+    --flatify__bg-color-dark: #141f23 !important;
+    --flatify__bg-color-darker: #263b43 !important;
+    --flatify__bg-color-darkest: #385661 !important;
+    --flatify__color-light-light: #141f23 !important;
+    --flatify__color-light-primary: #10191c !important;
+    --flatify__color-light-dark: #263b43 !important;
+
+    --flatify__txt-color: #f1f4f7;
+    --flatify__txt-color-dark: #ced9e3;
+    --flatify__txt-color-darker: #809cb6;
+    --flatify__txt-color-inverted: #141f23;
+    --flatify__color-dark-light: #f1f4f7;
+    --flatify__color-dark-primary: #ced9e3;
+    --flatify__color-dark-dark: #809cb6;
 }
