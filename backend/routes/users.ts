@@ -33,6 +33,12 @@ router.get("/user/mods", protectedRoute, async (context) => {
     });
 });
 
+router.get("/user/upload", protectedRoute, async (context) => {
+    context.response.body = await render("user/upload", {
+        user: context.state.user,
+    });
+});
+
 router.get("/mod-ideas", protectedRoute, async (context) => {
     context.response.body = await render("mod-ideas", {
         user: context.state.user,

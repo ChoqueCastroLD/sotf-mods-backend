@@ -1,0 +1,49 @@
+extends ../__layout
+
+block head
+  link(rel='stylesheet' href='/static/css/main.css')
+  link(href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet")
+  link(href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet")
+
+block body
+    h5 Upload a mod
+    form#upload-form
+      .row.center-xs
+        .col-xs-6
+          label.form-label(for="name") Enter Mod Name
+          input(type="text" name="name" placeholder="Mod name")
+
+          label.form-label(for="images") Mod Images
+          input.filepond(
+            type="file"
+            name="images" 
+            multiple 
+            data-allow-reorder="true"
+            data-max-file-size="3MB"
+            data-max-files="3"
+          )
+
+          //- label.form-label(for="dependencies") Enter Mod Dependencies
+          //- input(type="text" name="dependencies" placeholder="Mod dependencies")
+
+          label.form-label.size-sm(for="category") Choose your mod category
+          select#cars.size-xs(name="category")
+            option(value="1" selected) Script
+
+        .col-xs-6
+          label.form-label(for="image") Enter Mod Description
+          div.text-editor-light-mode#description
+      .row.center-xs
+        .col-xs-12
+          button.button(type="submit") Upload Mod
+
+block scripts
+  script(src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest")
+  script(src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest")
+  script(src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest")
+  script(src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest")
+  script(src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest")
+  script(src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest")
+  script(src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js")
+  script(src="https://unpkg.com/filepond/dist/filepond.js")
+  script(src='/static/scripts/upload.js' type="module")

@@ -40,12 +40,12 @@ function decorateMod(mod: Mod & {
     if (!mod) {
         return mod;
     }
-    const thumbnail_url = mod.images
+    const thumbnail_url = mod?.images
         ?.find((image) => image.isThumbnail)?.url
         ?? mod.images?.[0].url
         ?? "https://via.placeholder.com/512";
         
-    const primary_image_url = mod.images
+    const primary_image_url = mod?.images
         ?.find((image) => image.isPrimary)?.url
         ?? mod.images?.[0].url
         ?? "https://via.placeholder.com/1024";

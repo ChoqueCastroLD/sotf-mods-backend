@@ -34,4 +34,16 @@ html.dark {
     --flatify__color-dark-light: #f1f4f7;
     --flatify__color-dark-primary: #ced9e3;
     --flatify__color-dark-dark: #809cb6;
+
+    color: #f1f4f7;
+}
+
+.text-editor-light-mode {
+    background-color: white;
+    /* background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
+    color: #141f23 !important;
+    padding: .75em .85em .5em;
+    margin: .32em .32em .5em;
+    border-radius: var(--flatify__border-radius);
+    box-shadow: 0 calc(var(--flatify__border-width) * 1.38) 0 #ced9e3;
 }

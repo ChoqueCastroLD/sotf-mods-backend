@@ -1,16 +1,33 @@
 const darkModeCheckbox = document.querySelector('#checkbox-darkmode');
-let darkMode = localStorage.getItem('darkMode') === 'enabled';
-darkModeCheckbox.checked = darkMode;
-if (darkMode) {
-    document.querySelector('html').classList.add('dark');
+
+let darkMode = true;
+if (localStorage.getItem('darkMode') === 'disabled') {
+    darkMode = false;
 }
+
+applyDarkMode();
+
 darkModeCheckbox.addEventListener('change', () => {
+    updateDarkMode();
+    applyDarkMode();
+});
+
+function updateDarkMode() {
     if (darkMode) {
         localStorage.setItem('darkMode', 'disabled');
-        document.querySelector('html').classList.remove('dark');
+        darkMode = false;
     } else {
         localStorage.setItem('darkMode', 'enabled');
-        document.querySelector('html').classList.add('dark');
+        darkMode = true;
     }
-    darkMode = !darkMode;
-});
+}
+
+function applyDarkMode() {
+    if (darkMode) {
+        document.querySelector('html').classList.add('dark');
+        darkModeCheckbox.checked = true;
+    } else {
+        document.querySelector('html').classList.remove('dark');
+        darkModeCheckbox.checked = false;
+    }
+}
