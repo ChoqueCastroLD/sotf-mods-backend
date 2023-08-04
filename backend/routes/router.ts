@@ -5,10 +5,12 @@ import { router as guidesRouter } from "./guides.ts";
 import { router as toolsRouter } from "./tools.ts";
 import { router as usersRouter } from "./users.ts";
 import { router as authRouter } from "./auth.ts";
+import { router as apiRouter } from "./api.ts";
 import { authMiddleware } from "../middlewares/auth.ts";
 
 export const router = new Router();
 
+router.use(apiRouter.routes());
 router.use(authRouter.routes());
 
 router.use(authMiddleware);
