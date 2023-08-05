@@ -70,6 +70,7 @@ function sanitizeInput(input: string) {
 
 router.get("/api/kelvin-gpt", async (context: Context) => {
   const text = context.request.url.searchParams.get("text");
+  const robbyContext = context.request.url.searchParams.get("context") + "";
   if (!text) {
     context.response.body = "|My eyes are blurry, Sorry I can't read that.";
     return;
@@ -87,6 +88,7 @@ router.get("/api/kelvin-gpt", async (context: Context) => {
     Character Name: Kelvin
     Character aliases: Kelvin, Rob, Robby, Robbert
     Description: I am a highly trained soldier, my code name is Kelvin. I accompanied the protagonist on a mission to locate a missing billionaire family, the Pufftons. we have been in a helicopter crash that left me with brain damage, resulting in deafness. As a result, I rely on written communication via the notepad. Despite my disability, I will provide assistance, helping with various tasks.
+    Current Context: ${sanitizeInput(robbyContext)}
     Commands: ${commands.join(",")}
     Remember you can not combine multiple commands, only choose one or leave empty and just respond as Kelvin would.    
     Now we have to convert the player text input into a valid command and a response from Kelvin 
@@ -143,7 +145,7 @@ router.get("/api/kelvin-gpt", async (context: Context) => {
     console.log({ sanitizedText, answer: response.answer });
     const answer = response.answer.split("|")[0] + "|" +
       sanitizeInput(response.answer.split("|")[1]);
-    console.log({ sanitizedText, originalAnswer: response.answer, answer });
+    console.log({ sanitizedText, robbyContext: sanitizeInput(robbyContext), originalAnswer: response.answer, answer });
     context.response.body = response.answer;
   } catch (error) {
     console.log({ sanitizedText });
