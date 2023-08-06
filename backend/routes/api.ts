@@ -46,11 +46,11 @@ const commands = [
   "get.logs.fill_sled",
   "build.fire",
   "build.shelter",
-  "build.perimeter_wall",
-  "build.clear_shelter",
-  "build.finish_structure",
-  "build.reset_traps",
-  "build.fuel_fire",
+  //"build.perimeter_wall",
+  "clear_shelter",
+  "finish_structure",
+  "reset_traps",
+  "fuel_fire",
   "stay.here",
   "stay.shelter",
   "stay.hidden",
@@ -70,6 +70,7 @@ function sanitizeInput(input: string) {
 
 router.get("/api/kelvin-gpt", async (context: Context) => {
   const text = context.request.url.searchParams.get("text");
+  const id = context.request.url.searchParams.get("id");
   const robbyContext = context.request.url.searchParams.get("context") + "";
   if (!text) {
     context.response.body = "|My eyes are blurry, Sorry I can't read that.";
@@ -97,6 +98,7 @@ router.get("/api/kelvin-gpt", async (context: Context) => {
     - "please get logs and follow me" -> "get.logs.follow_me|I will follow you now with the logs"
     - "Stay hidden fast!" -> "stay.hidden|I will stay hidden now, take care"
     - "I  am cold, please build a fire" -> "build.fire|Do not worry, I will build a fire now"
+    - "Hi Kelvin, how are you" -> "|Hello! I'm doing well, How are you?"
 
     Considerations:
     - if the user input is just chatting leave the command empty and just answer as kelvin would in a nicely manner
@@ -105,7 +107,11 @@ router.get("/api/kelvin-gpt", async (context: Context) => {
     - command is always lowercase, no spaces, separated with dots
     - Max response size is 300 characters
     - Kelvin is always kind and good humoured
-    
+    - Kelvin doesnt offer assitance and doesnt ask if he can help or if he can assist you
+    - Kelvin fears the cannibals on the island and will prefer not go near them
+    - While on the island there were encounters with Virginia Puffton the daughter of the Pufftons. Virginia's base behavior is like an independent cat.
+    - Kelvin never says "as an AI", "as a language model", "i cannot fullfill your request", "How can I assist you today?"
+    - If a command is sent, the response from kelvin must be positive
     Remember to add no explanations, and stick to the format "{command}|{kelvin's response}" as your answer will be parsed by another program so do not combine commands.
     Answer the response in english, the commands remain intact, there can only be one separator | in the message
     `.trim();
@@ -142,11 +148,15 @@ router.get("/api/kelvin-gpt", async (context: Context) => {
       redirect: "follow",
     });
     const response = await r.json();
-    console.log({ sanitizedText, answer: response.answer });
-    const answer = response.answer.split("|")[0] + "|" +
-      sanitizeInput(response.answer.split("|")[1]);
-    console.log({ sanitizedText, robbyContext: sanitizeInput(robbyContext), originalAnswer: response.answer, answer });
-    context.response.body = response.answer;
+    console.log({response});
+    let answer = "";
+    if (response.answer.includes("|")) {
+      answer = response.answer.split("|")[0] + "|" + sanitizeInput(response.answer.split("|")[1]);
+    } else {
+      answer = "|" + response.answer;
+    }
+    console.log({ id, sanitizedText, answer, robbyContext: sanitizeInput(robbyContext) });
+    context.response.body = answer;
   } catch (error) {
     console.log({ sanitizedText });
     console.log("error", error);
