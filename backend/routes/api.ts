@@ -78,6 +78,7 @@ router.get("/api/kelvin-gpt", async (context: Context) => {
   }
   if (text.length > 201) {
     context.response.body = "|Thats too much text, I can't read that.";
+    return;
   }
 
   const sanitizedText = sanitizeInput(text);
