@@ -48,3 +48,13 @@ window.showSuccess = message => {
 window.sanitizeText = (text) => {
     return text.replace(/<[^>]*>?/gm, '');
 }
+
+window.debounceDict = {};
+window.addEventListenerDebounce = (name, element, event, callback) => {
+    element.addEventListener(event, () => {
+        clearTimeout(window.debounceDict[name]);
+        window.debounceDict[name] = setTimeout(() => {
+            callback();
+        }, 300);
+    });
+}

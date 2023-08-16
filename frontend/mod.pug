@@ -5,8 +5,8 @@ block meta
   meta(content=(mod.description.length > 150 ? mod.description.substring(0, 150).trim() + "..." : mod.description), property="og:description")
   meta(content=(mod.primary_image_url || "https://sotf-mods.com/static/images/sotfmods.png"), property="og:image")
   link(type="application/json+oembed", href=`https://sotf-mods.com/mods/${mod.user.slug}/${mod.slug}.json`)
-  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css')
   link(rel='stylesheet' href='/static/css/mod.css')
+  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css')
 
 block head
   span

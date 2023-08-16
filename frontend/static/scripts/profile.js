@@ -1,6 +1,8 @@
 const modsDiscoverContainer = document.querySelector('#mods-discover-container');
 const userProfile = JSON.parse(document.querySelector('#profile-info').dataset.user);
 
+let forceVerticalMod = false;
+
 async function getMods() {
     let url = `/api/mods/user/${userProfile.slug}`;
     const response = await fetch(url);
@@ -33,10 +35,16 @@ function getModTemplate(mod) {
 }
 
 async function renderMods(mods, meta) {
+    const horizontalMode = forceVerticalMod;
     modsDiscoverContainer.innerHTML = '';
     for (const mod of mods) {
         const modElement = document.createElement('div');
-        modElement.classList.add('card', 'card-side', 'bg-base-100', 'shadow-xl', 'mod-card');
+        modElement.classList.add('card', 'shadow-xl', 'sm:mb-2', 'mb-4');
+        if (horizontalMode) {
+            modElement.classList.add('card-compact', 'w-96', 'bg-base-100', 'mod-card-horizontal');
+        } else {
+            modElement.classList.add('card-side', 'bg-base-100', 'mod-card');
+        }
         modElement.innerHTML = getModTemplate(mod);
         modsDiscoverContainer.appendChild(modElement);
     }
@@ -59,6 +67,19 @@ async function loadMods() {
 
 async function main() {
     await loadMods();
+    function checkWindowSize() {
+        let startForceVerticalMod = forceVerticalMod;
+        if (window.innerWidth < 600) {
+            forceVerticalMod = true;
+        } else if (forceVerticalMod && window.innerWidth >= 600) {
+            forceVerticalMod = false;
+        }
+        if (startForceVerticalMod != forceVerticalMod) {
+            loadMods();
+        }
+    }
+    addEventListenerDebounce('resize', window, 'resize', checkWindowSize);
+    checkWindowSize();
 }
 
 main();

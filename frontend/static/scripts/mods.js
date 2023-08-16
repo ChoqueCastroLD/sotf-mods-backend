@@ -6,17 +6,7 @@ const modsDiscoverPagination = document.querySelector('#mods-discover-pagination
 const modsDiscoverPaginationUP = document.querySelector('#mods-discover-pagination-up');
 
 let forceVerticalMod = false;
-let debounceDict = {};
 let lastResponse = { mods: [], meta: {} };
-
-function addEventListenerDebounce(name, element, event, callback) {
-    element.addEventListener(event, () => {
-        clearTimeout(debounceDict[name]);
-        debounceDict[name] = setTimeout(() => {
-            callback();
-        }, 300);
-    });
-}
 
 async function getMods(page) {
     const search = modsDiscoverSearch.value.trim();
