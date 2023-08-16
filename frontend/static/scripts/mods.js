@@ -33,7 +33,7 @@ async function getMods(page) {
 }
 
 function getModTemplate(mod) {
-    mod.description = mod.description.replace(/\n/g, " ");
+    mod.description = sanitizeText(mod.description.replace(/\n/g, " "));
     return `<figure><img src="${mod.thumbnail_url}" alt="${mod.name}"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">

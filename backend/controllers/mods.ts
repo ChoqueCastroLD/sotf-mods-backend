@@ -371,7 +371,7 @@ export default {
     const thumbnail = form.files && form.files['modThumbnail'];
     let thumbnail_ext;
     const inputData = {};
-    
+
     if(thumbnail) {
       thumbnail_ext = thumbnail.filename.split('.').pop();
       if (['png', 'jpg', 'jpeg', 'gif'].indexOf(thumbnail_ext) === -1) {
@@ -379,19 +379,18 @@ export default {
         ctx.response.body = { message: 'Mod thumbnail must be a png, jpg, jpeg or gif file.' };
         return;
       }
-    }
-    const thumbnailSizeLimit = 8 * 1024 * 1024; // 8MB
-    if (thumbnail.size > thumbnailSizeLimit) {
-      ctx.response.status = 400;
-      ctx.response.body = { message: 'Mod thumbnail size exceeds the limit of 8MB.' };
-      return;
-    }
-
-    const img = await Image.decode(thumbnail.content);
-    if (!ALLOWED_RESOLUTIONS.find((res) => res.width === img.width && res.height === img.height)) {
-      ctx.response.status = 400;
-      ctx.response.body = { message: 'Mod thumbnail resolution must be 2560x1440 or 1080x608.' };
-      return;
+      const thumbnailSizeLimit = 8 * 1024 * 1024; // 8MB
+      if (thumbnail.size > thumbnailSizeLimit) {
+        ctx.response.status = 400;
+        ctx.response.body = { message: 'Mod thumbnail size exceeds the limit of 8MB.' };
+        return;
+      }
+      const img = await Image.decode(thumbnail.content);
+      if (!ALLOWED_RESOLUTIONS.find((res) => res.width === img.width && res.height === img.height)) {
+        ctx.response.status = 400;
+        ctx.response.body = { message: 'Mod thumbnail resolution must be 2560x1440 or 1080x608.' };
+        return;
+      }
     }
 
     try {
@@ -416,13 +415,13 @@ export default {
       },
       data: inputData,
     });
-    await prisma.modImage.deleteMany({
-      where: {
-        modId: mod.id,
-        isThumbnail: true,
-      }
-    });
     if (thumbnail) {
+      await prisma.modImage.deleteMany({
+        where: {
+          modId: mod.id,
+          isThumbnail: true,
+        }
+      });
       let thumbnailName;
       try {
         let timestamp = new Date().getTime();

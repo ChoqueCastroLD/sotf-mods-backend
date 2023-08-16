@@ -45,3 +45,6 @@ window.showSuccess = message => {
     }, 15000);
 };
 
+window.sanitizeText = (text) => {
+    return text.replace(/<[^>]*>?/gm, '');
+}
