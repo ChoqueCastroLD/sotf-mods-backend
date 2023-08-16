@@ -5,6 +5,7 @@ block meta
   meta(content=(mod.description.length > 150 ? mod.description.substring(0, 150).trim() + "..." : mod.description), property="og:description")
   meta(content=(mod.primary_image_url || "https://sotf-mods.com/static/images/sotfmods.png"), property="og:image")
   link(type="application/json+oembed", href=`https://sotf-mods.com/mods/${mod.user.slug}/${mod.slug}.json`)
+  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css')
   link(rel='stylesheet' href='/static/css/mod.css')
 
 block head
@@ -57,7 +58,8 @@ block body
 
       div.mod-downloads.m-4
         p.text-3xl.mb-8.mt-4 Description
-        p.text-justify.text-wrap-anywhere #{mod.description}
+        .markdown-body.w-full
+          pre.mod-description #{mod.description}
         p.text-3xl.mb-8.mt-4 Tags
         span Category: #{mod.category.name}
         .overflow-x-auto
@@ -83,7 +85,7 @@ block body
     dialog#modalOneClickInstall.modal
       form.modal-box(method='dialog')
         h3.font-bold.text-lg One Click Install
-        p.py-4 Automatically install this mod with one click. This will open SF Loader and install the latest version of the mod automagically.
+        p.py-4 Automatically install this mod with one click. This will open SF Loader and install the latest version of the mod automatically.
         p.py-4.text-error Still in development.
         .modal-action
           button.btn Close
