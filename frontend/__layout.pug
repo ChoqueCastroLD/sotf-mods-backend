@@ -39,14 +39,6 @@ html.dark(lang='en')
       #alerts.animate__animated
     dialog#loading-screen
       span.loading.loading-infinity.loading-lg.text-success
-    dialog#countdown-screen.justify-center.items-center.flex.flex-col
-      <span class="countdown font-mono text-8xl">
-        <span id="hours"></span>h
-        <span id="minutes"></span>m
-        <span id="seconds"></span>s
-      </span>
-      br
-      img(src="https://i.makeagif.com/media/9-28-2015/1ZLJK6.gif", alt="yes")
     div#user-info(data-user=JSON.stringify(user))
     script.
       const user = JSON.parse(document.querySelector('#user-info').dataset.user);
