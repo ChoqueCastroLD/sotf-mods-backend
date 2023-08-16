@@ -1,7 +1,6 @@
 import { prisma } from "./prisma.ts";
 import { Mod, ModImage, ModVersion, User } from "../../generated/client/deno/index.d.ts";
 
-
 function timeAgo(date: Date) {
     const msPerMinute = 60 * 1000;
     const msPerHour = msPerMinute * 60;
@@ -43,12 +42,12 @@ function decorateMod(mod: Mod & {
     const thumbnail_url = mod?.images
         ?.find((image) => image.isThumbnail)?.url
         ?? mod.images?.[0]?.url
-        ?? "https://via.placeholder.com/512";
+        ?? "https://via.placeholder.com/1080x608";
         
     const primary_image_url = mod?.images
         ?.find((image) => image.isPrimary)?.url
         ?? mod.images?.[0]?.url
-        ?? "https://via.placeholder.com/1024";
+        ?? "https://via.placeholder.com/1080x608";
 
     const latest_version = mod.versions?.find((version) => version.isLatest);
 
