@@ -260,7 +260,10 @@ export async function countMods(search: string, nsfw: boolean): Promise<number> 
         where.isNSFW = false;
     }
     const mods = await prisma.mod.count({
-        where,
+        where: {
+            isApproved: true,
+            ...where,
+        },
     });
 
     return mods;

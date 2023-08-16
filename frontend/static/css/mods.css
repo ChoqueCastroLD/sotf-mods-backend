@@ -29,7 +29,8 @@
 }
 .mod-card-horizontal:hover {
     /* box-shadow: -4px 6px 0 0.2rem rgb(54 211 153 / 90%); */
-    box-shadow: 0 0 0 0.2rem rgb(54 211 153 / 90%);
+    /* box-shadow: 0 0 0 0.2rem rgb(54 211 153 / 90%); */
+    box-shadow: 0 0 0 0.06rem rgb(255 255 255 / 90%);
     translate: 2px -2px;
     transition: box-shadow 0.3s ease-in-out;
 }
