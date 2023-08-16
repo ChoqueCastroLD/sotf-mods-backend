@@ -45,6 +45,11 @@
     margin: 60px;
     margin-bottom: 30px;
 }
+#mods-discover-search-container div {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
 @media only screen and (max-width: 600px) {
     #mods-discover-search-container {
         margin: 0;

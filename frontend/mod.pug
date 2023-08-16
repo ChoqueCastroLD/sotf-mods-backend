@@ -85,7 +85,6 @@ block body
         h3.font-bold.text-lg One Click Install
         p.py-4 Automatically install this mod with one click. This will open SF Loader and install the latest version of the mod automagically.
         p.py-4.text-error Still in development.
-        p.py-4 Press ESC key or click the button below to close
         .modal-action
           button.btn Close
     dialog#modalEdit.modal
@@ -103,7 +102,7 @@ block body
         .form-control
           label.label
             span.label-text Thumbnail
-          input#mod-thumbnail(type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.gif" required)
+          input#mod-thumbnail(type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.gif")
         p Mod thumbnail resolution must be 2560x1440 or 1080x608
         a(href="https://sotf-mods.com/images/thumbnail.png", target="_blank" style="color: #36d399; cursor: pointer;")
           p Download thumbnail template

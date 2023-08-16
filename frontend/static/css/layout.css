@@ -17,10 +17,6 @@ body {
     height: 40px;
     transition: 0.1s;
 }
-.navbar-logo-button:hover {
-    filter: invert(100%);
-    transition: 0.6s;
-}
 .text-wrap-anywhere{
     overflow-wrap: anywhere;
 }
