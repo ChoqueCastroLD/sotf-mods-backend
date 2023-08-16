@@ -13,9 +13,9 @@
     transition: box-shadow 0.3s ease-in-out;
 }
 .mod-card:hover {
-    box-shadow: -4px 7px 0 0.2rem rgb(54 211 153 / 90%);
+    /* box-shadow: -4px 7px 0 0.2rem rgb(54 211 153 / 90%); */
+    box-shadow: 0 0 0 0.06rem rgb(255 255 255 / 90%);
     transition: box-shadow 0.3s ease-in-out;
-    translate: 2px -2px;
 }
 .mod-card-badges {
     position: absolute;
@@ -27,7 +27,8 @@
     margin: 6px;
 }
 .mod-card-horizontal:hover {
-    box-shadow: -4px 6px 0 0.2rem rgb(54 211 153 / 90%);
+    /* box-shadow: -4px 6px 0 0.2rem rgb(54 211 153 / 90%); */
+    box-shadow: 0 0 0 0.2rem rgb(54 211 153 / 90%);
     translate: 2px -2px;
     transition: box-shadow 0.3s ease-in-out;
 }
@@ -43,6 +44,11 @@
 #mods-discover-search-container {
     margin: 60px;
     margin-bottom: 30px;
+}
+@media only screen and (max-width: 600px) {
+    #mods-discover-search-container {
+        margin: 0;
+    }
 }
 #mods-discover-pagination {
     margin: 20px;

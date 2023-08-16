@@ -4,6 +4,8 @@ const modsDiscoverSearch = document.querySelector('#mods-discover-search');
 const modsDiscoverNSFW = document.querySelector('#mods-discover-nsfw');
 const modsDiscoverPagination = document.querySelector('#mods-discover-pagination');
 const modsDiscoverPaginationUP = document.querySelector('#mods-discover-pagination-up');
+
+let forceVerticalMod = false;
 let debounceDict = {};
 let lastResponse = { mods: [], meta: {} };
 
@@ -42,7 +44,7 @@ function getModTemplate(mod) {
             ${mod.isFeatured ? `<div class="badge badge-accent">Featured</div>` : ''}
         </div>
         <h2 class="card-title w-full overflow-hidden">${mod.name}</h2>
-        <p>by <a href="/profile/${mod.user.slug}">${mod.user.name}</a></p>
+        <p>by <a class="text-success" href="/profile/${mod.user.slug}">${mod.user.name}</a></p>
         <p class="text-justify text-wrap-anywhere">${mod.description.substring(0, 60)}${mod.description.length > 60 ? "..." : ""}</p>
         <div class="card-actions justify-end">
             <a class="btn btn-outline btn-success btn-sm" href="/mods/${mod.user.slug}/${mod.slug}">Download</a>
@@ -79,16 +81,15 @@ function buildModsPaginationPages(parentElement, {total, page, number, next_page
 }
 
 async function renderMods(mods, meta) {
-    const horizontalMode = modsDiscoverOrientation.checked;
+    const horizontalMode = modsDiscoverOrientation.checked || forceVerticalMod;
     modsDiscoverContainer.innerHTML = '';
     for (const mod of mods) {
         const modElement = document.createElement('div');
+        modElement.classList.add('card', 'shadow-xl', 'sm:mb-2', 'mb-4');
         if (horizontalMode) {
-            // card card-compact w-96 bg-base-100 shadow-xl mod-card-horizontal
-            modElement.classList.add('card', 'card-compact', 'w-96', 'bg-base-100', 'shadow-xl', 'mod-card-horizontal');
+            modElement.classList.add('card-compact', 'w-96', 'bg-base-100', 'mod-card-horizontal');
         } else {
-            // card card-side bg-base-100 shadow-xl mod-card
-            modElement.classList.add('card', 'card-side', 'bg-base-100', 'shadow-xl', 'mod-card');
+            modElement.classList.add('card-side', 'bg-base-100', 'mod-card');
         }
         modElement.innerHTML = getModTemplate(mod);
         modsDiscoverContainer.appendChild(modElement);
@@ -126,6 +127,16 @@ async function main() {
     addEventListenerDebounce('orientation', modsDiscoverOrientation, 'change', () => {
         renderMods(lastResponse.mods, lastResponse.meta);
     });
+    function checkWindowSize() {
+        if (!forceVerticalMod && window.innerWidth < 600) {
+            forceVerticalMod = true;
+            loadMods();
+        } else if (forceVerticalMod && window.innerWidth >= 600) {
+            forceVerticalMod = false;
+        }
+    }
+    addEventListenerDebounce('resize', window, 'resize', checkWindowSize);
+    checkWindowSize();
 }
 
 main();

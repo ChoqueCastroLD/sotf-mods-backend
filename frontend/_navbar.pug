@@ -1,7 +1,9 @@
-.navbar.bg-base-100
+.navbar.bg-base-100.flex-wrap
   .flex-1
     a.btn.btn-ghost.normal-case.text-xl.navbar-logo-button(href='/')
-      img(src='/static/images/logo.png' alt='logo' class="navbar-logo-img")
+      img(src='/static/images/logo-large.png' alt='logo' class="navbar-logo-img hidden md:block")
+      img(src='/static/images/logo-sm.png' alt='logo' class="navbar-logo-img hidden sm:block md:hidden")
+      img(src='/static/images/logo.png' alt='logo' class="navbar-logo-img block sm:hidden")
   .flex-none
     a.btn.btn-ghost(href='/mods') Mods
     a.btn.btn-ghost(href='/loader') How to install

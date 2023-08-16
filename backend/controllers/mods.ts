@@ -2,11 +2,16 @@ import { Context } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { multiParser } from 'https://deno.land/x/multiparser/mod.ts';
 import { slug } from "https://deno.land/x/slug/mod.ts";
 import * as semver from "https://deno.land/x/semver/mod.ts";
+import { Image } from "https://deno.land/x/imagescript@1.2.15/mod.ts"
 
 import { getMod, getMods, countMods, getModsFromUser, countModsFromUser } from "../services/mods.ts";
 import { uploadFile } from "../util/drive.ts";
 import { prisma } from "../services/prisma.ts";
 
+const ALLOWED_RESOLUTIONS = [
+  { width: 2560, height: 1440 },
+  { width: 1080, height: 608 }
+];
 
 const BASE_URL = Deno.env.get("BASE_URL") + "";
 
@@ -133,6 +138,19 @@ export default {
       ctx.response.body = { message: 'Mod thumbnail must be a png, jpg, jpeg file.' };
       return;
     }
+    const thumbnailSizeLimit = 8 * 1024 * 1024; // 8MB
+    if (thumbnail.size > thumbnailSizeLimit) {
+      ctx.response.status = 400;
+      ctx.response.body = { message: 'Mod thumbnail size exceeds the limit of 8MB.' };
+      return;
+    }
+
+    const img = await Image.decode(thumbnail.content);
+    if (!ALLOWED_RESOLUTIONS.find((res) => res.width === img.width && res.height === img.height)) {
+      ctx.response.status = 400;
+      ctx.response.body = { message: 'Mod thumbnail resolution must be 2560x1440 or 1080x608.' };
+      return;
+    }
 
     // Upload file
     const file = form.files && form.files['modFile'];
@@ -151,6 +169,12 @@ export default {
     if (ext !== 'zip' && ext !== 'dll') {
       ctx.response.status = 400;
       ctx.response.body = { message: 'Mod file must be a zip or dll file.' };
+      return;
+    }
+    const modFileSizeLimit = 10 * 1024 * 1024; // 10MB
+    if (file.size > modFileSizeLimit) {
+      ctx.response.status = 400;
+      ctx.response.body = { message: 'Mod file size exceeds the limit of 10MB.' };
       return;
     }
     const slugName = slug(fields.name);
@@ -356,6 +380,20 @@ export default {
         return;
       }
     }
+    const thumbnailSizeLimit = 8 * 1024 * 1024; // 8MB
+    if (thumbnail.size > thumbnailSizeLimit) {
+      ctx.response.status = 400;
+      ctx.response.body = { message: 'Mod thumbnail size exceeds the limit of 8MB.' };
+      return;
+    }
+
+    const img = await Image.decode(thumbnail.content);
+    if (!ALLOWED_RESOLUTIONS.find((res) => res.width === img.width && res.height === img.height)) {
+      ctx.response.status = 400;
+      ctx.response.body = { message: 'Mod thumbnail resolution must be 2560x1440 or 1080x608.' };
+      return;
+    }
+
     try {
       if (name) {
         inputData['name'] = validateModName(name);

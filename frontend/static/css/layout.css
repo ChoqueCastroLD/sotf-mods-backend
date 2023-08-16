@@ -5,6 +5,9 @@ body {
     background-color: #0f1216 !important;
     overflow-x: hidden;
 }
+.hidden {
+    display: none;
+}
 .body-wrapper {
     margin-left: 10px;
     margin-right: 10px;
@@ -20,7 +23,6 @@ body {
 }
 .text-wrap-anywhere{
     overflow-wrap: anywhere;
-    line-break: anywhere;
 }
 #loading-screen {
     position: fixed;
