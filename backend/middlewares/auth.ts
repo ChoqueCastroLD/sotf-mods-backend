@@ -7,6 +7,11 @@ export const authMiddleware: Middleware = async function (context, next) {
 
     if (token) {
         const user = await getUserByToken(token);
+        delete user?.password;
+        delete user?.createdAt;
+        delete user?.id;
+        delete user?.updatedAt;
+        user.token = token;
         context.state.user = user;
     }
 
@@ -18,5 +23,27 @@ export const protectedRoute: Middleware = async function (context, next) {
         context.response.redirect("/user/login");
         return;
     }
+    await next();
+}
+
+export const protectedRouteAPI: Middleware = async function (context, next) {
+    const token = context.request.headers.get("Authorization")?.split("Bearer ").pop();
+    
+    if (!token) {
+        context.response.status = 401;
+        context.response.body = {error: "Unauthorized"};
+        return;
+    }
+
+    try {
+        const user = await getUserByToken(token);
+        context.state.user = user;
+    } catch (error) {
+        context.response.status = 401;
+        context.response.body = "Unauthorized";
+        console.error(error);
+        return;
+    }
+
     await next();
 }

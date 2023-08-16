@@ -25,22 +25,8 @@ router.get("/profile/:user_slug", async (context) => {
     });
 });
 
-router.get("/user/mods", protectedRoute, async (context) => {
-    const mods = await getModsFromUser(context.state.user.slug);
-    context.response.body = await render("user/mods", {
-        user: context.state.user,
-        mods
-    });
-});
-
 router.get("/user/upload", protectedRoute, async (context) => {
     context.response.body = await render("user/upload", {
-        user: context.state.user,
-    });
-});
-
-router.get("/mod-ideas", protectedRoute, async (context) => {
-    context.response.body = await render("mod-ideas", {
         user: context.state.user,
     });
 });

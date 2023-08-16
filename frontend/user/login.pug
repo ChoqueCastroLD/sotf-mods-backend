@@ -1,26 +1,33 @@
 extends ../__layout
 
 block head
-  link(rel='stylesheet' href='/static/css/main.css')
+  //- link(rel='stylesheet' href='/static/css/main.css')
 
 block body
-  form#login-form(action='/user/login' method='post')
-    article.card(style="max-width: 320px")
-      header.card-header
-        h2.card-title Login
-        p#registered-p.color-info
-      .card-body
-        label.form-label(for="email") Email
-        input(type="email", name="email", placeholder="Enter you email")
-        p#email-error.color-red
-
-        label.form-label(for="password") Password
-        input(type="password", name="password", placeholder="Enter you password")
-        p#password-error.color-red
-      footer.card-footer
-        button.button.style-accent Log In
-      p#submit-error.color-red
-      a(href="/user/register") Don't have an account? Register
+  form#login-form.hero.min-h-screen(action='/user/login' method='post')
+    .hero-content.flex-col(class='lg:flex-row-reverse')
+      .text-center(class='lg:text-left')
+        h1.text-5xl.font-bold Login now!
+        p.py-6
+          | If you already have an account, please login with your credentials.
+          br
+          | If you do not have an account, please 
+          a(href='/user/register' class='link link-primary') click here
+          | &nbsp;to register.
+      .card.flex-shrink-0.w-full.max-w-sm.shadow-2xl.bg-base-100
+        .card-body
+          .form-control
+            label.label
+              span.label-text Email
+            input.input.input-bordered(type="email", name="email", placeholder="Enter your email")
+          .form-control
+            label.label
+              span.label-text Password
+            input.input.input-bordered(type="password", name="password", placeholder="Enter your password")
+            label.label
+              a.label-text-alt.link.link-hover(href="/user/register") Register here!
+          .form-control.mt-6
+            button.btn.btn-primary Login
 
 block scripts
   script(src='/static/scripts/login.js' type="module")

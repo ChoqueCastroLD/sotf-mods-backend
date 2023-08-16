@@ -145,6 +145,8 @@ exports.Prisma.ModVersionScalarFieldEnum = makeEnum({
   isLatest: 'isLatest',
   changelog: 'changelog',
   downloadUrl: 'downloadUrl',
+  extension: 'extension',
+  filename: 'filename',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   modId: 'modId'
@@ -181,6 +183,7 @@ exports.Prisma.UserScalarFieldEnum = makeEnum({
   email: 'email',
   password: 'password',
   name: 'name',
+  image_url: 'image_url',
   slug: 'slug',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

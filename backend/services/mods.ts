@@ -1,6 +1,6 @@
 import { prisma } from "./prisma.ts";
 import { Mod, ModImage, ModVersion, User } from "../../generated/client/deno/index.d.ts";
-import { getCache, setCache } from "../util/cache.ts";
+
 
 function timeAgo(date: Date) {
     const msPerMinute = 60 * 1000;
@@ -42,12 +42,12 @@ function decorateMod(mod: Mod & {
     }
     const thumbnail_url = mod?.images
         ?.find((image) => image.isThumbnail)?.url
-        ?? mod.images?.[0].url
+        ?? mod.images?.[0]?.url
         ?? "https://via.placeholder.com/512";
         
     const primary_image_url = mod?.images
         ?.find((image) => image.isPrimary)?.url
-        ?? mod.images?.[0].url
+        ?? mod.images?.[0]?.url
         ?? "https://via.placeholder.com/1024";
 
     const latest_version = mod.versions?.find((version) => version.isLatest);
@@ -73,15 +73,64 @@ function decorateMod(mod: Mod & {
         time_ago,
     }
 }
+export async function getMods(page: number, limit: number, search: string, nsfw: boolean) {
+    const offset = (page - 1) * limit;
 
-export async function getMods() {
-    const cachedMods = await getCache("getMods");
-    if (cachedMods) return cachedMods;
+    const where = {};
 
+    if (search) {
+        where.OR = [
+            {
+                name: {
+                    contains: search,
+                    mode: "insensitive",
+                }
+            },
+            {
+                description: {
+                    contains: search,
+                    mode: "insensitive",
+                }
+            },
+            {
+                user: {
+                    name: {
+                        contains: search,
+                        mode: "insensitive",
+                    }
+                }
+            },
+        ];
+    }
+    if (!nsfw) {
+        where.isNSFW = false;
+    }
     const mods = await prisma.mod.findMany({
+        where: {
+            isApproved: true,
+            ...where,
+        },
         include: {
-            images: true,
-            user: true,
+            images: {
+                select: {
+                    isPrimary: true,
+                    isThumbnail: true,
+                    url: true,
+                }
+            },
+            user: {
+                select: {
+                    name: true,
+                    slug: true,
+                    image_url: true,
+                }
+            },
+            category: {
+                select: {
+                    name: true,
+                    slug: true,
+                }
+            },
             versions: {
                 orderBy: {
                     version: "asc",
@@ -102,18 +151,17 @@ export async function getMods() {
         },
         orderBy: {
             updatedAt: "desc",
-        }
+        },
+        skip: offset,
+        take: limit,
     });
+
     const arr = await Promise.all(mods.map(decorateMod));
 
-    setCache("getMods", arr);
     return arr;
 }
 
 export async function getModsFromUser(user_slug: string) {
-    const cachedMods = await getCache("getModsFromUser-" + user_slug);
-    if (cachedMods) return cachedMods;
-
     const mods = await prisma.mod.findMany({
         where: {
             user: {
@@ -121,8 +169,26 @@ export async function getModsFromUser(user_slug: string) {
             }
         },
         include: {
-            images: true,
-            user: true,
+            images: {
+                select: {
+                    isPrimary: true,
+                    isThumbnail: true,
+                    url: true,
+                }
+            },
+            user: {
+                select: {
+                    name: true,
+                    slug: true,
+                    image_url: true,
+                }
+            },
+            category: {
+                select: {
+                    name: true,
+                    slug: true,
+                }
+            },
             versions: {
                 orderBy: {
                     version: "asc",
@@ -143,17 +209,80 @@ export async function getModsFromUser(user_slug: string) {
         },
         orderBy: {
             updatedAt: "desc",
-        }
+        },
     });
+
     const arr = await Promise.all(mods.map(decorateMod));
 
-    setCache("getModsFromUser-" + user_slug, arr);
     return arr;
 }
 
-export async function getMod(mod_slug: string, author_slug: string) {
-    const cachedMods = await getCache("getMod-" + mod_slug + "-" + author_slug);
-    if (cachedMods) return cachedMods;
+export async function countModsFromUser(user_slug: string) {
+    const mods = await prisma.mod.count({
+        where: {
+            user: {
+                slug: user_slug,
+            }
+        },
+    });
+
+    return mods;
+}
+
+export async function countMods(search: string, nsfw: boolean): Promise<number> {
+    const where = {};
+
+    if (search) {
+        where.OR = [
+            {
+                name: {
+                    contains: search,
+                    mode: "insensitive",
+                }
+            },
+            {
+                description: {
+                    contains: search,
+                    mode: "insensitive",
+                }
+            },
+            {
+                user: {
+                    name: {
+                        contains: search,
+                        mode: "insensitive",
+                    }
+                }
+            },
+        ];
+    }
+
+    if (!nsfw) {
+        where.isNSFW = false;
+    }
+    const mods = await prisma.mod.count({
+        where,
+    });
+
+    return mods;
+}
+
+export async function getMod(mod_slug: string, author_slug: string, userWatching?: any) {
+    let favoritesInclude = {};
+    if (userWatching) {
+        favoritesInclude = {
+            favorites: {
+                where: {
+                    user: {
+                        slug: userWatching.slug,
+                    }
+                },
+                select: {
+                    userId: true,
+                }
+            }
+        }
+    }
 
     const mod = await prisma.mod.findFirst({
         where: {
@@ -163,6 +292,7 @@ export async function getMod(mod_slug: string, author_slug: string) {
             }
         },
         include: {
+            ...favoritesInclude,
             images: true,
             user: true,
             versions: {
@@ -176,6 +306,12 @@ export async function getMod(mod_slug: string, author_slug: string) {
                         },
                     },
                 },
+            },
+            category: {
+                select: {
+                    name: true,
+                    slug: true,
+                }
             },
             _count: {
                 select: {
@@ -191,14 +327,10 @@ export async function getMod(mod_slug: string, author_slug: string) {
 
     const decoratedMod = await decorateMod(mod);
 
-    setCache("getMod-" + mod_slug + "-" + author_slug, decoratedMod);
     return decoratedMod;
 }
 
 export async function getModDownloadVersion(mod_slug: string, author_slug: string, version: string) {
-    const cachedModDownloadVersion = await getCache("getModDownloadVersion-" + mod_slug + "-" + author_slug + "-" + version);
-    if (cachedModDownloadVersion) return cachedModDownloadVersion;
-
     const modVersion = await prisma.modVersion.findFirst({
         where: {
             version: version,
@@ -211,7 +343,6 @@ export async function getModDownloadVersion(mod_slug: string, author_slug: strin
         }
     });
 
-    setCache("getModDownloadVersion-" + mod_slug + "-" + author_slug + "-" + version, modVersion, 30);
     return modVersion;
 }
 

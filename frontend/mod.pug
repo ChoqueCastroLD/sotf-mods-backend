@@ -5,72 +5,134 @@ block meta
   meta(content=(mod.description.length > 150 ? mod.description.substring(0, 150).trim() + "..." : mod.description), property="og:description")
   meta(content=(mod.primary_image_url || "https://sotf-mods.com/static/images/sotfmods.png"), property="og:image")
   link(type="application/json+oembed", href=`https://sotf-mods.com/mods/${mod.user.slug}/${mod.slug}.json`)
+  link(rel='stylesheet' href='/static/css/mod.css')
 
 block head
   span
 
 block body
-  .row.center-xs
-    .col-xs-12
-      .box(style="margin-bottom: 30px;")
-        h3(style="margin-bottom: 3px;")
-          p #{mod.name}
-        p
-          | Developed by 
-          a(href=`/profile/${mod.user.slug}`) #{mod.user.name}
-  .row.center-xs
-    .col-xs-6
-      .box
-        figure
-          img(src=mod.primary_image_url, alt="Mod Image", style="margin-bottom: 20px;")
-          a.button.size-2x(href=(mod.latest_version ? `/mods/${mod.user.slug}/${mod.slug}/download/${mod.latest_version.version}` : '') target="_blank" class=(mod.latest_version ? "" : "disabled"))
-            svg.icon.icon-tabler.icon-tabler-download(xmlns="http://www.w3.org/2000/svg", width="48", height="48", viewBox="0 0 24 24", stroke-width="2", stroke="currentColor", fill="none", stroke-linecap="round", stroke-linejoin="round")
-              path(stroke="none", d="M0 0h24v24H0z", fill="none")
-              path(d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2")
-              path(d="M7 11l5 5l5 -5")
-              path(d="M12 4l0 12")
-            span(style="margin-left: 6px; margin-right: 6px;") Download
-            - if (mod.latest_version)
-              span.color-dark-light.text-xs #{mod.latest_version.version}
-          - if (mod.latest_version)
-            p.color-dark-light.text-xs(style="margin-bottom: 0px;") Unique downloads: #{mod.downloads}
-            p.color-dark-light.text-xs Total downloads: #{mod.total_downloads || mod.downloads}
-          - else
-            p.color-red-light.text-xs No versions available
-          - if (!mod.isApproved)
-            p.color-red-light.text-xs(style="margin-bottom: 0px;") Pending approval.
-    .col-xs-6
-      .box
-        .tabs-wrapper
-          .tabs-header(role="tablist")
-            button.tab-button.active(role="tab", aria-controls="tab-description", aria-selected="true")
-              | Description
-            //- button.tab-button(role="tab", aria-controls="tab-reviews", aria-selected="false")
-            //-   | Reviews
-          .tabs-content
-            #tab-description.tab-panel.show
-              span #{mod.description}
-            //- #tab-reviews.tab-panel
-            //-   h5 Reviews
-  .row.center-xs
-    .col-xs-12
-      .box
-        h5 Version History
-        table
+  .wrapper.m-4
+    .flex.justify-center.mt-8
+      p.text-5xl #{mod.name}
+    .flex.justify-center.mb-8
+      p.text-base by 
+        a.text-success(href=`/profile/${mod.user.slug}`) #{mod.user.name}
+
+    div.grid.grid-cols-2.gap-4
+    div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
+      div.mod-info.m-4
+        img.mod-logo(src=mod.primary_image_url, alt=mod.name)
+        - if (!mod.isApproved)
+          .flex.justify-center
+            p.text-error.text-xs.mt-4 Pending approval.
+        .flex.justify-center
+          a(
+            class="btn btn-outline btn-success m-4 table-auto" + (mod.latest_version ? "" : "disabled")
+            href=(
+              mod.latest_version 
+              ? `/mods/${mod.user.slug}/${mod.slug}/download/${mod.latest_version.version}`
+              : ''
+            )
+            target="_blank"
+          ) Direct Download
+          button#btnOneClickInstall.btn.btn-outline.btn-secondary.m-4 One-Click Install
+        - if (mod.latest_version)
+          .flex.justify-center
+            span.color-dark-light.text-xs.mb-2 Version #{mod.latest_version.version}
+        .flex.justify-center
+          span.stat-desc.text-success ↗︎ #{mod.downloads} downloads
+          span.stat-desc.text-secondary.ml-2 ♥ #{mod._count.favorites} follows
+          span.stat-desc.ml-2 ⏱ Last update #{mod.time_ago}
+        - if (user && user.slug !== mod.user.slug)
+          .flex.justify-center
+            a.mod-favorite.m-2(href="#!", onclick="toggleFavorite(this, '" + mod.user.slug + "', '" + mod.slug + "')")
+              span.hidden(id="modFavorite:" + mod.slug + ":on")
+                <svg width="1.6rem" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z" fill="currentColor"></path></svg>
+              span(id="modFavorite:" + mod.slug + ":off")
+                <svg width="1.6rem" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M458.4 64.3C400.6 15.7 311.3 23 256 79.3C200.7 23 111.4 15.6 53.6 64.3C-21.6 127.6-10.6 230.8 43 285.5l175.4 178.7c10 10.2 23.4 15.9 37.6 15.9c14.3 0 27.6-5.6 37.6-15.8L469 285.6c53.5-54.7 64.7-157.9-10.6-221.3zm-23.6 187.5L259.4 430.5c-2.4 2.4-4.4 2.4-6.8 0L77.2 251.8c-36.5-37.2-43.9-107.6 7.3-150.7c38.9-32.7 98.9-27.8 136.5 10.5l35 35.7l35-35.7c37.8-38.5 97.8-43.2 136.5-10.6c51.1 43.1 43.5 113.9 7.3 150.8z" fill="currentColor"></path></svg>
+        - if (user && user.slug === mod.user.slug)
+          .flex.justify-center.mt-4
+            a.btn.btn-outline.m-2(onclick="modalEdit.showModal()") Update details
+            a.btn.btn-outline.m-2(onclick="modalReleaseVersion.showModal()") Release version
+
+      div.mod-downloads.m-4
+        p.text-3xl.mb-8.mt-4 Description
+        p.text-justify.text-wrap-anywhere #{mod.description}
+        p.text-3xl.mb-8.mt-4 Tags
+        span Category: #{mod.category.name}
+        .overflow-x-auto
+    .flex.justify-center
+      p.text-3xl.mb-8.mt-4 Version history
+    .flex.justify-center
+      .overflow-x-auto
+        table.table
           thead
             tr
               th Version
               th Changelog
               th Downloads
-              th Download
           tbody
+            // row 1
             - for (const version of mod.versions)
-              tr
+              tr(class=version.isLatest ? "bg-base-100" : "")
                 td #{version.version}
                 td #{version.changelog}
                 td #{version.downloads.length}
-                td
-                  a(href=(mod.latest_version ? `/mods/${mod.user.slug}/${mod.slug}/download/${version.version}` : '') target="_blank")
-                    | Download
+
+    //- Modals
+    dialog#modalOneClickInstall.modal
+      form.modal-box(method='dialog')
+        h3.font-bold.text-lg One Click Install
+        p.py-4 Automatically install this mod with one click. This will open SF Loader and install the latest version of the mod automagically.
+        p.py-4.text-error Still in development.
+        p.py-4 Press ESC key or click the button below to close
+        .modal-action
+          button.btn Close
+    dialog#modalEdit.modal
+      form.modal-box(method='dialog')
+        h3.font-bold.text-lg Update mod details
+        .form-control
+          label.label
+            span.label-text Mod name
+          input#mod-name.input.input-bordered(type="text", name="name", placeholder="Enter the name of the mod" minlength="4" maxlength="24" value=mod.name)
+        .form-control
+          label.label
+            span.label-text Mod description
+            span.label-text-alt (max: 1000 characters)
+          textarea#mod-description.textarea.textarea-bordered.h-24(name="description" placeholder='Enter the description of the mod...' minlength="16" maxlength="2000") #{mod.description}
+        .form-control
+          label.label
+            span.label-text Thumbnail
+          input#mod-thumbnail(type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.gif" required)
+        label.cursor-pointer.label.ml-2
+          span.label-text Has NSFW content
+          input#mod-isNSFW.toggle.toggle-secondary.ml-2(name='isNSFW' type='checkbox' checked=mod.isNSFW)
+        .modal-action
+          button.btn Close
+          button#updateModBtn.btn.btn-primary Update
+    dialog#modalReleaseVersion.modal
+      form.modal-box(method='dialog')
+        h3.font-bold.text-lg Release version
+        p.py-4 Release a new version of the mod. This will be automatically set as the latest version of the mod. (Current version: #{mod.latest_version ? mod.latest_version.version : "1.0.0"})
+        .form-control
+          label.label
+            span.label-text Version
+        input#mod-version.input.input-bordered.w-full(type="text", name="name", placeholder="Enter the mod version (Ex. 1.0.0)" minlength="5" maxlength="10" value=mod.next_version ? mod.next_version : "1.0.0")
+        .form-control
+          label.label
+            span.label-text Changelog
+        textarea#mod-changelog.textarea.textarea-bordered.h-24.w-full(name="changelog" placeholder='Enter the changelog of the version...' minlength="16" maxlength="2000")
+        .form-control
+          label.label
+            span.label-text Mod file (.dll or .zip)
+        input#mod-file.w-full(type="file" class="file-input file-input-bordered file-input-secondary" accept=".zip,.dll")
+        .modal-action
+          button.btn Close
+          button#releaseVersionBtn.btn.btn-secondary Release
+    #mod-info(data-mod=JSON.stringify({ slug: mod.slug, author_slug: mod.user.slug }))
+
+
 block scripts
+  script.
+    window.mod = JSON.parse(document.querySelector('#mod-info').dataset.mod);
   script(src='/static/scripts/mod.js' type="module")

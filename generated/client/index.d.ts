@@ -19,6 +19,7 @@ export type User = {
   email: string
   password: string
   name: string
+  image_url: string
   slug: string
   createdAt: Date
   updatedAt: Date
@@ -66,6 +67,8 @@ export type ModVersion = {
   isLatest: boolean
   changelog: string
   downloadUrl: string
+  extension: string | null
+  filename: string | null
   createdAt: Date
   updatedAt: Date
   modId: number | null
@@ -1209,6 +1212,7 @@ export namespace Prisma {
     email: string | null
     password: string | null
     name: string | null
+    image_url: string | null
     slug: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -1219,6 +1223,7 @@ export namespace Prisma {
     email: string | null
     password: string | null
     name: string | null
+    image_url: string | null
     slug: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -1229,6 +1234,7 @@ export namespace Prisma {
     email: number
     password: number
     name: number
+    image_url: number
     slug: number
     createdAt: number
     updatedAt: number
@@ -1249,6 +1255,7 @@ export namespace Prisma {
     email?: true
     password?: true
     name?: true
+    image_url?: true
     slug?: true
     createdAt?: true
     updatedAt?: true
@@ -1259,6 +1266,7 @@ export namespace Prisma {
     email?: true
     password?: true
     name?: true
+    image_url?: true
     slug?: true
     createdAt?: true
     updatedAt?: true
@@ -1269,6 +1277,7 @@ export namespace Prisma {
     email?: true
     password?: true
     name?: true
+    image_url?: true
     slug?: true
     createdAt?: true
     updatedAt?: true
@@ -1367,6 +1376,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    image_url: string
     slug: string
     createdAt: Date
     updatedAt: Date
@@ -1396,6 +1406,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
+    image_url?: boolean
     slug?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4369,6 +4380,8 @@ export namespace Prisma {
     isLatest: boolean | null
     changelog: string | null
     downloadUrl: string | null
+    extension: string | null
+    filename: string | null
     createdAt: Date | null
     updatedAt: Date | null
     modId: number | null
@@ -4380,6 +4393,8 @@ export namespace Prisma {
     isLatest: boolean | null
     changelog: string | null
     downloadUrl: string | null
+    extension: string | null
+    filename: string | null
     createdAt: Date | null
     updatedAt: Date | null
     modId: number | null
@@ -4391,6 +4406,8 @@ export namespace Prisma {
     isLatest: number
     changelog: number
     downloadUrl: number
+    extension: number
+    filename: number
     createdAt: number
     updatedAt: number
     modId: number
@@ -4414,6 +4431,8 @@ export namespace Prisma {
     isLatest?: true
     changelog?: true
     downloadUrl?: true
+    extension?: true
+    filename?: true
     createdAt?: true
     updatedAt?: true
     modId?: true
@@ -4425,6 +4444,8 @@ export namespace Prisma {
     isLatest?: true
     changelog?: true
     downloadUrl?: true
+    extension?: true
+    filename?: true
     createdAt?: true
     updatedAt?: true
     modId?: true
@@ -4436,6 +4457,8 @@ export namespace Prisma {
     isLatest?: true
     changelog?: true
     downloadUrl?: true
+    extension?: true
+    filename?: true
     createdAt?: true
     updatedAt?: true
     modId?: true
@@ -4535,6 +4558,8 @@ export namespace Prisma {
     isLatest: boolean
     changelog: string
     downloadUrl: string
+    extension: string | null
+    filename: string | null
     createdAt: Date
     updatedAt: Date
     modId: number | null
@@ -4565,6 +4590,8 @@ export namespace Prisma {
     isLatest?: boolean
     changelog?: boolean
     downloadUrl?: boolean
+    extension?: boolean
+    filename?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     modId?: boolean
@@ -9394,6 +9421,8 @@ export namespace Prisma {
     isLatest: 'isLatest',
     changelog: 'changelog',
     downloadUrl: 'downloadUrl',
+    extension: 'extension',
+    filename: 'filename',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     modId: 'modId'
@@ -9445,6 +9474,7 @@ export namespace Prisma {
     email: 'email',
     password: 'password',
     name: 'name',
+    image_url: 'image_url',
     slug: 'slug',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -9466,6 +9496,7 @@ export namespace Prisma {
     email?: StringFilter | string
     password?: StringFilter | string
     name?: StringFilter | string
+    image_url?: StringFilter | string
     slug?: StringFilter | string
     createdAt?: DateTimeFilter | Date | string
     updatedAt?: DateTimeFilter | Date | string
@@ -9478,6 +9509,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    image_url?: SortOrder
     slug?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9496,6 +9528,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    image_url?: SortOrder
     slug?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9514,6 +9547,7 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter | string
     password?: StringWithAggregatesFilter | string
     name?: StringWithAggregatesFilter | string
+    image_url?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
     createdAt?: DateTimeWithAggregatesFilter | Date | string
     updatedAt?: DateTimeWithAggregatesFilter | Date | string
@@ -9669,6 +9703,8 @@ export namespace Prisma {
     isLatest?: BoolFilter | boolean
     changelog?: StringFilter | string
     downloadUrl?: StringFilter | string
+    extension?: StringNullableFilter | string | null
+    filename?: StringNullableFilter | string | null
     createdAt?: DateTimeFilter | Date | string
     updatedAt?: DateTimeFilter | Date | string
     modId?: IntNullableFilter | number | null
@@ -9682,6 +9718,8 @@ export namespace Prisma {
     isLatest?: SortOrder
     changelog?: SortOrder
     downloadUrl?: SortOrder
+    extension?: SortOrder
+    filename?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     modId?: SortOrder
@@ -9699,6 +9737,8 @@ export namespace Prisma {
     isLatest?: SortOrder
     changelog?: SortOrder
     downloadUrl?: SortOrder
+    extension?: SortOrder
+    filename?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     modId?: SortOrder
@@ -9718,6 +9758,8 @@ export namespace Prisma {
     isLatest?: BoolWithAggregatesFilter | boolean
     changelog?: StringWithAggregatesFilter | string
     downloadUrl?: StringWithAggregatesFilter | string
+    extension?: StringNullableWithAggregatesFilter | string | null
+    filename?: StringNullableWithAggregatesFilter | string | null
     createdAt?: DateTimeWithAggregatesFilter | Date | string
     updatedAt?: DateTimeWithAggregatesFilter | Date | string
     modId?: IntNullableWithAggregatesFilter | number | null
@@ -9939,6 +9981,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    image_url?: string
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9951,6 +9994,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    image_url?: string
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9962,6 +10006,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image_url?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9974,6 +10019,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image_url?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9986,6 +10032,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    image_url?: string
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9995,6 +10042,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image_url?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10005,6 +10053,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image_url?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10190,6 +10239,8 @@ export namespace Prisma {
     isLatest: boolean
     changelog: string
     downloadUrl: string
+    extension?: string | null
+    filename?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     mod?: ModCreateNestedOneWithoutVersionsInput
@@ -10202,6 +10253,8 @@ export namespace Prisma {
     isLatest: boolean
     changelog: string
     downloadUrl: string
+    extension?: string | null
+    filename?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     modId?: number | null
@@ -10213,6 +10266,8 @@ export namespace Prisma {
     isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mod?: ModUpdateOneWithoutVersionsNestedInput
@@ -10225,6 +10280,8 @@ export namespace Prisma {
     isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     modId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -10237,6 +10294,8 @@ export namespace Prisma {
     isLatest: boolean
     changelog: string
     downloadUrl: string
+    extension?: string | null
+    filename?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     modId?: number | null
@@ -10247,6 +10306,8 @@ export namespace Prisma {
     isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -10257,6 +10318,8 @@ export namespace Prisma {
     isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     modId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -10562,6 +10625,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    image_url?: SortOrder
     slug?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10576,6 +10640,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    image_url?: SortOrder
     slug?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10586,6 +10651,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    image_url?: SortOrder
     slug?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10822,6 +10888,21 @@ export namespace Prisma {
     modId?: SortOrder
   }
 
+  export type StringNullableFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    mode?: QueryMode
+    not?: NestedStringNullableFilter | string | null
+  }
+
   export type ModDownloadListRelationFilter = {
     every?: ModDownloadWhereInput
     some?: ModDownloadWhereInput
@@ -10838,6 +10919,8 @@ export namespace Prisma {
     isLatest?: SortOrder
     changelog?: SortOrder
     downloadUrl?: SortOrder
+    extension?: SortOrder
+    filename?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     modId?: SortOrder
@@ -10854,6 +10937,8 @@ export namespace Prisma {
     isLatest?: SortOrder
     changelog?: SortOrder
     downloadUrl?: SortOrder
+    extension?: SortOrder
+    filename?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     modId?: SortOrder
@@ -10865,6 +10950,8 @@ export namespace Prisma {
     isLatest?: SortOrder
     changelog?: SortOrder
     downloadUrl?: SortOrder
+    extension?: SortOrder
+    filename?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     modId?: SortOrder
@@ -10873,6 +10960,24 @@ export namespace Prisma {
   export type ModVersionSumOrderByAggregateInput = {
     id?: SortOrder
     modId?: SortOrder
+  }
+
+  export type StringNullableWithAggregatesFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter | string | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedStringNullableFilter
+    _max?: NestedStringNullableFilter
   }
 
   export type TagCountOrderByAggregateInput = {
@@ -11367,6 +11472,10 @@ export namespace Prisma {
     connect?: Enumerable<ModDownloadWhereUniqueInput>
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type ModUpdateOneWithoutVersionsNestedInput = {
     create?: XOR<ModCreateWithoutVersionsInput, ModUncheckedCreateWithoutVersionsInput>
     connectOrCreate?: ModCreateOrConnectWithoutVersionsInput
@@ -11678,6 +11787,37 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter | number | null
   }
 
+  export type NestedStringNullableFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    not?: NestedStringNullableFilter | string | null
+  }
+
+  export type NestedStringNullableWithAggregatesFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    not?: NestedStringNullableWithAggregatesFilter | string | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedStringNullableFilter
+    _max?: NestedStringNullableFilter
+  }
+
   export type ModCreateWithoutUserInput = {
     name: string
     slug: string
@@ -11808,6 +11948,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    image_url?: string
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11819,6 +11960,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    image_url?: string
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11857,6 +11999,8 @@ export namespace Prisma {
     isLatest: boolean
     changelog: string
     downloadUrl: string
+    extension?: string | null
+    filename?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     downloads?: ModDownloadCreateNestedManyWithoutVersionInput
@@ -11868,6 +12012,8 @@ export namespace Prisma {
     isLatest: boolean
     changelog: string
     downloadUrl: string
+    extension?: string | null
+    filename?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     downloads?: ModDownloadUncheckedCreateNestedManyWithoutVersionInput
@@ -11964,6 +12110,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image_url?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11975,6 +12122,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image_url?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12028,6 +12176,8 @@ export namespace Prisma {
     isLatest?: BoolFilter | boolean
     changelog?: StringFilter | string
     downloadUrl?: StringFilter | string
+    extension?: StringNullableFilter | string | null
+    filename?: StringNullableFilter | string | null
     createdAt?: DateTimeFilter | Date | string
     updatedAt?: DateTimeFilter | Date | string
     modId?: IntNullableFilter | number | null
@@ -12429,6 +12579,8 @@ export namespace Prisma {
     isLatest: boolean
     changelog: string
     downloadUrl: string
+    extension?: string | null
+    filename?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     mod?: ModCreateNestedOneWithoutVersionsInput
@@ -12440,6 +12592,8 @@ export namespace Prisma {
     isLatest: boolean
     changelog: string
     downloadUrl: string
+    extension?: string | null
+    filename?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     modId?: number | null
@@ -12460,6 +12614,8 @@ export namespace Prisma {
     isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mod?: ModUpdateOneWithoutVersionsNestedInput
@@ -12471,6 +12627,8 @@ export namespace Prisma {
     isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     modId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -12480,6 +12638,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    image_url?: string
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12491,6 +12650,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    image_url?: string
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12549,6 +12709,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image_url?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12560,6 +12721,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image_url?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12696,6 +12858,8 @@ export namespace Prisma {
     isLatest: boolean
     changelog: string
     downloadUrl: string
+    extension?: string | null
+    filename?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12721,6 +12885,8 @@ export namespace Prisma {
     isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     downloads?: ModDownloadUpdateManyWithoutVersionNestedInput
@@ -12732,6 +12898,8 @@ export namespace Prisma {
     isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     downloads?: ModDownloadUncheckedUpdateManyWithoutVersionNestedInput
@@ -12743,6 +12911,8 @@ export namespace Prisma {
     isLatest?: BoolFieldUpdateOperationsInput | boolean
     changelog?: StringFieldUpdateOperationsInput | string
     downloadUrl?: StringFieldUpdateOperationsInput | string
+    extension?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

@@ -13,6 +13,8 @@
     "prisma": "^4.11.0"
   },
   "dependencies": {
-    "@prisma/client": "^4.11.0"
+    "@prisma/client": "^4.11.0",
+    "chatgpt": "^5.2.5",
+    "string-sanitizer": "^2.0.2"
   }
 }

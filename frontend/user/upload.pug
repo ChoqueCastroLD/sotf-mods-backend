@@ -1,42 +1,101 @@
 extends ../__layout
 
 block head
-  link(rel='stylesheet' href='/static/css/main.css')
+  link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css")
   link(href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet")
   link(href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet")
+  link(rel='stylesheet' href='/static/css/mods.css')
+  link(rel='stylesheet' href='/static/css/upload.css')
 
 block body
-    h5 Upload a mod
-    form#upload-form
-      .row.center-xs
-        .col-xs-6
-          label.form-label(for="name") Enter Mod Name
-          input(type="text" name="name" placeholder="Mod name")
-
-          label.form-label(for="images") Mod Images
-          input.filepond(
-            type="file"
-            name="images" 
-            multiple 
-            data-allow-reorder="true"
-            data-max-file-size="3MB"
-            data-max-files="3"
-          )
-
-          //- label.form-label(for="dependencies") Enter Mod Dependencies
-          //- input(type="text" name="dependencies" placeholder="Mod dependencies")
-
-          label.form-label.size-sm(for="category") Choose your mod category
-          select#cars.size-xs(name="category")
-            option(value="1" selected) Script
-
-        .col-xs-6
-          label.form-label(for="image") Enter Mod Description
-          div.text-editor-light-mode#description
-      .row.center-xs
-        .col-xs-12
-          button.button(type="submit") Upload Mod
-
+  .hero.min-h-screen
+    .hero-content.flex-col(class='lg:flex-row-reverse')
+      .text-center(class='lg:text-left')
+        h1.text-5xl.font-bold Upload a mod
+        p.py-6
+          | Fill out the fields to see how your mod is going to look
+        <label class="swap swap-rotate ml-2">
+          <input id="mods-discover-orientation" type="checkbox" />
+          <svg class="swap-on fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 28 28"><g fill="none"><path d="M10.75 15A2.25 2.25 0 0 1 13 17.25v5.5A2.25 2.25 0 0 1 10.75 25h-5.5A2.25 2.25 0 0 1 3 22.75v-5.5A2.25 2.25 0 0 1 5.25 15h5.5zm12 0A2.25 2.25 0 0 1 25 17.25v5.5A2.25 2.25 0 0 1 22.75 25h-5.5A2.25 2.25 0 0 1 15 22.75v-5.5A2.25 2.25 0 0 1 17.25 15h5.5zm-12-12A2.25 2.25 0 0 1 13 5.25v5.5A2.25 2.25 0 0 1 10.75 13h-5.5A2.25 2.25 0 0 1 3 10.75v-5.5A2.25 2.25 0 0 1 5.25 3h5.5zm12 0A2.25 2.25 0 0 1 25 5.25v5.5A2.25 2.25 0 0 1 22.75 13h-5.5A2.25 2.25 0 0 1 15 10.75v-5.5A2.25 2.25 0 0 1 17.25 3h5.5z" fill="currentColor"></path></g></svg>
+          <svg class="swap-off fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M149.333 216v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-80c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zM125.333 32H24C10.745 32 0 42.745 0 56v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zm80 448H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm-24-424v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24zm24 264H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24z" fill="currentColor"></path></svg>
+        </label>
+        #mod-list-demo(min-width="472px")
+      .card.flex-shrink-0.w-full.max-w-sm.shadow-2xl.bg-base-100(action='/user/upload' method='post')
+        .card-body
+          p(class="collapse-title text-xl font-medium") Mod upload
+          <div class="join join-vertical w-full">
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4" checked="checked" /> 
+              <div class="collapse-title text-xl font-medium">
+                | Basic information
+              </div>
+              <div class="collapse-content"> 
+                .form-control
+                  label.label
+                    span.label-text Mod name
+                  input#mod-name.input.input-bordered(type="text", name="name", placeholder="Enter the name of the mod" minlength="4" maxlength="24")
+                .form-control
+                  label.label
+                    span.label-text Mod description
+                    span.label-text-alt (max: 1000 characters)
+                  textarea#mod-description.textarea.textarea-bordered.h-24(name="description" placeholder='Enter the description of the mod...' minlength="16" maxlength="2000")
+              </div>
+            </div>
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4" /> 
+              <div class="collapse-title text-xl font-medium">
+                | Category
+              </div>
+              <div class="collapse-content"> 
+                <label class="cursor-pointer label ml-2">
+                  <span class="label-text">Has NSFW content</span> 
+                  <input id="mod-isNSFW" name="isNSFW" type="checkbox" class="toggle toggle-secondary ml-2" />
+                </label>
+                .form-control.w-full.max-w-xs
+                  label.label
+                    span.label-text Category
+                  select#mod-category.select.select-bordered
+                    option(disabled='' selected='') Pick one category
+                    option(value="1") Scripts
+              </div>
+            </div>
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4" /> 
+              <div class="collapse-title text-xl font-medium">
+                | Images
+              </div>
+              <div class="collapse-content"> 
+                //- .form-control.w-full.max-w-xs
+                //-   label.label
+                //-     span.label-text Pick a file
+                //-     span.label-text-alt Alt label
+                //-   input.file-input.file-input-bordered.w-full.max-w-xs(type='file' name='images' multiple)
+                p Images must be in .png, .jpeg or .gif format
+                .form-control
+                  label.label
+                    span.label-text Thumbnail
+                  input#mod-thumbnail(type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs" accept=".png,.jpeg,.gif" required)
+              </div>
+            </div>
+            <div class="collapse collapse-arrow join-item border border-base-300">
+              <input type="radio" name="my-accordion-4" /> 
+              <div class="collapse-title text-xl font-medium">
+                | Download
+              </div>
+              <div class="collapse-content">
+                .form-control
+                  label.label
+                    span.label-text Version
+                  input#mod-version.input.input-bordered(type="text", name="name", placeholder="Enter the mod version (Ex. 1.0.0)" minlength="5" maxlength="10")
+                .form-control
+                  label.label
+                    span.label-text Mod file (.dll or .zip)
+                  input#mod-file(type="file" class="file-input file-input-bordered file-input-primary w-full max-w-xs" accept=".zip,.dll")
+              </div>
+            </div>
+          </div>
+          <button id="btn-submit-mod" class="btn btn-primary">Submit</button>
+  #mod-page-demo
 block scripts
   script(src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest")
   script(src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest")

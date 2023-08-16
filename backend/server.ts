@@ -1,6 +1,6 @@
 // deno-lint-ignore-file
 import "./util/env.ts";
-import { Application, Router, isHttpError } from "https://deno.land/x/oak@v11.1.0/mod.ts";
+import { Application, isHttpError } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { staticAssetsMiddleware } from "./middlewares/static.ts";
 import logger from "https://deno.land/x/oak_logger@1.0.0/mod.ts";
 import { router } from "./routes/router.ts";
@@ -12,7 +12,7 @@ export async function startServer(port = 8000) {
     try {
       await next();
     } catch (err) {
-      console.error(err);
+      console.log(err);
       if (isHttpError(err)) {
         context.response.status = err.status;
       } else {

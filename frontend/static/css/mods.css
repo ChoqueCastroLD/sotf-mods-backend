@@ -1,0 +1,52 @@
+.mod-card {
+    max-width: 720px;
+    margin: 10px;
+    height: 250px;
+}
+.mod-card figure {
+    max-width: 280px;
+    width: 614px;
+    transition: box-shadow 0.3s ease-in-out;
+}
+.mod-card img {
+    height: 100%;
+    transition: box-shadow 0.3s ease-in-out;
+}
+.mod-card:hover {
+    box-shadow: -4px 7px 0 0.2rem rgb(54 211 153 / 90%);
+    transition: box-shadow 0.3s ease-in-out;
+    translate: 2px -2px;
+}
+.mod-card-badges {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+}
+.mod-card-horizontal {
+    margin: 6px;
+}
+.mod-card-horizontal:hover {
+    box-shadow: -4px 6px 0 0.2rem rgb(54 211 153 / 90%);
+    translate: 2px -2px;
+    transition: box-shadow 0.3s ease-in-out;
+}
+.mod-card-horizontal img {
+    width: 520px;
+    object-fit: cover;
+    object-position: 25% 25%; 
+    transition: box-shadow 0.3s ease-in-out;
+}
+#mods-discover-section {
+    padding: 15px;
+}
+#mods-discover-search-container {
+    margin: 60px;
+    margin-bottom: 30px;
+}
+#mods-discover-pagination {
+    margin: 20px;
+}
+#mods-discover-pagination-up {
+    margin: 20px;
+}

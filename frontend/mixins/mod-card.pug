@@ -12,12 +12,12 @@ mixin mod-card(mod)
             a.badge.style-green(href="#") MelonLoader
             a.badge.style-accent.edge-circle.pulse(href="#") New
           img.card-image(src=mod.thumbnail_url, alt=mod.name)
-          h2.card-title(style="margin-bottom: 0px;") #{mod.name}
+          h2.card-title.w-full.overflow-hidden(style="margin-bottom: 0px;") #{mod.name}
           span.text-sm
             | by 
             a(href=`/profile/${mod.user.slug}`) #{mod.user.name}
-        .card-body.truncate
-          p #{mod.description}
+        .card-body.truncate.text-justify
+          p.text-wrap-anywhere #{mod.description}
           - if (mod.latest_version)
             span.color-dark-light.text-xs Last version #{mod.latest_version.version} released #{mod.time_ago}
           - else
