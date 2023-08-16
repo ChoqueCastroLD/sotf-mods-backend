@@ -66,6 +66,8 @@ model ModVersion {
   isLatest    Boolean
   changelog   String
   downloadUrl String
+  extension   String?
+  filename    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
