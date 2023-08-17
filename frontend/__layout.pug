@@ -37,9 +37,9 @@ html.dark(lang='en')
       #alerts.animate__animated
     dialog#loading-screen
       span.loading.loading-infinity.loading-lg.text-success
-    div#user-info(data-user=JSON.stringify(user))
+    div#user-info(data-user=(JSON.stringify(user)))
     script.
-      const user = JSON.parse(document.querySelector('#user-info').dataset.user);
+      const user = JSON.parse((document.querySelector('#user-info').dataset.user));
     script(src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.5/purify.min.js" integrity="sha512-KqUc2WMPF/gxte9xVjVE4TIt1LMUTidO3BrcItFg0Ro24I7pGNzgcXdnWdezNY+8T0/JEmdC79MuwYn+8UdOqw==" crossorigin="anonymous" referrerpolicy="no-referrer")
     script(src='/static/scripts/shared.js' type="module")
     block scripts

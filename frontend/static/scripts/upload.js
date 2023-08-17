@@ -11,8 +11,6 @@ const modIsNSFW = document.querySelector('#mod-isNSFW');
 const modFile = document.querySelector('#mod-file');
 const modThumbnail = document.querySelector('#mod-thumbnail');
 
-const converter = new showdown.Converter();
-
 
 function getModTemplate(mod) {
     if (!mod.shortDescription) mod.shortDescription = "This is a description of the mod.";
@@ -139,7 +137,7 @@ async function uploadMod() {
 function renderDescriptionPreview() {
     const description = document.getElementById('mod-description').value.trim();
     const descriptionPreview = document.getElementById('mod-description-preview');
-    descriptionPreview.innerHTML = converter.makeHtml(description);
+    descriptionPreview.innerHTML = markdownToHTML(description);
     document.querySelector('#mod-description-character-count').innerHTML = document.querySelector('#mod-description')?.value.length || "0";
 }
 

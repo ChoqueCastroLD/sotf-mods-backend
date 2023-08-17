@@ -57,7 +57,7 @@ block body
             a.btn.btn-outline.m-2(onclick="openModal('#modalReleaseVersion')") Release version
 
       div.mod-downloads.m-4
-        pre.mod-description-template !{mod.description_template || mod.description}
+        pre#modDescriptionTemplate.mod-description-template
     .flex.justify-center
       p.text-3xl.mb-8.mt-4 Version history
     .flex.justify-center
@@ -103,7 +103,7 @@ block body
                   | (
                   span#mod-description-character-count #{mod.description.length}
                   | / 2000 characters)
-              textarea#mod-description.textarea.textarea-bordered.mod-description-textarea(name="description" placeholder='Enter the description of the mod...' minlength="10" maxlength="2000") #{mod.description}
+              textarea#mod-description.textarea.textarea-bordered.mod-description-textarea(name="description" placeholder='Enter the description of the mod...' minlength="10" maxlength="2000")
             div(class="md:m-4")
               label.label
                 span.label-text Mod description preview
@@ -142,10 +142,10 @@ block body
         .modal-action
           button.btn(onclick="closeModal('#modalReleaseVersion')") Close
           button#releaseVersionBtn.btn.btn-secondary Release
-    #mod-info(data-mod=JSON.stringify({ slug: mod.slug, author_slug: mod.user.slug }))
+    #mod-info(data-mod=(JSON.stringify({ slug: mod.slug, author_slug: mod.user.slug, name: mod.name, description: mod.description })))
 
 block scripts
   script(src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js")
   script.
-    window.mod = JSON.parse(document.querySelector('#mod-info').dataset.mod);
+    window.mod = JSON.parse((document.querySelector('#mod-info').dataset.mod));
   script(src='/static/scripts/mod.js' type="module")

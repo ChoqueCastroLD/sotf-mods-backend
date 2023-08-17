@@ -2,11 +2,7 @@ import { Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { getMod, getModDownloadVersion, addDownload } from "../services/mods.ts";
 import { render } from "../util/render.ts";
 import * as semver from "https://deno.land/x/semver/mod.ts";
-import showdown from "npm:showdown";
-import * as ammonia from "https://deno.land/x/ammonia@0.3.1/mod.ts";
-await ammonia.init();
 
-const showdownConverter = new showdown.Converter();
 
 export const router = new Router();
 
@@ -33,8 +29,6 @@ router.get("/mods/:user_slug/:mod_slug", async (context) => {
         if (mod.latest_version) {
             mod.next_version = semver.inc(mod.latest_version.version, "patch");
         }
-        const htmlTemplate = showdownConverter.makeHtml(mod.description);
-        mod.description_template = ammonia.clean(htmlTemplate);
         context.response.body = await render("mod", {
             user: context.state.user,
             mod,

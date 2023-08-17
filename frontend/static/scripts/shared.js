@@ -73,3 +73,8 @@ window.addEventListenerDebounce = (name, element, event, callback) => {
         }, 300);
     });
 }
+
+const converter = new showdown.Converter();
+window.markdownToHTML = text => {
+    return converter.makeHtml(text);
+}

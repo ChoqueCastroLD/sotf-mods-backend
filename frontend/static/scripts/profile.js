@@ -1,5 +1,5 @@
 const modsDiscoverContainer = document.querySelector('#mods-discover-container');
-const userProfile = JSON.parse(document.querySelector('#profile-info').dataset.user);
+const userProfile = JSON.parse((document.querySelector('#profile-info').dataset.user));
 
 let forceVerticalMod = false;
 

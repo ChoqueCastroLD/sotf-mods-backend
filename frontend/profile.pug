@@ -5,7 +5,7 @@ block head
   link(rel='stylesheet' href='/static/css/profile.css')
 
 block body
-  #profile-info(data-user=JSON.stringify(userProfile))
+  #profile-info(data-user=(JSON.stringify(userProfile)))
   .flex.flex-col.justify-center.items-center.m-6
     .text-center(class='lg:text-left')
       h1.text-5xl.font-bold #{userProfile.name}'s mods

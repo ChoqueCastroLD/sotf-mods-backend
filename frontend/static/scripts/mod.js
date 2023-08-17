@@ -4,8 +4,6 @@ const updateModBtn = document.getElementById('updateModBtn');
 const releaseVersionBtn = document.getElementById('releaseVersionBtn');
 const modThumbnail = document.querySelector('#mod-thumbnail');
 
-const converter = new showdown.Converter();
-
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has('updated')) {
     window.history.replaceState({}, document.title, window.location.pathname);
@@ -42,21 +40,22 @@ window.toggleFavorite = function (elem, author, slug) {
     });
 }
 
-function renderDescriptionPreview() {
-    const description = document.getElementById('mod-description').value.trim();
+function renderDescriptionPreview(description) {
     const descriptionPreview = document.getElementById('mod-description-preview');
-    descriptionPreview.innerHTML = converter.makeHtml(description);
+    descriptionPreview.innerHTML = markdownToHTML(description);
     document.querySelector('#mod-description-character-count').innerHTML = document.querySelector('#mod-description')?.value.length || "0";
 }
 
 async function main() {
+    document.querySelector('#modDescriptionTemplate').innerHTML = markdownToHTML(mod.description);
+    document.querySelector('#mod-description').value = mod.description;
     btnOneClickInstall.addEventListener('click', () => {
         openModal('#modalOneClickInstall');
     });
     document.querySelector('#mod-description')?.addEventListener('input', (event) => {
-        renderDescriptionPreview();
+        renderDescriptionPreview(document.getElementById('mod-description').value.trim());
     });
-    renderDescriptionPreview();
+    renderDescriptionPreview(mod.description);
     updateModBtn.addEventListener('click', () => {
         showLoadingScreen();
         updateModBtn.disabled = true;
