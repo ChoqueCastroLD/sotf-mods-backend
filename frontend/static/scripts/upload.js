@@ -3,6 +3,7 @@ const modsDiscoverOrientation = document.querySelector('#mods-discover-orientati
 
 const btnSubmitMod = document.querySelector('#btn-submit-mod');
 const modName = document.querySelector('#mod-name');
+const modShortDescription = document.querySelector('#mod-shortDescription');
 const modDescription = document.querySelector('#mod-description');
 const modCategory = document.querySelector('#mod-category');
 const modVersion = document.querySelector('#mod-version');
@@ -10,10 +11,11 @@ const modIsNSFW = document.querySelector('#mod-isNSFW');
 const modFile = document.querySelector('#mod-file');
 const modThumbnail = document.querySelector('#mod-thumbnail');
 
+const converter = new showdown.Converter();
+
 
 function getModTemplate(mod) {
-    if (!mod.description) mod.description = "This is a description of the mod.";
-    mod.description = sanitizeText(mod.description.replace(/\n/g, " "));
+    if (!mod.shortDescription) mod.shortDescription = "This is a description of the mod.";
     return `<figure><img src="${mod.thumbnail_url || "https://cdn.discordapp.com/attachments/1078656518133661737/1140334396172402748/example_image.png"}" alt="${mod.name || "Mod Name"}"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">
@@ -22,9 +24,9 @@ function getModTemplate(mod) {
             </a>
             ${mod.isNSFW ? `<div class="badge badge-secondary badge-outline">NSFW</div>` : ''}
         </div>
-        <h2 class="card-title w-full overflow-hidden">${mod.name || "Mod Name"}</h2>
+        <h2 class="card-title w-full">${mod.name || "Mod Name"}</h2>
         <p>by <a href="#!">${user.name}</a></p>
-        <p class="text-justify text-wrap-anywhere">${mod.description.substring(0, 60)}${mod.description.length > 60 ? "..." : ""}</p>
+        <p class="text-justify text-wrap-anywhere">${mod.shortDescription}</p>
         <div class="card-actions justify-end">
             <a class="btn btn-outline btn-success btn-sm" href="#!">Download</a>
         </div>
@@ -53,6 +55,7 @@ async function renderModItem() {
 function getMod() {
     return {
         "name": modName.value.trim(),
+        "shortDescription": modShortDescription.value.trim(),
         "description": modDescription.value.trim(),
         "thumbnail_url": modThumbnail.files[0] ? URL.createObjectURL(modThumbnail.files[0]) : null,
         "isNSFW": modIsNSFW.checked,
@@ -68,11 +71,14 @@ function isVersionValid(version) {
 
 function validateMod(mod) {
     if (!mod.name) throw "Mod name is required!";
-    if (mod.name.length < 3) throw "Mod name must be at least 3 characters long!";
-    if (mod.name.length > 30) throw "Mod name must be less than 50 characters!";
+    if (mod.name.length < 4) throw "Mod name must be at least 4 characters long!";
+    if (mod.name.length > 24) throw "Mod name must be less than 24 characters!";
+    if (!mod.shortDescription) throw "Mod short description is required!";
+    if (mod.shortDescription.length < 10) throw "Mod short description must be at least 10 characters long!";
+    if (mod.shortDescription.length > 100) throw "Mod short description must be less than 100 characters!";
     if (!mod.description) throw "Mod description is required!";
     if (mod.description.length < 10) throw "Mod description must be at least 10 characters long!";
-    if (mod.description.length > 1000) throw "Mod description must be less than 1000 characters!";
+    if (mod.description.length > 2000) throw "Mod description must be less than 2000 characters!";
     if (!mod.category_id) throw "Mod category is required!";
     if (isNaN(mod.category_id)) throw "Mod category is not valid!";
     if (!mod.version) throw "Mod version is required!";
@@ -98,7 +104,8 @@ async function uploadMod() {
 
         const formData = new FormData();
 
-        formData.append('name', mod.name);
+        formData.append('name', sanitizeText(mod.name));
+        formData.append('shortDescription', sanitizeText(mod.shortDescription));
         formData.append('description', mod.description);
         formData.append('isNSFW', mod.isNSFW);
         formData.append('category_id', mod.category_id);
@@ -129,11 +136,19 @@ async function uploadMod() {
     }
 }
 
+function renderDescriptionPreview() {
+    const description = document.getElementById('mod-description').value.trim();
+    const descriptionPreview = document.getElementById('mod-description-preview');
+    descriptionPreview.innerHTML = converter.makeHtml(description);
+    document.querySelector('#mod-description-character-count').innerHTML = document.querySelector('#mod-description')?.value.length || "0";
+}
+
 async function main() {
     await renderModItem();
     modsDiscoverOrientation.addEventListener('change', renderModItem);
     modName.addEventListener('input', renderModItem);
-    modDescription.addEventListener('input', renderModItem);
+    modShortDescription.addEventListener('input', renderModItem);
+    modDescription.addEventListener('input', renderDescriptionPreview);
     modCategory.addEventListener('change', renderModItem);
     modIsNSFW.addEventListener('change', renderModItem);
     modThumbnail.addEventListener('change', renderModItem);

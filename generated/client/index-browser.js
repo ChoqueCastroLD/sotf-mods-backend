@@ -129,6 +129,7 @@ exports.Prisma.ModScalarFieldEnum = makeEnum({
   id: 'id',
   name: 'name',
   slug: 'slug',
+  shortDescription: 'shortDescription',
   description: 'description',
   isNSFW: 'isNSFW',
   isApproved: 'isApproved',

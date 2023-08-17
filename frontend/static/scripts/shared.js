@@ -8,8 +8,15 @@ window.hideLoadingScreen = () => {
     loadingScreen.close();
     loadingScreen.style.display = 'none';
 }
+window.openModal = (modalSelector) => {
+    document.querySelector(modalSelector).classList.add('modal-open');
+}
+window.closeModal = (modalSelector) => {
+    document.querySelector(modalSelector).classList.remove('modal-open');
+}
 window.errorTimeout = null;
 window.showError = error => {
+    document.querySelector('#alert-wrapper').style.display = 'flex';
     document.querySelector('#alerts').classList.add('animate__backInRight');
     document.querySelector('#alerts').innerHTML = `
     <div class="alert alert-error">
@@ -23,11 +30,14 @@ window.showError = error => {
             document.querySelector('#alerts').innerHTML = '';
             document.querySelector('#alerts').classList.remove('animate__backOutRight');
             document.querySelector('#alerts').classList.remove('animate__backInRight');
+            document.querySelector('#alert-wrapper').display = 'none';
+            // document.querySelector('#alert-wrapper').close();
         }, 800);
     }, 15000);
 };
 window.successTimeout = null;
 window.showSuccess = message => {
+    document.querySelector('#alert-wrapper').style.display = 'flex';
     document.querySelector('#alerts').classList.add('animate__backInRight');
     document.querySelector('#alerts').innerHTML = `
     <div class="alert alert-success">
@@ -41,12 +51,17 @@ window.showSuccess = message => {
             document.querySelector('#alerts').innerHTML = '';
             document.querySelector('#alerts').classList.remove('animate__backOutRight');
             document.querySelector('#alerts').classList.remove('animate__backInRight');
+            document.querySelector('#alert-wrapper').style.display = 'none';
+            // document.querySelector('#alert-wrapper').close();
         }, 800);
     }, 15000);
 };
 
 window.sanitizeText = (text) => {
-    return text.replace(/<[^>]*>?/gm, '');
+    if (!text) return "";
+    const allowedPattern = /[^a-zA-Z0-9,.!? _-]/g;
+    const sanitizedInput = DOMPurify.sanitize(text).replace(allowedPattern, "");
+    return sanitizedInput.trim().replace(/<[^>]*>?/gm, '');
 }
 
 window.debounceDict = {};

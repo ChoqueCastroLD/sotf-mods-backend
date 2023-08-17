@@ -2,8 +2,7 @@ extends ../__layout
 
 block head
   link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css")
-  link(href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet")
-  link(href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet")
+  link(rel='stylesheet' href='/static/css/description.css')
   link(rel='stylesheet' href='/static/css/mods.css')
   link(rel='stylesheet' href='/static/css/upload.css')
 
@@ -20,6 +19,10 @@ block body
           <svg class="swap-off fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M149.333 216v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-80c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zM125.333 32H24C10.745 32 0 42.745 0 56v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zm80 448H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm-24-424v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24zm24 264H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24z" fill="currentColor"></path></svg>
         </label>
         #mod-list-demo(min-width="472px")
+        div(class="md:m-4")
+          label.label
+            span.label-text Mod description preview
+          #mod-description-preview.mod-description-template
       .card.flex-shrink-0.w-full.max-w-sm.shadow-2xl.bg-base-100(action='/user/upload' method='post')
         .card-body
           p(class="collapse-title text-xl font-medium") Mod upload
@@ -32,13 +35,21 @@ block body
               <div class="collapse-content"> 
                 .form-control
                   label.label
-                    span.label-text Mod name
+                    span.label-text Name
                   input#mod-name.input.input-bordered(type="text", name="name", placeholder="Enter the name of the mod" minlength="4" maxlength="24")
                 .form-control
                   label.label
-                    span.label-text Mod description
-                    span.label-text-alt (max: 1000 characters)
-                  textarea#mod-description.textarea.textarea-bordered.h-24(name="description" placeholder='Enter the description of the mod...' minlength="16" maxlength="2000")
+                    span.label-text Short description
+                    span.label-text-alt (max: 100 characters)
+                  input#mod-shortDescription.input.input-bordered(type="text", name="name", placeholder="Enter the short description of the mod" minlength="10" maxlength="100")
+                .form-control
+                  label.label
+                    span.label-text Description
+                    span.label-text-alt
+                      | (
+                      span#mod-description-character-count 0
+                      | / 2000 characters)
+                  textarea#mod-description.textarea.textarea-bordered.h-24(name="description" placeholder='Enter the description of the mod...' minlength="10" maxlength="2000")
               </div>
             </div>
             <div class="collapse collapse-arrow join-item border border-base-300">
@@ -64,12 +75,7 @@ block body
               <div class="collapse-title text-xl font-medium">
                 | Images
               </div>
-              <div class="collapse-content"> 
-                //- .form-control.w-full.max-w-xs
-                //-   label.label
-                //-     span.label-text Pick a file
-                //-     span.label-text-alt Alt label
-                //-   input.file-input.file-input-bordered.w-full.max-w-xs(type='file' name='images' multiple)
+              <div class="collapse-content">
                 p Images must be in .png, .jpeg or .gif format
                 .form-control
                   label.label
@@ -102,12 +108,5 @@ block body
           <button id="btn-submit-mod" class="btn btn-primary">Submit</button>
   #mod-page-demo
 block scripts
-  script(src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest")
-  script(src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest")
-  script(src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest")
-  script(src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest")
-  script(src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest")
-  script(src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest")
-  script(src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js")
-  script(src="https://unpkg.com/filepond/dist/filepond.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js")
   script(src='/static/scripts/upload.js' type="module")

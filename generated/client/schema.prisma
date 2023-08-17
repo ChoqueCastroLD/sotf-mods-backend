@@ -26,13 +26,14 @@ model User {
 }
 
 model Mod {
-  id          Int     @id @default(autoincrement())
-  name        String
-  slug        String  @unique
-  description String
-  isNSFW      Boolean
-  isApproved  Boolean
-  isFeatured  Boolean
+  id               Int     @id @default(autoincrement())
+  name             String
+  slug             String  @unique
+  shortDescription String  @default("")
+  description      String
+  isNSFW           Boolean
+  isApproved       Boolean
+  isFeatured       Boolean
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -42,12 +42,12 @@ function decorateMod(mod: Mod & {
     const thumbnail_url = mod?.images
         ?.find((image) => image.isThumbnail)?.url
         ?? mod.images?.[0]?.url
-        ?? "https://via.placeholder.com/1080x608/222";
+        ?? "https://via.placeholder.com/1080x608/222/222";
         
     const primary_image_url = mod?.images
         ?.find((image) => image.isPrimary)?.url
         ?? mod.images?.[0]?.url
-        ?? "https://via.placeholder.com/1080x608/222";
+        ?? "https://via.placeholder.com/1080x608/222/222";
 
     const latest_version = mod.versions?.find((version) => version.isLatest);
 
@@ -240,7 +240,7 @@ export async function countMods(search: string, nsfw: boolean): Promise<number> 
                 }
             },
             {
-                description: {
+                shortDescription: {
                     contains: search,
                     mode: "insensitive",
                 }

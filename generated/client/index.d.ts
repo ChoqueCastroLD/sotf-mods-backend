@@ -33,6 +33,7 @@ export type Mod = {
   id: number
   name: string
   slug: string
+  shortDescription: string
   description: string
   isNSFW: boolean
   isApproved: boolean
@@ -2256,6 +2257,7 @@ export namespace Prisma {
     id: number | null
     name: string | null
     slug: string | null
+    shortDescription: string | null
     description: string | null
     isNSFW: boolean | null
     isApproved: boolean | null
@@ -2270,6 +2272,7 @@ export namespace Prisma {
     id: number | null
     name: string | null
     slug: string | null
+    shortDescription: string | null
     description: string | null
     isNSFW: boolean | null
     isApproved: boolean | null
@@ -2284,6 +2287,7 @@ export namespace Prisma {
     id: number
     name: number
     slug: number
+    shortDescription: number
     description: number
     isNSFW: number
     isApproved: number
@@ -2312,6 +2316,7 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
+    shortDescription?: true
     description?: true
     isNSFW?: true
     isApproved?: true
@@ -2326,6 +2331,7 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
+    shortDescription?: true
     description?: true
     isNSFW?: true
     isApproved?: true
@@ -2340,6 +2346,7 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
+    shortDescription?: true
     description?: true
     isNSFW?: true
     isApproved?: true
@@ -2442,6 +2449,7 @@ export namespace Prisma {
     id: number
     name: string
     slug: string
+    shortDescription: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -2475,6 +2483,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
+    shortDescription?: boolean
     description?: boolean
     isNSFW?: boolean
     isApproved?: boolean
@@ -9402,6 +9411,7 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     slug: 'slug',
+    shortDescription: 'shortDescription',
     description: 'description',
     isNSFW: 'isNSFW',
     isApproved: 'isApproved',
@@ -9560,6 +9570,7 @@ export namespace Prisma {
     id?: IntFilter | number
     name?: StringFilter | string
     slug?: StringFilter | string
+    shortDescription?: StringFilter | string
     description?: StringFilter | string
     isNSFW?: BoolFilter | boolean
     isApproved?: BoolFilter | boolean
@@ -9580,6 +9591,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    shortDescription?: SortOrder
     description?: SortOrder
     isNSFW?: SortOrder
     isApproved?: SortOrder
@@ -9605,6 +9617,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    shortDescription?: SortOrder
     description?: SortOrder
     isNSFW?: SortOrder
     isApproved?: SortOrder
@@ -9627,6 +9640,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter | number
     name?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
+    shortDescription?: StringWithAggregatesFilter | string
     description?: StringWithAggregatesFilter | string
     isNSFW?: BoolWithAggregatesFilter | boolean
     isApproved?: BoolWithAggregatesFilter | boolean
@@ -10062,6 +10076,7 @@ export namespace Prisma {
   export type ModCreateInput = {
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -10080,6 +10095,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -10097,6 +10113,7 @@ export namespace Prisma {
   export type ModUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -10115,6 +10132,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -10133,6 +10151,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -10146,6 +10165,7 @@ export namespace Prisma {
   export type ModUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -10158,6 +10178,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -10769,6 +10790,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    shortDescription?: SortOrder
     description?: SortOrder
     isNSFW?: SortOrder
     isApproved?: SortOrder
@@ -10789,6 +10811,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    shortDescription?: SortOrder
     description?: SortOrder
     isNSFW?: SortOrder
     isApproved?: SortOrder
@@ -10803,6 +10826,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    shortDescription?: SortOrder
     description?: SortOrder
     isNSFW?: SortOrder
     isApproved?: SortOrder
@@ -11821,6 +11845,7 @@ export namespace Prisma {
   export type ModCreateWithoutUserInput = {
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -11838,6 +11863,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -11907,6 +11933,7 @@ export namespace Prisma {
     id?: IntFilter | number
     name?: StringFilter | string
     slug?: StringFilter | string
+    shortDescription?: StringFilter | string
     description?: StringFilter | string
     isNSFW?: BoolFilter | boolean
     isApproved?: BoolFilter | boolean
@@ -12259,6 +12286,7 @@ export namespace Prisma {
   export type ModCreateWithoutImagesInput = {
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -12276,6 +12304,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -12302,6 +12331,7 @@ export namespace Prisma {
   export type ModUpdateWithoutImagesInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -12319,6 +12349,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -12335,6 +12366,7 @@ export namespace Prisma {
   export type ModCreateWithoutVersionsInput = {
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -12352,6 +12384,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -12403,6 +12436,7 @@ export namespace Prisma {
   export type ModUpdateWithoutVersionsInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -12420,6 +12454,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -12464,6 +12499,7 @@ export namespace Prisma {
   export type ModCreateWithoutTagsInput = {
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -12481,6 +12517,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -12518,6 +12555,7 @@ export namespace Prisma {
   export type ModCreateWithoutCategoryInput = {
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -12535,6 +12573,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -12665,6 +12704,7 @@ export namespace Prisma {
   export type ModCreateWithoutFavoritesInput = {
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -12682,6 +12722,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -12736,6 +12777,7 @@ export namespace Prisma {
   export type ModUpdateWithoutFavoritesInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -12753,6 +12795,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -12770,6 +12813,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -12789,6 +12833,7 @@ export namespace Prisma {
   export type ModUpdateWithoutUserInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -12806,6 +12851,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -12823,6 +12869,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -13023,6 +13070,7 @@ export namespace Prisma {
   export type ModUpdateWithoutTagsInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -13040,6 +13088,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -13057,6 +13106,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    shortDescription?: string
     description: string
     isNSFW: boolean
     isApproved: boolean
@@ -13069,6 +13119,7 @@ export namespace Prisma {
   export type ModUpdateWithoutCategoryInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean
@@ -13086,6 +13137,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    shortDescription?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     isNSFW?: BoolFieldUpdateOperationsInput | boolean
     isApproved?: BoolFieldUpdateOperationsInput | boolean

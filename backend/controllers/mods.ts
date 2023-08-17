@@ -17,14 +17,14 @@ const BASE_URL = Deno.env.get("BASE_URL") + "";
 
 function validateModName(modName) {
   let name = modName.trim();
-  if (name.length < 3) {
+  if (name.length < 4) {
     throw "Mod name must be at least 3 characters long.";
   }
-  if (name.length > 50) {
+  if (name.length > 24) {
     throw "Mod name must be less than 50 characters long.";
   }
-  if (!/^[a-zA-Z0-9 ]+$/.test(name)) {
-    throw "Mod name must only contain letters, numbers and spaces.";
+  if (!/^[a-zA-Z0-9 -_]+$/.test(name)) {
+    throw "Mod name must only contain letters, numbers, spaces, dashes and underscores.";
   }
   return name;
 }
@@ -34,12 +34,22 @@ function validateModDescription(modDescription) {
   if (description.length < 10) {
     throw "Mod description must be at least 10 characters long.";
   }
-  if (description.length > 1000) {
-    throw "Mod description must be less than 500 characters long.";
+  if (description.length > 2000) {
+    throw "Mod description must be less than 2000 characters long. ("+description.length+")";
   }
   return description;
 }
 
+function validateModShortDescription(modShortDescription) {
+  let shortDescription = modShortDescription.trim();
+  if (shortDescription.length < 10) {
+    throw "Mod description must be at least 10 characters long.";
+  }
+  if (shortDescription.length > 100) {
+    throw "Mod description must be less than 100 characters long. ("+modShortDescription.length+")";
+  }
+  return shortDescription;
+}
 
 export default {
   getMods: async (ctx: Context) => {
@@ -93,6 +103,11 @@ export default {
       ctx.response.body = { message: 'No mod name provided.' };
       return;
     }
+    if (!fields.shortDescription) {
+      ctx.response.status = 400;
+      ctx.response.body = { message: 'No mod short description provided.' };
+      return;
+    }
     if (!fields.description) {
       ctx.response.status = 400;
       ctx.response.body = { message: 'No mod description provided.' };
@@ -113,6 +128,7 @@ export default {
     try {
       fields.name = validateModName(fields.name);
       fields.description = validateModDescription(fields.description);
+      fields.shortDescription = validateModShortDescription(fields.shortDescription);
     } catch (error) {
       ctx.response.status = 400;
       ctx.response.body = { status: false, message: error };
@@ -196,6 +212,7 @@ export default {
       data: {
         name: fields.name,
         slug: slugName,
+        shortDescription: fields.shortDescription,
         description: fields.description,
         isNSFW: fields.isNSFW === "true",
         isApproved: false,
@@ -367,7 +384,7 @@ export default {
       return;
     }
     
-    const { name, description, isNSFW } = form?.fields;
+    const { name, description, shortDescription, isNSFW } = form?.fields;
     const thumbnail = form.files && form.files['modThumbnail'];
     let thumbnail_ext;
     const inputData = {};
@@ -399,6 +416,9 @@ export default {
       }
       if (description) {
         inputData['description'] = validateModDescription(description);
+      }
+      if (shortDescription) {
+        inputData['shortDescription'] = validateModShortDescription(shortDescription);
       }
     } catch (error) {
       ctx.response.status = 400;

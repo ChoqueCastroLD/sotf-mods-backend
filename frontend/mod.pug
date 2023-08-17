@@ -2,11 +2,11 @@ extends __layout
 
 block meta
   meta(content=mod.name, property="og:title")
-  meta(content=(mod.description.length > 150 ? mod.description.substring(0, 150).trim() + "..." : mod.description), property="og:description")
+  meta(content=(mod.shortDescription), property="og:description")
   meta(content=(mod.primary_image_url || "https://sotf-mods.com/static/images/sotfmods.png"), property="og:image")
   link(type="application/json+oembed", href=`https://sotf-mods.com/mods/${mod.user.slug}/${mod.slug}.json`)
   link(rel='stylesheet' href='/static/css/mod.css')
-  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown.min.css')
+  link(rel='stylesheet' href='/static/css/description.css')
 
 block head
   span
@@ -14,15 +14,15 @@ block head
 block body
   .wrapper.m-4
     .flex.justify-center.mt-8
-      p.text-5xl #{mod.name}
+      p.text-5xl(style="overflow-wrap: anywhere;") #{mod.name}
     .flex.justify-center.mb-8
       p.text-base by 
         a.text-success(href=`/profile/${mod.user.slug}`) #{mod.user.name}
-
-    div.grid.grid-cols-2.gap-4
-    div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
+    div(class="grid grid-cols-1 lg:grid-cols-2 gap-4")
       div.mod-info.m-4
         img.mod-logo(src=mod.primary_image_url, alt=mod.name)
+        .flex.justify-center.flex-wrap
+          p.text-base.m-4(style="overflow-wrap: anywhere;") #{mod.shortDescription}
         - if (!mod.isApproved)
           .flex.justify-center
             p.text-error.text-xs.mt-4 Pending approval.
@@ -53,16 +53,11 @@ block body
                 <svg width="1.6rem" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M458.4 64.3C400.6 15.7 311.3 23 256 79.3C200.7 23 111.4 15.6 53.6 64.3C-21.6 127.6-10.6 230.8 43 285.5l175.4 178.7c10 10.2 23.4 15.9 37.6 15.9c14.3 0 27.6-5.6 37.6-15.8L469 285.6c53.5-54.7 64.7-157.9-10.6-221.3zm-23.6 187.5L259.4 430.5c-2.4 2.4-4.4 2.4-6.8 0L77.2 251.8c-36.5-37.2-43.9-107.6 7.3-150.7c38.9-32.7 98.9-27.8 136.5 10.5l35 35.7l35-35.7c37.8-38.5 97.8-43.2 136.5-10.6c51.1 43.1 43.5 113.9 7.3 150.8z" fill="currentColor"></path></svg>
         - if (user && user.slug === mod.user.slug)
           .flex.justify-center.mt-4.flex-wrap
-            a.btn.btn-outline.m-2(onclick="modalEdit.showModal()") Update details
-            a.btn.btn-outline.m-2(onclick="modalReleaseVersion.showModal()") Release version
+            a.btn.btn-outline.m-2(onclick="openModal('#modalEdit')") Update details
+            a.btn.btn-outline.m-2(onclick="openModal('#modalReleaseVersion')") Release version
 
       div.mod-downloads.m-4
-        p.text-3xl.mb-8.mt-4 Description
-        .markdown-body.w-full
-          pre.mod-description #{mod.description}
-        p.text-3xl.mb-8.mt-4 Tags
-        span Category: #{mod.category.name}
-        .overflow-x-auto
+        pre.mod-description-template !{mod.description_template || mod.description}
     .flex.justify-center
       p.text-3xl.mb-8.mt-4 Version history
     .flex.justify-center
@@ -74,7 +69,6 @@ block body
               th Changelog
               th Downloads
           tbody
-            // row 1
             - for (const version of mod.versions)
               tr(class=version.isLatest ? "bg-base-100" : "")
                 td #{version.version}
@@ -88,20 +82,33 @@ block body
         p.py-4 Automatically install this mod with one click. This will open SF Loader and install the latest version of the mod automatically.
         p.py-4.text-error Still in development.
         .modal-action
-          button.btn Close
+          button.btn(onclick="closeModal('#modalOneClickInstall')") Close
     dialog#modalEdit.modal
       form.modal-box(method='dialog')
         h3.font-bold.text-lg Update mod details
         .form-control
           label.label
-            span.label-text Mod name
+            span.label-text Name
           input#mod-name.input.input-bordered(type="text", name="name", placeholder="Enter the name of the mod" minlength="4" maxlength="24" value=mod.name)
         .form-control
           label.label
-            span.label-text Mod description
-            span.label-text-alt (max: 1000 characters)
-          textarea#mod-description.textarea.textarea-bordered.h-24(name="description" placeholder='Enter the description of the mod...' minlength="16" maxlength="2000") #{mod.description}
-        .form-control
+            span.label-text Short description
+          input#mod-shortDescription.input.input-bordered(type="text", name="name", placeholder="Enter the short description of the mod" minlength="10" maxlength="100" value=mod.shortDescription)
+        .form-control.mb-4
+          div(class="grid grid-cols-1 md:grid-cols-2 gap-4")
+            div(class="md:m-4")
+              label.label
+                span.label-text Mod description
+                span.label-text-alt
+                  | (
+                  span#mod-description-character-count #{mod.description.length}
+                  | / 2000 characters)
+              textarea#mod-description.textarea.textarea-bordered.mod-description-textarea(name="description" placeholder='Enter the description of the mod...' minlength="10" maxlength="2000") #{mod.description}
+            div(class="md:m-4")
+              label.label
+                span.label-text Mod description preview
+              #mod-description-preview.mod-description-template
+        .form-control.mt-2
           label.label
             span.label-text Thumbnail
           input#mod-thumbnail(type="file" class="file-input file-input-bordered file-input-primary w-full" accept=".png,.jpeg,.gif")
@@ -114,7 +121,7 @@ block body
           span.label-text Has NSFW content
           input#mod-isNSFW.toggle.toggle-secondary.ml-2(name='isNSFW' type='checkbox' checked=mod.isNSFW)
         .modal-action
-          button.btn Close
+          button.btn(onclick="closeModal('#modalEdit')") Close
           button#updateModBtn.btn.btn-primary Update
     dialog#modalReleaseVersion.modal
       form.modal-box(method='dialog')
@@ -127,18 +134,18 @@ block body
         .form-control
           label.label
             span.label-text Changelog
-        textarea#mod-changelog.textarea.textarea-bordered.h-24.w-full(name="changelog" placeholder='Enter the changelog of the version...' minlength="16" maxlength="2000")
+        textarea#mod-changelog.textarea.textarea-bordered.h-24.w-full(name="changelog" placeholder='Enter the changelog of the version...' minlength="10" maxlength="2000")
         .form-control
           label.label
             span.label-text Mod file (.dll or .zip)
         input#mod-file.w-full(type="file" class="file-input file-input-bordered file-input-secondary" accept=".zip,.dll")
         .modal-action
-          button.btn Close
+          button.btn(onclick="closeModal('#modalReleaseVersion')") Close
           button#releaseVersionBtn.btn.btn-secondary Release
     #mod-info(data-mod=JSON.stringify({ slug: mod.slug, author_slug: mod.user.slug }))
 
-
 block scripts
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js")
   script.
     window.mod = JSON.parse(document.querySelector('#mod-info').dataset.mod);
   script(src='/static/scripts/mod.js' type="module")

@@ -20,9 +20,9 @@ function getModTemplate(mod) {
             ${mod.isNSFW ? `<div class="badge badge-secondary badge-outline">NSFW</div>` : ''}
             ${mod.isFeatured ? `<div class="badge badge-accent">Featured</div>` : ''}
         </div>
-        <h2 class="card-title w-full overflow-hidden">${mod.name}</h2>
+        <h2 class="card-title w-full">${mod.name}</h2>
         <p>by <a class="text-success" href="/profile/${mod.user.slug}">${mod.user.name}</a></p>
-        <p class="text-justify text-wrap-anywhere">${sanitizeText(mod.description.substring(0, 60))}${sanitizeText(mod.description).length > 60 ? "..." : ""}</p>
+        <p class="text-justify text-wrap-anywhere">${mod.shortDescription}</p>
         <div class="card-actions justify-end">
             <a class="btn btn-outline btn-success btn-sm" href="/mods/${mod.user.slug}/${mod.slug}">Download</a>
         </div>

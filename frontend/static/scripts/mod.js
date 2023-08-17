@@ -4,6 +4,8 @@ const updateModBtn = document.getElementById('updateModBtn');
 const releaseVersionBtn = document.getElementById('releaseVersionBtn');
 const modThumbnail = document.querySelector('#mod-thumbnail');
 
+const converter = new showdown.Converter();
+
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has('updated')) {
     window.history.replaceState({}, document.title, window.location.pathname);
@@ -40,15 +42,27 @@ window.toggleFavorite = function (elem, author, slug) {
     });
 }
 
+function renderDescriptionPreview() {
+    const description = document.getElementById('mod-description').value.trim();
+    const descriptionPreview = document.getElementById('mod-description-preview');
+    descriptionPreview.innerHTML = converter.makeHtml(description);
+    document.querySelector('#mod-description-character-count').innerHTML = document.querySelector('#mod-description')?.value.length || "0";
+}
+
 async function main() {
     btnOneClickInstall.addEventListener('click', () => {
-        modalOneClickInstall.showModal();
+        openModal('#modalOneClickInstall');
     });
+    document.querySelector('#mod-description')?.addEventListener('input', (event) => {
+        renderDescriptionPreview();
+    });
+    renderDescriptionPreview();
     updateModBtn.addEventListener('click', () => {
         showLoadingScreen();
         updateModBtn.disabled = true;
         const formData = new FormData();
-        formData.append('name', document.getElementById('mod-name').value.trim());
+        formData.append('name', sanitizeText(document.getElementById('mod-name').value.trim()));
+        formData.append('shortDescription', sanitizeText(document.getElementById('mod-shortDescription').value.trim()));
         formData.append('description', document.getElementById('mod-description').value.trim());
         formData.append('isNSFW', document.getElementById('mod-isNSFW').checked);
         formData.append('modThumbnail', modThumbnail.files[0]);
@@ -78,7 +92,7 @@ async function main() {
         showLoadingScreen();
         releaseVersionBtn.disabled = true;
         const modVersion = document.getElementById('mod-version').value.trim();
-        const modChangelog = document.getElementById('mod-changelog').value.trim();
+        const modChangelog = sanitizeText(document.getElementById('mod-changelog').value.trim());
         const modFile = document.getElementById('mod-file');
         if (!modVersion || !modChangelog) {
             showError('Please fill in all the fields');

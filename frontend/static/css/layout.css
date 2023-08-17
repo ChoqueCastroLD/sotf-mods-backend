@@ -38,4 +38,11 @@ body {
     right: 0;
     margin-bottom: 30px;
     margin-right: 30px;
+    overflow: hidden;
+    z-index: 9999;
+    background: none;
+    box-shadow: -3px 7px 9px 4px rgb(0 0 0 / 34%);
+}
+#alert-wrapper::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
 }

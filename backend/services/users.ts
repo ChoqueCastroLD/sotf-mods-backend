@@ -14,10 +14,10 @@ export async function registerUser(email: string, name: string, password: string
     errors.push({ field: 'password', message: "Password must be at most 64 characters long" });
   if (password !== confirm_password)
     errors.push({ field: 'password', message: "Passwords do not match" });
-  if (name.length < 3)
-    errors.push({ field: 'username', message: "Name must be at least 3 characters long" });
-  if (name.length > 20)
-    errors.push({ field: 'username', message: "Name must be at most 20 characters long" });
+  if (name.length < 4)
+    errors.push({ field: 'username', message: "Name must be at least 4 characters long" });
+  if (name.length > 24)
+    errors.push({ field: 'username', message: "Name must be at most 24 characters long" });
   if(email.length < 6)
     errors.push({ field: 'email', message: "Email must be at least 6 characters long" });
   if(email.length > 254)
