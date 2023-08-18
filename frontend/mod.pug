@@ -37,13 +37,13 @@ block body
             target="_blank"
           ) Direct Download
           button#btnOneClickInstall.btn.btn-outline.btn-secondary.m-4 One-Click Install
-        - if (mod.latest_version)
-          .flex.justify-center
-            span.color-dark-light.text-xs.mb-2 Version #{mod.latest_version.version}
         .flex.justify-center.flex-wrap
           span.stat-desc.text-success ↗︎ #{mod.downloads} downloads
           span.stat-desc.text-secondary.ml-2 ♥ #{mod._count.favorites} follows
-          span.stat-desc.ml-2 ⏱ Last update #{mod.time_ago}
+          - if (mod.latest_version)
+            span.stat-desc.ml-2 ⏱ Version #{mod.latest_version.version} released #{mod.time_ago}
+          - else
+            span.stat-desc.ml-2 ⏱ Announced #{mod.time_ago}
         - if (user && user.slug !== mod.user.slug)
           .flex.justify-center
             a.mod-favorite.m-2(href="#!", onclick="toggleFavorite(this, '" + mod.user.slug + "', '" + mod.slug + "')")
