@@ -59,7 +59,7 @@ window.showSuccess = message => {
 
 window.sanitizeText = (text) => {
     if (!text) return "";
-    const allowedPattern = /[^a-zA-Z0-9,.!? _-]/g;
+    const allowedPattern = /[^a-zA-Z0-9,.¡!¿?$%&()#+;/'" _-]/g;
     const sanitizedInput = DOMPurify.sanitize(text).replace(allowedPattern, "");
     return sanitizedInput.trim().replace(/<[^>]*>?/gm, '');
 }

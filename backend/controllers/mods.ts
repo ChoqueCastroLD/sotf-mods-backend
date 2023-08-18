@@ -23,7 +23,8 @@ function validateModName(modName) {
   if (name.length > 24) {
     throw "Mod name must be less than 50 characters long.";
   }
-  if (!/^[a-zA-Z0-9 -_]+$/.test(name)) {
+  const allowedPattern = /^[a-zA-Z0-9,.¡!¿?$%&()#+;'" _-]+$/;
+  if (!allowedPattern.test(name)) {
     throw "Mod name must only contain letters, numbers, spaces, dashes and underscores.";
   }
   return name;
@@ -63,6 +64,9 @@ export default {
       delete mod.userId;
       delete mod.versions;
       delete mod.images;
+      if (mod.latest_version) {
+        mod.latest_version.downloads = mod.latest_version.downloads.length;
+      }
       return mod;
     });
     const mod_count = await countMods(search, nsfw);
