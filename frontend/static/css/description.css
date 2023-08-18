@@ -5,6 +5,8 @@
 
 .mod-description-template {
     text-wrap: wrap;
+    line-break: auto;
+    word-break: break-word;
     height: 100%;
     padding: 20px;
     background-color: #161b22 !important;
