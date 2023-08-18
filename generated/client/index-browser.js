@@ -118,6 +118,7 @@ exports.Prisma.ModFavoriteScalarFieldEnum = makeEnum({
 exports.Prisma.ModImageScalarFieldEnum = makeEnum({
   id: 'id',
   url: 'url',
+  preview_url: 'preview_url',
   isPrimary: 'isPrimary',
   isThumbnail: 'isThumbnail',
   createdAt: 'createdAt',

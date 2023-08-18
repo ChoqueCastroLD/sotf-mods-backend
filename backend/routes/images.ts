@@ -4,4 +4,6 @@ import imagesController from "../controllers/images.ts";
 
 export const router = new Router();
 
+router.get("/images/:filename/preview", imagesController.downloadImagePreview);
+
 router.get("/images/:filename", imagesController.downloadImage);

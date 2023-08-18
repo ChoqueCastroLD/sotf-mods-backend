@@ -51,6 +51,7 @@ export type Mod = {
 export type ModImage = {
   id: number
   url: string
+  preview_url: string | null
   isPrimary: boolean
   isThumbnail: boolean
   createdAt: Date
@@ -3401,6 +3402,7 @@ export namespace Prisma {
   export type ModImageMinAggregateOutputType = {
     id: number | null
     url: string | null
+    preview_url: string | null
     isPrimary: boolean | null
     isThumbnail: boolean | null
     createdAt: Date | null
@@ -3411,6 +3413,7 @@ export namespace Prisma {
   export type ModImageMaxAggregateOutputType = {
     id: number | null
     url: string | null
+    preview_url: string | null
     isPrimary: boolean | null
     isThumbnail: boolean | null
     createdAt: Date | null
@@ -3421,6 +3424,7 @@ export namespace Prisma {
   export type ModImageCountAggregateOutputType = {
     id: number
     url: number
+    preview_url: number
     isPrimary: number
     isThumbnail: number
     createdAt: number
@@ -3443,6 +3447,7 @@ export namespace Prisma {
   export type ModImageMinAggregateInputType = {
     id?: true
     url?: true
+    preview_url?: true
     isPrimary?: true
     isThumbnail?: true
     createdAt?: true
@@ -3453,6 +3458,7 @@ export namespace Prisma {
   export type ModImageMaxAggregateInputType = {
     id?: true
     url?: true
+    preview_url?: true
     isPrimary?: true
     isThumbnail?: true
     createdAt?: true
@@ -3463,6 +3469,7 @@ export namespace Prisma {
   export type ModImageCountAggregateInputType = {
     id?: true
     url?: true
+    preview_url?: true
     isPrimary?: true
     isThumbnail?: true
     createdAt?: true
@@ -3561,6 +3568,7 @@ export namespace Prisma {
   export type ModImageGroupByOutputType = {
     id: number
     url: string
+    preview_url: string | null
     isPrimary: boolean
     isThumbnail: boolean
     createdAt: Date
@@ -3590,6 +3598,7 @@ export namespace Prisma {
   export type ModImageSelect = {
     id?: boolean
     url?: boolean
+    preview_url?: boolean
     isPrimary?: boolean
     isThumbnail?: boolean
     createdAt?: boolean
@@ -9397,6 +9406,7 @@ export namespace Prisma {
   export const ModImageScalarFieldEnum: {
     id: 'id',
     url: 'url',
+    preview_url: 'preview_url',
     isPrimary: 'isPrimary',
     isThumbnail: 'isThumbnail',
     createdAt: 'createdAt',
@@ -9657,6 +9667,7 @@ export namespace Prisma {
     NOT?: Enumerable<ModImageWhereInput>
     id?: IntFilter | number
     url?: StringFilter | string
+    preview_url?: StringNullableFilter | string | null
     isPrimary?: BoolFilter | boolean
     isThumbnail?: BoolFilter | boolean
     createdAt?: DateTimeFilter | Date | string
@@ -9668,6 +9679,7 @@ export namespace Prisma {
   export type ModImageOrderByWithRelationInput = {
     id?: SortOrder
     url?: SortOrder
+    preview_url?: SortOrder
     isPrimary?: SortOrder
     isThumbnail?: SortOrder
     createdAt?: SortOrder
@@ -9683,6 +9695,7 @@ export namespace Prisma {
   export type ModImageOrderByWithAggregationInput = {
     id?: SortOrder
     url?: SortOrder
+    preview_url?: SortOrder
     isPrimary?: SortOrder
     isThumbnail?: SortOrder
     createdAt?: SortOrder
@@ -9701,6 +9714,7 @@ export namespace Prisma {
     NOT?: Enumerable<ModImageScalarWhereWithAggregatesInput>
     id?: IntWithAggregatesFilter | number
     url?: StringWithAggregatesFilter | string
+    preview_url?: StringNullableWithAggregatesFilter | string | null
     isPrimary?: BoolWithAggregatesFilter | boolean
     isThumbnail?: BoolWithAggregatesFilter | boolean
     createdAt?: DateTimeWithAggregatesFilter | Date | string
@@ -10191,6 +10205,7 @@ export namespace Prisma {
 
   export type ModImageCreateInput = {
     url: string
+    preview_url?: string | null
     isPrimary: boolean
     isThumbnail: boolean
     createdAt?: Date | string
@@ -10201,6 +10216,7 @@ export namespace Prisma {
   export type ModImageUncheckedCreateInput = {
     id?: number
     url: string
+    preview_url?: string | null
     isPrimary: boolean
     isThumbnail: boolean
     createdAt?: Date | string
@@ -10210,6 +10226,7 @@ export namespace Prisma {
 
   export type ModImageUpdateInput = {
     url?: StringFieldUpdateOperationsInput | string
+    preview_url?: NullableStringFieldUpdateOperationsInput | string | null
     isPrimary?: BoolFieldUpdateOperationsInput | boolean
     isThumbnail?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10220,6 +10237,7 @@ export namespace Prisma {
   export type ModImageUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     url?: StringFieldUpdateOperationsInput | string
+    preview_url?: NullableStringFieldUpdateOperationsInput | string | null
     isPrimary?: BoolFieldUpdateOperationsInput | boolean
     isThumbnail?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10230,6 +10248,7 @@ export namespace Prisma {
   export type ModImageCreateManyInput = {
     id?: number
     url: string
+    preview_url?: string | null
     isPrimary: boolean
     isThumbnail: boolean
     createdAt?: Date | string
@@ -10239,6 +10258,7 @@ export namespace Prisma {
 
   export type ModImageUpdateManyMutationInput = {
     url?: StringFieldUpdateOperationsInput | string
+    preview_url?: NullableStringFieldUpdateOperationsInput | string | null
     isPrimary?: BoolFieldUpdateOperationsInput | boolean
     isThumbnail?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10248,6 +10268,7 @@ export namespace Prisma {
   export type ModImageUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     url?: StringFieldUpdateOperationsInput | string
+    preview_url?: NullableStringFieldUpdateOperationsInput | string | null
     isPrimary?: BoolFieldUpdateOperationsInput | boolean
     isThumbnail?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10867,6 +10888,21 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter
   }
 
+  export type StringNullableFilter = {
+    equals?: string | null
+    in?: Enumerable<string> | null
+    notIn?: Enumerable<string> | null
+    lt?: string
+    lte?: string
+    gt?: string
+    gte?: string
+    contains?: string
+    startsWith?: string
+    endsWith?: string
+    mode?: QueryMode
+    not?: NestedStringNullableFilter | string | null
+  }
+
   export type ModRelationFilter = {
     is?: ModWhereInput | null
     isNot?: ModWhereInput | null
@@ -10875,6 +10911,7 @@ export namespace Prisma {
   export type ModImageCountOrderByAggregateInput = {
     id?: SortOrder
     url?: SortOrder
+    preview_url?: SortOrder
     isPrimary?: SortOrder
     isThumbnail?: SortOrder
     createdAt?: SortOrder
@@ -10890,6 +10927,7 @@ export namespace Prisma {
   export type ModImageMaxOrderByAggregateInput = {
     id?: SortOrder
     url?: SortOrder
+    preview_url?: SortOrder
     isPrimary?: SortOrder
     isThumbnail?: SortOrder
     createdAt?: SortOrder
@@ -10900,6 +10938,7 @@ export namespace Prisma {
   export type ModImageMinOrderByAggregateInput = {
     id?: SortOrder
     url?: SortOrder
+    preview_url?: SortOrder
     isPrimary?: SortOrder
     isThumbnail?: SortOrder
     createdAt?: SortOrder
@@ -10912,7 +10951,7 @@ export namespace Prisma {
     modId?: SortOrder
   }
 
-  export type StringNullableFilter = {
+  export type StringNullableWithAggregatesFilter = {
     equals?: string | null
     in?: Enumerable<string> | null
     notIn?: Enumerable<string> | null
@@ -10924,7 +10963,10 @@ export namespace Prisma {
     startsWith?: string
     endsWith?: string
     mode?: QueryMode
-    not?: NestedStringNullableFilter | string | null
+    not?: NestedStringNullableWithAggregatesFilter | string | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedStringNullableFilter
+    _max?: NestedStringNullableFilter
   }
 
   export type ModDownloadListRelationFilter = {
@@ -10984,24 +11026,6 @@ export namespace Prisma {
   export type ModVersionSumOrderByAggregateInput = {
     id?: SortOrder
     modId?: SortOrder
-  }
-
-  export type StringNullableWithAggregatesFilter = {
-    equals?: string | null
-    in?: Enumerable<string> | null
-    notIn?: Enumerable<string> | null
-    lt?: string
-    lte?: string
-    gt?: string
-    gte?: string
-    contains?: string
-    startsWith?: string
-    endsWith?: string
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedStringNullableFilter
-    _max?: NestedStringNullableFilter
   }
 
   export type TagCountOrderByAggregateInput = {
@@ -11466,6 +11490,10 @@ export namespace Prisma {
     connect?: ModWhereUniqueInput
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type ModUpdateOneWithoutImagesNestedInput = {
     create?: XOR<ModCreateWithoutImagesInput, ModUncheckedCreateWithoutImagesInput>
     connectOrCreate?: ModCreateOrConnectWithoutImagesInput
@@ -11494,10 +11522,6 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<ModDownloadCreateOrConnectWithoutVersionInput>
     createMany?: ModDownloadCreateManyVersionInputEnvelope
     connect?: Enumerable<ModDownloadWhereUniqueInput>
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type ModUpdateOneWithoutVersionsNestedInput = {
@@ -12080,6 +12104,7 @@ export namespace Prisma {
 
   export type ModImageCreateWithoutModInput = {
     url: string
+    preview_url?: string | null
     isPrimary: boolean
     isThumbnail: boolean
     createdAt?: Date | string
@@ -12089,6 +12114,7 @@ export namespace Prisma {
   export type ModImageUncheckedCreateWithoutModInput = {
     id?: number
     url: string
+    preview_url?: string | null
     isPrimary: boolean
     isThumbnail: boolean
     createdAt?: Date | string
@@ -12260,6 +12286,7 @@ export namespace Prisma {
     NOT?: Enumerable<ModImageScalarWhereInput>
     id?: IntFilter | number
     url?: StringFilter | string
+    preview_url?: StringNullableFilter | string | null
     isPrimary?: BoolFilter | boolean
     isThumbnail?: BoolFilter | boolean
     createdAt?: DateTimeFilter | Date | string
@@ -12914,6 +12941,7 @@ export namespace Prisma {
   export type ModImageCreateManyModInput = {
     id?: number
     url: string
+    preview_url?: string | null
     isPrimary: boolean
     isThumbnail: boolean
     createdAt?: Date | string
@@ -12992,6 +13020,7 @@ export namespace Prisma {
 
   export type ModImageUpdateWithoutModInput = {
     url?: StringFieldUpdateOperationsInput | string
+    preview_url?: NullableStringFieldUpdateOperationsInput | string | null
     isPrimary?: BoolFieldUpdateOperationsInput | boolean
     isThumbnail?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13001,6 +13030,7 @@ export namespace Prisma {
   export type ModImageUncheckedUpdateWithoutModInput = {
     id?: IntFieldUpdateOperationsInput | number
     url?: StringFieldUpdateOperationsInput | string
+    preview_url?: NullableStringFieldUpdateOperationsInput | string | null
     isPrimary?: BoolFieldUpdateOperationsInput | boolean
     isThumbnail?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13010,6 +13040,7 @@ export namespace Prisma {
   export type ModImageUncheckedUpdateManyWithoutImagesInput = {
     id?: IntFieldUpdateOperationsInput | number
     url?: StringFieldUpdateOperationsInput | string
+    preview_url?: NullableStringFieldUpdateOperationsInput | string | null
     isPrimary?: BoolFieldUpdateOperationsInput | boolean
     isThumbnail?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

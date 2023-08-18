@@ -23,7 +23,7 @@ async function getMods(page) {
 }
 
 function getModTemplate(mod) {
-    return `<figure><img src="${mod.thumbnail_url}" alt="${mod.name}" loading="lazy"/></figure>
+    return `<figure><img data-lazy-src="${mod.thumbnail_url}" alt="${mod.name}" loading="lazy"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">
             <a href="/mods?category=${mod.category.slug}">

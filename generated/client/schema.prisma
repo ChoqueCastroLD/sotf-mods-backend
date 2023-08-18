@@ -51,6 +51,7 @@ model Mod {
 model ModImage {
   id          Int     @id @default(autoincrement())
   url         String
+  preview_url String?
   isPrimary   Boolean
   isThumbnail Boolean
 

@@ -75,18 +75,52 @@ window.addEventListenerDebounce = (name, element, event, callback) => {
 }
 
 
-showdown.setOption('simpleLineBreaks', true);
-showdown.setOption('smoothLivePreview', true);
-showdown.setOption('simplifiedAutoLink', true);
-showdown.setOption('noHeaderId', true);
-showdown.setOption('tasklists', true);
-
-window.converter = new showdown.Converter();
-
-window.markdownToHTML = text => {
-    const lineBreakToken = Date.now();
-    text = text.split('\n').map(v => v.trim() == '' ? lineBreakToken : '\n' + v ).join('');
-    const html = converter.makeHtml(text);
-    const h = html.replaceAll('\n', '').replaceAll(lineBreakToken, '<br>');
-    return h;
+if (window.showdown) {
+    showdown.setOption('simpleLineBreaks', true);
+    showdown.setOption('smoothLivePreview', true);
+    showdown.setOption('simplifiedAutoLink', true);
+    showdown.setOption('noHeaderId', true);
+    showdown.setOption('tasklists', true);
+    
+    window.converter = new showdown.Converter();
+    
+    window.markdownToHTML = text => {
+        const lineBreakToken = Date.now();
+        text = text.split('\n').map(v => v.trim() == '' ? lineBreakToken : '\n' + v ).join('');
+        const html = converter.makeHtml(text);
+        const h = html.replaceAll('\n', '').replaceAll(lineBreakToken, '<br>');
+        return h;
+    }
 }
+
+
+const mutationCallback = (mutationsList, observer) => {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach(node => {
+            if (node instanceof Element) {
+                node.querySelectorAll('img[data-lazy-src]').forEach(node => {
+                    const img = node;
+                    img.src = img.dataset.lazySrc + '/preview';
+                    fetch(img.dataset.lazySrc)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const imageUrl = URL.createObjectURL(blob);
+                            img.src = imageUrl;
+                        });
+                });
+            }
+        });
+      }
+    }
+};
+  
+const observerOptions = {
+    childList: true,
+    subtree: true,
+    attributes: true,
+};
+
+const observer = new MutationObserver(mutationCallback);
+
+observer.observe(document.body, observerOptions);
