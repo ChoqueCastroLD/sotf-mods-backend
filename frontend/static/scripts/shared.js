@@ -74,7 +74,19 @@ window.addEventListenerDebounce = (name, element, event, callback) => {
     });
 }
 
-const converter = new showdown.Converter();
+
+showdown.setOption('simpleLineBreaks', true);
+showdown.setOption('smoothLivePreview', true);
+showdown.setOption('simplifiedAutoLink', true);
+showdown.setOption('noHeaderId', true);
+showdown.setOption('tasklists', true);
+
+window.converter = new showdown.Converter();
+
 window.markdownToHTML = text => {
-    return converter.makeHtml(text);
+    const lineBreakToken = Date.now();
+    text = text.split('\n').map(v => v.trim() == '' ? lineBreakToken : '\n' + v ).join('');
+    const html = converter.makeHtml(text);
+    const h = html.replaceAll('\n', '').replaceAll(lineBreakToken, '<br>');
+    return h;
 }

@@ -53,7 +53,7 @@ async function main() {
         openModal('#modalOneClickInstall');
     });
     document.querySelector('#mod-description')?.addEventListener('input', (event) => {
-        renderDescriptionPreview(document.getElementById('mod-description').value.trim());
+        renderDescriptionPreview(document.getElementById('mod-description').value);
     });
     renderDescriptionPreview(mod.description);
     updateModBtn.addEventListener('click', () => {

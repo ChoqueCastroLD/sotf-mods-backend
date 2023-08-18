@@ -9,7 +9,8 @@
     padding: 20px;
     background-color: #161b22 !important;
     border-radius: 30px;
-    line-break: anywhere;
+    /* line-break: anywhere; */
+    line-height: 1 !important;
 
 
     /* Elements inside */
@@ -23,14 +24,12 @@
     & body {
       font-family: Arial, sans-serif;
       font-size: 16px;
-      line-height: 1.5;
       margin: 1rem;
     }
     
     /* Headings */
     & h1, h2, h3, h4, h5, h6 {
       font-weight: bold;
-      margin-bottom: 0.5rem;
     }
     
     & h1 {
@@ -55,11 +54,6 @@
     
     & h6 {
       font-size: 0.875rem;
-    }
-    
-    /* Paragraphs */
-    & p {
-      margin-bottom: 1rem;
     }
     
     /* Links */
@@ -96,21 +90,15 @@
     
     /* Lists */
     & ul, ol {
-      margin-bottom: 0.3rem;
       list-style: auto;
       margin-left: 1rem;
     }
     
     & li {
-      margin-bottom: 0.25rem;
       margin-left: 1rem;
     }
     
     /* Definition Lists */
-    & dl {
-      margin-bottom: 1rem;
-    }
-    
     & dt {
       font-weight: bold;
     }
@@ -130,7 +118,6 @@
     & table {
       border-collapse: collapse;
       width: 100%;
-      margin-bottom: 1rem;
       border: 1px solid #ccc;
     }
 
