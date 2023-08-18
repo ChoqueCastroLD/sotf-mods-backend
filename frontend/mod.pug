@@ -20,7 +20,7 @@ block body
         a.text-success(href=`/profile/${mod.user.slug}`) #{mod.user.name}
     div(class="grid grid-cols-1 lg:grid-cols-2 gap-4")
       div.mod-info.m-4
-        img.mod-logo(src=mod.primary_image_url, alt=mod.name)
+        img.mod-logo(data-lazy-src=mod.primary_image_url, alt=mod.name)
         .flex.justify-center.flex-wrap
           p.text-base.m-4(style="overflow-wrap: anywhere;") #{mod.shortDescription}
         - if (!mod.isApproved)

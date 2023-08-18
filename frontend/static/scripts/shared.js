@@ -94,21 +94,30 @@ if (window.showdown) {
 }
 
 
+function lazyLoadImages(elements) {
+    elements.forEach(img => {
+        const imageUrl = img.dataset.lazySrc;
+        img.removeAttribute('data-lazy-src');
+        img.src = imageUrl + '/preview';
+        fetch(imageUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const image = URL.createObjectURL(blob);
+                img.src = image;
+            })
+            .catch(error => {
+                // we just ignore the error and let the browser handle it
+                img.src = imageUrl;
+            });
+    });
+}
+
 const mutationCallback = (mutationsList, observer) => {
     for (const mutation of mutationsList) {
       if (mutation.type === 'childList') {
         mutation.addedNodes.forEach(node => {
             if (node instanceof Element) {
-                node.querySelectorAll('img[data-lazy-src]').forEach(node => {
-                    const img = node;
-                    img.src = img.dataset.lazySrc + '/preview';
-                    fetch(img.dataset.lazySrc)
-                        .then(response => response.blob())
-                        .then(blob => {
-                            const imageUrl = URL.createObjectURL(blob);
-                            img.src = imageUrl;
-                        });
-                });
+                lazyLoadImages(node.querySelectorAll('img[data-lazy-src]'));
             }
         });
       }
@@ -122,5 +131,7 @@ const observerOptions = {
 };
 
 const observer = new MutationObserver(mutationCallback);
+
+lazyLoadImages(document.querySelectorAll('img[data-lazy-src]'));
 
 observer.observe(document.body, observerOptions);

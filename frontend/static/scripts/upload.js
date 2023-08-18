@@ -14,7 +14,7 @@ const modThumbnail = document.querySelector('#mod-thumbnail');
 
 function getModTemplate(mod) {
     if (!mod.shortDescription) mod.shortDescription = "This is a description of the mod.";
-    return `<figure><img src="${mod.thumbnail_url || "https://cdn.discordapp.com/attachments/1078656518133661737/1140334396172402748/example_image.png"}" alt="${mod.name || "Mod Name"}"/></figure>
+    return `<figure><img data-lazy-src="${mod.thumbnail_url || "https://cdn.discordapp.com/attachments/1078656518133661737/1140334396172402748/example_image.png"}" alt="${mod.name || "Mod Name"}"/></figure>
     <div class="card-body">
         <div class="mod-card-badges">
             <a href="#!">
