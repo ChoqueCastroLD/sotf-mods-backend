@@ -36,7 +36,11 @@ function getModTemplate(mod) {
         <p>by <a class="text-success" href="/profile/${mod.user.slug}">${mod.user.name}</a></p>
         <p class="text-justify text-wrap-anywhere">${mod.shortDescription}</p>
         <div class="card-actions justify-end">
-            <a class="btn btn-outline btn-success btn-sm" href="/mods/${mod.user.slug}/${mod.slug}">Download ${mod.latest_version && mod.latest_version.version}</a>
+            ${mod.latest_version
+                ? `<a class="btn btn-outline btn-success btn-sm" href="/mods/${mod.user.slug}/${mod.slug}">Download ${mod.latest_version && mod.latest_version.version}</a>`
+                : `<a class="btn btn-outline btn-sm" href="/mods/${mod.user.slug}/${mod.slug}">See more</a>`
+            }
+            
         </div>
         <div class="card-actions justify-end">
             <span class="stat-desc text-success">↗︎ ${mod.downloads} downloads</span>

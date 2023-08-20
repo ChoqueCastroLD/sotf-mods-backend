@@ -1,8 +1,12 @@
 html {
     background-color: #0f1216 !important;
+    background: linear-gradient(24deg, rgb(3 4 4) 10%, rgb(20 25 30) 49%, rgba(15,18,22,1) 49%) !important;
+    background-attachment: fixed !important;
 }
 body {
     background-color: #0f1216 !important;
+    background: linear-gradient(24deg, rgb(3 4 4) 10%, rgb(20 25 30) 49%, rgba(15,18,22,1) 49%) !important;
+    background-attachment: fixed !important;
     overflow-x: hidden;
 }
 .hidden {

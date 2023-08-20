@@ -93,16 +93,21 @@ if (window.showdown) {
     }
 }
 
-
+const blobCache = {};
 async function lazyLoadImages(elements) {
     for (const img of elements) {
         const imageUrl = img.dataset.lazySrc;
+        if(blobCache[imageUrl]) {
+            img.src = blobCache[imageUrl];
+            continue;
+        }
         try {
             img.removeAttribute('data-lazy-src');
             img.src = imageUrl + '/preview';
             const f = await fetch(imageUrl);
             const blob = await f.blob();
             const image = URL.createObjectURL(blob);
+            blobCache[imageUrl] = image;
             img.src = image;
         } catch (error) {
             // we just ignore the error and let the browser handle it

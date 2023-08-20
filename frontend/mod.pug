@@ -27,21 +27,23 @@ block body
           .flex.justify-center
             p.text-error.text-xs.mt-4 Pending approval.
         .flex.justify-center.flex-wrap
-          a(
-            class="btn btn-outline btn-success m-4 table-auto" + (mod.latest_version ? "" : "disabled")
-            href=(
-              mod.latest_version 
-              ? `/mods/${mod.user.slug}/${mod.slug}/download/${mod.latest_version && mod.latest_version.version}`
-              : ''
-            )
-            target="_blank"
-          ) Direct Download
-          button#btnOneClickInstall.btn.btn-outline.btn-secondary.m-4 One-Click Install
+          - if (mod.latest_version)
+            a(
+              class="btn btn-outline btn-success m-4 table-auto"
+              href=`/mods/${mod.user.slug}/${mod.slug}/download/${mod.latest_version.version}`
+              target="_blank"
+            ) Direct Download
+          - else
+            a(
+              class="btn btn-outline m-4 table-auto btn-disabled"
+              href="#!"
+            ) Direct Download
+          button#btnOneClickInstall.btn.btn-outline.btn-secondary.m-4(class=(mod.latest_version ? "" : "btn-disabled")) One-Click Install
         .flex.justify-center.flex-wrap
           span.stat-desc.text-success ↗︎ #{mod.downloads} downloads
           span.stat-desc.text-secondary.ml-2 ♥ #{mod._count.favorites} follows
           - if (mod.latest_version)
-            span.stat-desc.ml-2 ⏱ Version #{mod.latest_version && mod.latest_version.version} released #{mod.time_ago}
+            span.stat-desc.ml-2 ⏱ Version #{mod.latest_version.version} released #{mod.time_ago}
           - else
             span.stat-desc.ml-2 ⏱ Announced #{mod.time_ago}
         - if (user && user.slug !== mod.user.slug)
