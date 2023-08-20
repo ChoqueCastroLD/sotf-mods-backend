@@ -31,7 +31,7 @@ block body
             class="btn btn-outline btn-success m-4 table-auto" + (mod.latest_version ? "" : "disabled")
             href=(
               mod.latest_version 
-              ? `/mods/${mod.user.slug}/${mod.slug}/download/${mod.latest_version.version}`
+              ? `/mods/${mod.user.slug}/${mod.slug}/download/${mod.latest_version && mod.latest_version.version}`
               : ''
             )
             target="_blank"
@@ -41,7 +41,7 @@ block body
           span.stat-desc.text-success ↗︎ #{mod.downloads} downloads
           span.stat-desc.text-secondary.ml-2 ♥ #{mod._count.favorites} follows
           - if (mod.latest_version)
-            span.stat-desc.ml-2 ⏱ Version #{mod.latest_version.version} released #{mod.time_ago}
+            span.stat-desc.ml-2 ⏱ Version #{mod.latest_version && mod.latest_version.version} released #{mod.time_ago}
           - else
             span.stat-desc.ml-2 ⏱ Announced #{mod.time_ago}
         - if (user && user.slug !== mod.user.slug)

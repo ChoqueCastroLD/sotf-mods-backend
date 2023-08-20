@@ -94,22 +94,21 @@ if (window.showdown) {
 }
 
 
-function lazyLoadImages(elements) {
-    elements.forEach(img => {
+async function lazyLoadImages(elements) {
+    for (const img of elements) {
         const imageUrl = img.dataset.lazySrc;
-        img.removeAttribute('data-lazy-src');
-        img.src = imageUrl + '/preview';
-        fetch(imageUrl)
-            .then(response => response.blob())
-            .then(blob => {
-                const image = URL.createObjectURL(blob);
-                img.src = image;
-            })
-            .catch(error => {
-                // we just ignore the error and let the browser handle it
-                img.src = imageUrl;
-            });
-    });
+        try {
+            img.removeAttribute('data-lazy-src');
+            img.src = imageUrl + '/preview';
+            const f = await fetch(imageUrl);
+            const blob = await f.blob();
+            const image = URL.createObjectURL(blob);
+            img.src = image;
+        } catch (error) {
+            // we just ignore the error and let the browser handle it
+            img.src = imageUrl;
+        }
+    }
 }
 
 const mutationCallback = (mutationsList, observer) => {

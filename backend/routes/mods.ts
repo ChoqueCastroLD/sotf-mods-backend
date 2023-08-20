@@ -27,7 +27,7 @@ router.get("/mods/:user_slug/:mod_slug", async (context) => {
     } else {
         const mod = await getMod(context.params.mod_slug, context.params.user_slug, context.state.user);
         if (mod.latest_version) {
-            mod.next_version = semver.inc(mod.latest_version.version, "patch");
+            mod.next_version = semver.inc(mod.latest_version && mod.latest_version.version, "patch");
         }
         context.response.body = await render("mod", {
             user: context.state.user,
