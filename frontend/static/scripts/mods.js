@@ -44,7 +44,7 @@ function getModTemplate(mod) {
         </div>
         <div class="card-actions justify-end">
             <span class="stat-desc text-success">↗︎ ${mod.downloads} downloads</span>
-            <span class="stat-desc text-secondary ml-2">♥ ${mod._count.favorites} follows</span>
+            <span class="stat-desc text-secondary ml-2">♥ ${mod.favorites} follows</span>
             <span class="stat-desc ml-2">⏱ ${mod.time_ago}</span>
         </div>
     </div>`;

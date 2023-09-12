@@ -64,6 +64,8 @@ export default {
       delete mod.userId;
       delete mod.versions;
       delete mod.images;
+      delete mod.description;
+      delete mod._count;
       if (mod.latest_version) {
         mod.latest_version.downloads = mod.latest_version.downloads.length;
       }
@@ -80,6 +82,23 @@ export default {
     }
     ctx.response.body = { mods, meta };
   },
+  getMod: async (ctx: Context) => {
+    const { user_slug, mod_slug } = ctx.params;
+    const mod = await getMod(mod_slug, user_slug);
+    if (!mod) {
+      ctx.response.status = 404;
+      ctx.response.body = { message: 'Mod not found.' };
+      return;
+    }
+    delete mod.id;
+    delete mod.userId;
+    delete mod.images;
+    delete mod._count;
+    if (mod.latest_version) {
+      mod.latest_version.downloads = mod.latest_version.downloads.length;
+    }
+    ctx.response.body = mod;
+  },
   getModsFromUser: async (ctx: Context) => {
     const user_slug = ctx.params.user_slug;
     const mods = (await getModsFromUser(user_slug)).map((mod) => {
@@ -87,6 +106,10 @@ export default {
       delete mod.userId;
       delete mod.versions;
       delete mod.images;
+      delete mod._count;
+      if (mod.latest_version) {
+        mod.latest_version.downloads = mod.latest_version.downloads.length;
+      }
       return mod;
     });
     const mod_count = await countModsFromUser(user_slug);
@@ -363,12 +386,26 @@ export default {
     return;
   },
   getFavoriteModsIds: async (ctx: Context) => {
-    const ids = (await prisma.modFavorite.findMany({
+    const mods = (await prisma.modFavorite.findMany({
       where: {
-        userId: ctx.params.user_slug,
-      }
-    })).map((favorite) => favorite.modId);
-    ctx.response.body = { ids };
+        user: {
+          slug: ctx.params.user_slug,
+        },
+      },
+      select: {
+        mod: {
+          select: {
+            slug: true,
+            user: {
+              select: {
+                slug: true,
+              }
+            }
+          }
+        }
+      },
+    })).map((favorite) => ({slug: favorite.mod.slug, user_slug: favorite.mod.user.slug}));
+    ctx.response.body = { mods };
   },
   updateMod: async (ctx: Context) => {
     const form = await multiParser(ctx.request.originalRequest.request);

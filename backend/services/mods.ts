@@ -55,6 +55,8 @@ function decorateMod(mod: Mod & {
 
     const downloads = [...new Set(downloads_arr)].length;
 
+    const favorites = mod._count.favorites;
+
     const total_downloads = downloads_arr.length;
 
     let time_ago = timeAgo(mod.updatedAt);
@@ -68,6 +70,7 @@ function decorateMod(mod: Mod & {
         primary_image_url,
         latest_version,
         downloads,
+        favorites,
         total_downloads,
         time_ago,
     }

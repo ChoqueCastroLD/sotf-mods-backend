@@ -41,7 +41,7 @@ block body
           button#btnOneClickInstall.btn.btn-outline.btn-secondary.m-4(class=(mod.latest_version ? "" : "btn-disabled")) One-Click Install
         .flex.justify-center.flex-wrap
           span.stat-desc.text-success ↗︎ #{mod.downloads} downloads
-          span.stat-desc.text-secondary.ml-2 ♥ #{mod._count.favorites} follows
+          span.stat-desc.text-secondary.ml-2 ♥ #{mod.favorites} follows
           - if (mod.latest_version)
             span.stat-desc.ml-2 ⏱ Version #{mod.latest_version.version} released #{mod.time_ago}
           - else

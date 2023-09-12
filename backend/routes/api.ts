@@ -27,6 +27,8 @@ router.get("/api/mods", modsController.getMods);
 
 router.get("/api/mods/user/:user_slug", modsController.getModsFromUser);
 
+router.get("/api/mods/:user_slug/:mod_slug", modsController.getMod);
+
 router.get("/api/mods/:user_slug/:mod_slug/check", modsController.checkVersion);
 
 router.get("/api/favorite/:user_slug/:mod_slug", protectedRouteAPI, modsController.toggleFavorite);
