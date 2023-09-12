@@ -94,6 +94,11 @@ export default {
     delete mod.userId;
     delete mod.images;
     delete mod._count;
+    delete mod.user.id;
+    delete mod.user.email;
+    delete mod.user.password;
+    delete mod.user.createdAt;
+    delete mod.user.updatedAt;
     if (mod.latest_version) {
       mod.latest_version.downloads = mod.latest_version.downloads.length;
     }
