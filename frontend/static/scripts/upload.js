@@ -22,11 +22,11 @@ function getModTemplate(mod) {
             </a>
             ${mod.isNSFW ? `<div class="badge badge-secondary badge-outline">NSFW</div>` : ''}
         </div>
-        <h2 class="card-title w-full">${mod.name || "Mod Name"}</h2>
-        <p>by <a href="#!">${user.name}</a></p>
+        <h2 class="card-title w-full">${mod.name || "Mod Name"}<span class="card-title-version">${(mod.latest_version && mod.latest_version.version) || "1.0.0"}</span></h2>
+        <p>by <a class="hover-underline-animation" href="#!">${user.name}</a></p>
         <p class="text-justify text-wrap-anywhere">${mod.shortDescription}</p>
         <div class="card-actions justify-end">
-            <a class="btn btn-outline btn-success btn-sm" href="#!">Download</a>
+            <a class="btn btn-outline btn-success btn-sm" href="#!">See More</a>
         </div>
         <div class="card-actions justify-end">
             <span class="stat-desc text-success">↗︎ 99 downloads</span>

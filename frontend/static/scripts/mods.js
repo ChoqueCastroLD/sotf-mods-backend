@@ -32,15 +32,11 @@ function getModTemplate(mod) {
             ${mod.isNSFW ? `<div class="badge badge-secondary badge-outline">NSFW</div>` : ''}
             ${mod.isFeatured ? `<div class="badge badge-accent">Featured</div>` : ''}
         </div>
-        <h2 class="card-title w-full">${mod.name}</h2>
-        <p>by <a class="text-success" href="/profile/${mod.user.slug}">${mod.user.name}</a></p>
+        <h2 class="card-title w-full">${mod.name}<span class="card-title-version">${(mod.latest_version && mod.latest_version.version) || "TBA"}</span></h2>
+        <p>by <a class="text-success hover-underline-animation" href="/profile/${mod.user.slug}">${mod.user.name}</a></p>
         <p class="text-justify text-wrap-anywhere">${mod.shortDescription}</p>
         <div class="card-actions justify-end">
-            ${mod.latest_version
-                ? `<a class="btn btn-outline btn-success btn-sm" href="/mods/${mod.user.slug}/${mod.slug}">Download ${mod.latest_version && mod.latest_version.version}</a>`
-                : `<a class="btn btn-outline btn-sm" href="/mods/${mod.user.slug}/${mod.slug}">See more</a>`
-            }
-            
+            <a class="btn btn-outline ${mod.latest_version ? "btn-success" : ""} btn-sm" href="/mods/${mod.user.slug}/${mod.slug}">See More</a>
         </div>
         <div class="card-actions justify-end">
             <span class="stat-desc text-success">↗︎ ${mod.downloads} downloads</span>
