@@ -17,6 +17,16 @@ export default {
         updatedAt: "asc"
       }
     })) : [];
+    if (messages.length > 32) {
+      const messagesToDeleteIds = messages.slice(32, messages.length).map(msg => msg.id);
+      await prisma.kelvinGPTMessages.deleteMany({
+        where: {
+          id: {
+            in: messagesToDeleteIds
+          }
+        }
+      });
+    }
 
     if (!text) {
       context.response.body = "|My eyes are blurry, Sorry I can't read that.";
@@ -31,13 +41,22 @@ export default {
 
     await Promise.resolve();
     const prompt = kelvinPrompt(sanitizeInput(robbyContext));
+    messages.push({
+      id: -1,
+      message: sanitizedText,
+      role: "user",
+      who: "User: ",
+      chatId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
     const raw = JSON.stringify({
       "env": "chatbot",
       "session": "N/A",
       "prompt": prompt,
       "context": prompt,
-      "messages": messages.map(msg => ({
-        "id": msg.id,
+      "messages": messages.map((msg, i) => ({
+        "id": `${i+1}`,
         "role": msg.role,
         "content": msg.message,
         "who": msg.who,
@@ -47,14 +66,14 @@ export default {
       "userName": "",
       "aiName": "",
       "model": "gpt-3.5-turbo",
-      "temperature": 0.8,
-      "maxTokens": 1024,
+      "temperature": 0.1,
+      "maxTokens": 1024*4,
       "maxResults": 1,
       "apiKey": "",
       "service": "openai",
       "embeddingsIndex": "",
       "stop": "",
-      "clientId": "t5l15gkth",
+      "clientId": chatId || "t5l15gkth",
     });
 
     try {
@@ -102,6 +121,8 @@ export default {
         })
       }
       console.log({ chatId, sanitizedText, answer, messages, robbyContext: sanitizeInput(robbyContext) });
+      console.log(messages)
+      console.log(messages.length)
       context.response.body = command + "|" + answer;
     } catch (error) {
       console.log({ sanitizedText });
