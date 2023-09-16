@@ -14,7 +14,7 @@ export default {
         chatId
       },
       orderBy: {
-        updatedAt: "desc"
+        updatedAt: "asc"
       }
     })) : [];
 
@@ -83,8 +83,8 @@ export default {
         command = ""
         answer = response.answer.trim();
       }
-      await Promise.all([
-        prisma.kelvinGPTMessages.create({
+      if (chatId) {
+        await prisma.kelvinGPTMessages.create({
           data: {
             chatId,
             message: sanitizedText,
@@ -92,7 +92,7 @@ export default {
             who: "User: ",
           }
         }),
-        prisma.kelvinGPTMessages.create({
+        await prisma.kelvinGPTMessages.create({
           data: {
             chatId,
             message: answer,
@@ -100,7 +100,7 @@ export default {
             who: "AI: ",
           }
         })
-      ]);
+      }
       console.log({ chatId, sanitizedText, answer, messages, robbyContext: sanitizeInput(robbyContext) });
       context.response.body = command + "|" + answer;
     } catch (error) {
