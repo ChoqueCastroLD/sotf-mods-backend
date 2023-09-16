@@ -23,6 +23,8 @@ router.use(async (context, next) => {
 
 router.get("/api/kelvin-gpt", kelvinGPTController.prompt);
 
+router.get("/api/kelvin-gpt/clear", kelvinGPTController.clear);
+
 router.get("/api/mods", modsController.getMods);
 
 router.get("/api/mods/user/:user_slug", modsController.getModsFromUser);

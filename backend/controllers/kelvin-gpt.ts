@@ -109,5 +109,14 @@ export default {
       context.response.body =
         "|My eyes are way too blurry, Sorry I can't read that.";
     }
+  },
+  clear: async function (context: Context) {
+    const chatId = (context.request.url.searchParams.get("chat_id") + "").trim();
+    await prisma.kelvinGPTMessages.deleteMany({
+      where: {
+        chatId
+      }
+    });
+    context.response.body = "Chat cleared";
   }
 }
