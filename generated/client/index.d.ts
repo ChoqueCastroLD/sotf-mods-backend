@@ -127,6 +127,20 @@ export type ModFavorite = {
   modId: number | null
 }
 
+/**
+ * Model KelvinGPTMessages
+ * 
+ */
+export type KelvinGPTMessages = {
+  id: number
+  createdAt: Date
+  updatedAt: Date
+  chatId: string
+  message: string
+  role: string
+  who: string
+}
+
 
 /**
  * ##  Prisma Client ʲˢ
@@ -324,6 +338,16 @@ export class PrismaClient<
     * ```
     */
   get modFavorite(): Prisma.ModFavoriteDelegate<GlobalReject>;
+
+  /**
+   * `prisma.kelvinGPTMessages`: Exposes CRUD operations for the **KelvinGPTMessages** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more KelvinGPTMessages
+    * const kelvinGPTMessages = await prisma.kelvinGPTMessages.findMany()
+    * ```
+    */
+  get kelvinGPTMessages(): Prisma.KelvinGPTMessagesDelegate<GlobalReject>;
 }
 
 export namespace Prisma {
@@ -800,7 +824,8 @@ export namespace Prisma {
     Tag: 'Tag',
     Category: 'Category',
     ModDownload: 'ModDownload',
-    ModFavorite: 'ModFavorite'
+    ModFavorite: 'ModFavorite',
+    KelvinGPTMessages: 'KelvinGPTMessages'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -9362,6 +9387,938 @@ export namespace Prisma {
 
 
   /**
+   * Model KelvinGPTMessages
+   */
+
+
+  export type AggregateKelvinGPTMessages = {
+    _count: KelvinGPTMessagesCountAggregateOutputType | null
+    _avg: KelvinGPTMessagesAvgAggregateOutputType | null
+    _sum: KelvinGPTMessagesSumAggregateOutputType | null
+    _min: KelvinGPTMessagesMinAggregateOutputType | null
+    _max: KelvinGPTMessagesMaxAggregateOutputType | null
+  }
+
+  export type KelvinGPTMessagesAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type KelvinGPTMessagesSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type KelvinGPTMessagesMinAggregateOutputType = {
+    id: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    chatId: string | null
+    message: string | null
+    role: string | null
+    who: string | null
+  }
+
+  export type KelvinGPTMessagesMaxAggregateOutputType = {
+    id: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    chatId: string | null
+    message: string | null
+    role: string | null
+    who: string | null
+  }
+
+  export type KelvinGPTMessagesCountAggregateOutputType = {
+    id: number
+    createdAt: number
+    updatedAt: number
+    chatId: number
+    message: number
+    role: number
+    who: number
+    _all: number
+  }
+
+
+  export type KelvinGPTMessagesAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type KelvinGPTMessagesSumAggregateInputType = {
+    id?: true
+  }
+
+  export type KelvinGPTMessagesMinAggregateInputType = {
+    id?: true
+    createdAt?: true
+    updatedAt?: true
+    chatId?: true
+    message?: true
+    role?: true
+    who?: true
+  }
+
+  export type KelvinGPTMessagesMaxAggregateInputType = {
+    id?: true
+    createdAt?: true
+    updatedAt?: true
+    chatId?: true
+    message?: true
+    role?: true
+    who?: true
+  }
+
+  export type KelvinGPTMessagesCountAggregateInputType = {
+    id?: true
+    createdAt?: true
+    updatedAt?: true
+    chatId?: true
+    message?: true
+    role?: true
+    who?: true
+    _all?: true
+  }
+
+  export type KelvinGPTMessagesAggregateArgs = {
+    /**
+     * Filter which KelvinGPTMessages to aggregate.
+     */
+    where?: KelvinGPTMessagesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KelvinGPTMessages to fetch.
+     */
+    orderBy?: Enumerable<KelvinGPTMessagesOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: KelvinGPTMessagesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KelvinGPTMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KelvinGPTMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned KelvinGPTMessages
+    **/
+    _count?: true | KelvinGPTMessagesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: KelvinGPTMessagesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: KelvinGPTMessagesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: KelvinGPTMessagesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: KelvinGPTMessagesMaxAggregateInputType
+  }
+
+  export type GetKelvinGPTMessagesAggregateType<T extends KelvinGPTMessagesAggregateArgs> = {
+        [P in keyof T & keyof AggregateKelvinGPTMessages]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateKelvinGPTMessages[P]>
+      : GetScalarType<T[P], AggregateKelvinGPTMessages[P]>
+  }
+
+
+
+
+  export type KelvinGPTMessagesGroupByArgs = {
+    where?: KelvinGPTMessagesWhereInput
+    orderBy?: Enumerable<KelvinGPTMessagesOrderByWithAggregationInput>
+    by: KelvinGPTMessagesScalarFieldEnum[]
+    having?: KelvinGPTMessagesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: KelvinGPTMessagesCountAggregateInputType | true
+    _avg?: KelvinGPTMessagesAvgAggregateInputType
+    _sum?: KelvinGPTMessagesSumAggregateInputType
+    _min?: KelvinGPTMessagesMinAggregateInputType
+    _max?: KelvinGPTMessagesMaxAggregateInputType
+  }
+
+
+  export type KelvinGPTMessagesGroupByOutputType = {
+    id: number
+    createdAt: Date
+    updatedAt: Date
+    chatId: string
+    message: string
+    role: string
+    who: string
+    _count: KelvinGPTMessagesCountAggregateOutputType | null
+    _avg: KelvinGPTMessagesAvgAggregateOutputType | null
+    _sum: KelvinGPTMessagesSumAggregateOutputType | null
+    _min: KelvinGPTMessagesMinAggregateOutputType | null
+    _max: KelvinGPTMessagesMaxAggregateOutputType | null
+  }
+
+  type GetKelvinGPTMessagesGroupByPayload<T extends KelvinGPTMessagesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickArray<KelvinGPTMessagesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof KelvinGPTMessagesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], KelvinGPTMessagesGroupByOutputType[P]>
+            : GetScalarType<T[P], KelvinGPTMessagesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type KelvinGPTMessagesSelect = {
+    id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    chatId?: boolean
+    message?: boolean
+    role?: boolean
+    who?: boolean
+  }
+
+
+  export type KelvinGPTMessagesGetPayload<S extends boolean | null | undefined | KelvinGPTMessagesArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? KelvinGPTMessages :
+    S extends undefined ? never :
+    S extends { include: any } & (KelvinGPTMessagesArgs | KelvinGPTMessagesFindManyArgs)
+    ? KelvinGPTMessages 
+    : S extends { select: any } & (KelvinGPTMessagesArgs | KelvinGPTMessagesFindManyArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+    P extends keyof KelvinGPTMessages ? KelvinGPTMessages[P] : never
+  } 
+      : KelvinGPTMessages
+
+
+  type KelvinGPTMessagesCountArgs = 
+    Omit<KelvinGPTMessagesFindManyArgs, 'select' | 'include'> & {
+      select?: KelvinGPTMessagesCountAggregateInputType | true
+    }
+
+  export interface KelvinGPTMessagesDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+
+    /**
+     * Find zero or one KelvinGPTMessages that matches the filter.
+     * @param {KelvinGPTMessagesFindUniqueArgs} args - Arguments to find a KelvinGPTMessages
+     * @example
+     * // Get one KelvinGPTMessages
+     * const kelvinGPTMessages = await prisma.kelvinGPTMessages.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends KelvinGPTMessagesFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, KelvinGPTMessagesFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'KelvinGPTMessages'> extends True ? Prisma__KelvinGPTMessagesClient<KelvinGPTMessagesGetPayload<T>> : Prisma__KelvinGPTMessagesClient<KelvinGPTMessagesGetPayload<T> | null, null>
+
+    /**
+     * Find one KelvinGPTMessages that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {KelvinGPTMessagesFindUniqueOrThrowArgs} args - Arguments to find a KelvinGPTMessages
+     * @example
+     * // Get one KelvinGPTMessages
+     * const kelvinGPTMessages = await prisma.kelvinGPTMessages.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends KelvinGPTMessagesFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, KelvinGPTMessagesFindUniqueOrThrowArgs>
+    ): Prisma__KelvinGPTMessagesClient<KelvinGPTMessagesGetPayload<T>>
+
+    /**
+     * Find the first KelvinGPTMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KelvinGPTMessagesFindFirstArgs} args - Arguments to find a KelvinGPTMessages
+     * @example
+     * // Get one KelvinGPTMessages
+     * const kelvinGPTMessages = await prisma.kelvinGPTMessages.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends KelvinGPTMessagesFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, KelvinGPTMessagesFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'KelvinGPTMessages'> extends True ? Prisma__KelvinGPTMessagesClient<KelvinGPTMessagesGetPayload<T>> : Prisma__KelvinGPTMessagesClient<KelvinGPTMessagesGetPayload<T> | null, null>
+
+    /**
+     * Find the first KelvinGPTMessages that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KelvinGPTMessagesFindFirstOrThrowArgs} args - Arguments to find a KelvinGPTMessages
+     * @example
+     * // Get one KelvinGPTMessages
+     * const kelvinGPTMessages = await prisma.kelvinGPTMessages.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends KelvinGPTMessagesFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, KelvinGPTMessagesFindFirstOrThrowArgs>
+    ): Prisma__KelvinGPTMessagesClient<KelvinGPTMessagesGetPayload<T>>
+
+    /**
+     * Find zero or more KelvinGPTMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KelvinGPTMessagesFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all KelvinGPTMessages
+     * const kelvinGPTMessages = await prisma.kelvinGPTMessages.findMany()
+     * 
+     * // Get first 10 KelvinGPTMessages
+     * const kelvinGPTMessages = await prisma.kelvinGPTMessages.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const kelvinGPTMessagesWithIdOnly = await prisma.kelvinGPTMessages.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends KelvinGPTMessagesFindManyArgs>(
+      args?: SelectSubset<T, KelvinGPTMessagesFindManyArgs>
+    ): Prisma.PrismaPromise<Array<KelvinGPTMessagesGetPayload<T>>>
+
+    /**
+     * Create a KelvinGPTMessages.
+     * @param {KelvinGPTMessagesCreateArgs} args - Arguments to create a KelvinGPTMessages.
+     * @example
+     * // Create one KelvinGPTMessages
+     * const KelvinGPTMessages = await prisma.kelvinGPTMessages.create({
+     *   data: {
+     *     // ... data to create a KelvinGPTMessages
+     *   }
+     * })
+     * 
+    **/
+    create<T extends KelvinGPTMessagesCreateArgs>(
+      args: SelectSubset<T, KelvinGPTMessagesCreateArgs>
+    ): Prisma__KelvinGPTMessagesClient<KelvinGPTMessagesGetPayload<T>>
+
+    /**
+     * Create many KelvinGPTMessages.
+     *     @param {KelvinGPTMessagesCreateManyArgs} args - Arguments to create many KelvinGPTMessages.
+     *     @example
+     *     // Create many KelvinGPTMessages
+     *     const kelvinGPTMessages = await prisma.kelvinGPTMessages.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends KelvinGPTMessagesCreateManyArgs>(
+      args?: SelectSubset<T, KelvinGPTMessagesCreateManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a KelvinGPTMessages.
+     * @param {KelvinGPTMessagesDeleteArgs} args - Arguments to delete one KelvinGPTMessages.
+     * @example
+     * // Delete one KelvinGPTMessages
+     * const KelvinGPTMessages = await prisma.kelvinGPTMessages.delete({
+     *   where: {
+     *     // ... filter to delete one KelvinGPTMessages
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends KelvinGPTMessagesDeleteArgs>(
+      args: SelectSubset<T, KelvinGPTMessagesDeleteArgs>
+    ): Prisma__KelvinGPTMessagesClient<KelvinGPTMessagesGetPayload<T>>
+
+    /**
+     * Update one KelvinGPTMessages.
+     * @param {KelvinGPTMessagesUpdateArgs} args - Arguments to update one KelvinGPTMessages.
+     * @example
+     * // Update one KelvinGPTMessages
+     * const kelvinGPTMessages = await prisma.kelvinGPTMessages.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends KelvinGPTMessagesUpdateArgs>(
+      args: SelectSubset<T, KelvinGPTMessagesUpdateArgs>
+    ): Prisma__KelvinGPTMessagesClient<KelvinGPTMessagesGetPayload<T>>
+
+    /**
+     * Delete zero or more KelvinGPTMessages.
+     * @param {KelvinGPTMessagesDeleteManyArgs} args - Arguments to filter KelvinGPTMessages to delete.
+     * @example
+     * // Delete a few KelvinGPTMessages
+     * const { count } = await prisma.kelvinGPTMessages.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends KelvinGPTMessagesDeleteManyArgs>(
+      args?: SelectSubset<T, KelvinGPTMessagesDeleteManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KelvinGPTMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KelvinGPTMessagesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many KelvinGPTMessages
+     * const kelvinGPTMessages = await prisma.kelvinGPTMessages.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends KelvinGPTMessagesUpdateManyArgs>(
+      args: SelectSubset<T, KelvinGPTMessagesUpdateManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one KelvinGPTMessages.
+     * @param {KelvinGPTMessagesUpsertArgs} args - Arguments to update or create a KelvinGPTMessages.
+     * @example
+     * // Update or create a KelvinGPTMessages
+     * const kelvinGPTMessages = await prisma.kelvinGPTMessages.upsert({
+     *   create: {
+     *     // ... data to create a KelvinGPTMessages
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the KelvinGPTMessages we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends KelvinGPTMessagesUpsertArgs>(
+      args: SelectSubset<T, KelvinGPTMessagesUpsertArgs>
+    ): Prisma__KelvinGPTMessagesClient<KelvinGPTMessagesGetPayload<T>>
+
+    /**
+     * Count the number of KelvinGPTMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KelvinGPTMessagesCountArgs} args - Arguments to filter KelvinGPTMessages to count.
+     * @example
+     * // Count the number of KelvinGPTMessages
+     * const count = await prisma.kelvinGPTMessages.count({
+     *   where: {
+     *     // ... the filter for the KelvinGPTMessages we want to count
+     *   }
+     * })
+    **/
+    count<T extends KelvinGPTMessagesCountArgs>(
+      args?: Subset<T, KelvinGPTMessagesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], KelvinGPTMessagesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a KelvinGPTMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KelvinGPTMessagesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends KelvinGPTMessagesAggregateArgs>(args: Subset<T, KelvinGPTMessagesAggregateArgs>): Prisma.PrismaPromise<GetKelvinGPTMessagesAggregateType<T>>
+
+    /**
+     * Group by KelvinGPTMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KelvinGPTMessagesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends KelvinGPTMessagesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: KelvinGPTMessagesGroupByArgs['orderBy'] }
+        : { orderBy?: KelvinGPTMessagesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, KelvinGPTMessagesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetKelvinGPTMessagesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for KelvinGPTMessages.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__KelvinGPTMessagesClient<T, Null = never> implements Prisma.PrismaPromise<T> {
+    private readonly _dmmf;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * KelvinGPTMessages base type for findUnique actions
+   */
+  export type KelvinGPTMessagesFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the KelvinGPTMessages
+     */
+    select?: KelvinGPTMessagesSelect | null
+    /**
+     * Filter, which KelvinGPTMessages to fetch.
+     */
+    where: KelvinGPTMessagesWhereUniqueInput
+  }
+
+  /**
+   * KelvinGPTMessages findUnique
+   */
+  export interface KelvinGPTMessagesFindUniqueArgs extends KelvinGPTMessagesFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * KelvinGPTMessages findUniqueOrThrow
+   */
+  export type KelvinGPTMessagesFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the KelvinGPTMessages
+     */
+    select?: KelvinGPTMessagesSelect | null
+    /**
+     * Filter, which KelvinGPTMessages to fetch.
+     */
+    where: KelvinGPTMessagesWhereUniqueInput
+  }
+
+
+  /**
+   * KelvinGPTMessages base type for findFirst actions
+   */
+  export type KelvinGPTMessagesFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the KelvinGPTMessages
+     */
+    select?: KelvinGPTMessagesSelect | null
+    /**
+     * Filter, which KelvinGPTMessages to fetch.
+     */
+    where?: KelvinGPTMessagesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KelvinGPTMessages to fetch.
+     */
+    orderBy?: Enumerable<KelvinGPTMessagesOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KelvinGPTMessages.
+     */
+    cursor?: KelvinGPTMessagesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KelvinGPTMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KelvinGPTMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KelvinGPTMessages.
+     */
+    distinct?: Enumerable<KelvinGPTMessagesScalarFieldEnum>
+  }
+
+  /**
+   * KelvinGPTMessages findFirst
+   */
+  export interface KelvinGPTMessagesFindFirstArgs extends KelvinGPTMessagesFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * KelvinGPTMessages findFirstOrThrow
+   */
+  export type KelvinGPTMessagesFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the KelvinGPTMessages
+     */
+    select?: KelvinGPTMessagesSelect | null
+    /**
+     * Filter, which KelvinGPTMessages to fetch.
+     */
+    where?: KelvinGPTMessagesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KelvinGPTMessages to fetch.
+     */
+    orderBy?: Enumerable<KelvinGPTMessagesOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KelvinGPTMessages.
+     */
+    cursor?: KelvinGPTMessagesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KelvinGPTMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KelvinGPTMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KelvinGPTMessages.
+     */
+    distinct?: Enumerable<KelvinGPTMessagesScalarFieldEnum>
+  }
+
+
+  /**
+   * KelvinGPTMessages findMany
+   */
+  export type KelvinGPTMessagesFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the KelvinGPTMessages
+     */
+    select?: KelvinGPTMessagesSelect | null
+    /**
+     * Filter, which KelvinGPTMessages to fetch.
+     */
+    where?: KelvinGPTMessagesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KelvinGPTMessages to fetch.
+     */
+    orderBy?: Enumerable<KelvinGPTMessagesOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing KelvinGPTMessages.
+     */
+    cursor?: KelvinGPTMessagesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KelvinGPTMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KelvinGPTMessages.
+     */
+    skip?: number
+    distinct?: Enumerable<KelvinGPTMessagesScalarFieldEnum>
+  }
+
+
+  /**
+   * KelvinGPTMessages create
+   */
+  export type KelvinGPTMessagesCreateArgs = {
+    /**
+     * Select specific fields to fetch from the KelvinGPTMessages
+     */
+    select?: KelvinGPTMessagesSelect | null
+    /**
+     * The data needed to create a KelvinGPTMessages.
+     */
+    data: XOR<KelvinGPTMessagesCreateInput, KelvinGPTMessagesUncheckedCreateInput>
+  }
+
+
+  /**
+   * KelvinGPTMessages createMany
+   */
+  export type KelvinGPTMessagesCreateManyArgs = {
+    /**
+     * The data used to create many KelvinGPTMessages.
+     */
+    data: Enumerable<KelvinGPTMessagesCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * KelvinGPTMessages update
+   */
+  export type KelvinGPTMessagesUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the KelvinGPTMessages
+     */
+    select?: KelvinGPTMessagesSelect | null
+    /**
+     * The data needed to update a KelvinGPTMessages.
+     */
+    data: XOR<KelvinGPTMessagesUpdateInput, KelvinGPTMessagesUncheckedUpdateInput>
+    /**
+     * Choose, which KelvinGPTMessages to update.
+     */
+    where: KelvinGPTMessagesWhereUniqueInput
+  }
+
+
+  /**
+   * KelvinGPTMessages updateMany
+   */
+  export type KelvinGPTMessagesUpdateManyArgs = {
+    /**
+     * The data used to update KelvinGPTMessages.
+     */
+    data: XOR<KelvinGPTMessagesUpdateManyMutationInput, KelvinGPTMessagesUncheckedUpdateManyInput>
+    /**
+     * Filter which KelvinGPTMessages to update
+     */
+    where?: KelvinGPTMessagesWhereInput
+  }
+
+
+  /**
+   * KelvinGPTMessages upsert
+   */
+  export type KelvinGPTMessagesUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the KelvinGPTMessages
+     */
+    select?: KelvinGPTMessagesSelect | null
+    /**
+     * The filter to search for the KelvinGPTMessages to update in case it exists.
+     */
+    where: KelvinGPTMessagesWhereUniqueInput
+    /**
+     * In case the KelvinGPTMessages found by the `where` argument doesn't exist, create a new KelvinGPTMessages with this data.
+     */
+    create: XOR<KelvinGPTMessagesCreateInput, KelvinGPTMessagesUncheckedCreateInput>
+    /**
+     * In case the KelvinGPTMessages was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<KelvinGPTMessagesUpdateInput, KelvinGPTMessagesUncheckedUpdateInput>
+  }
+
+
+  /**
+   * KelvinGPTMessages delete
+   */
+  export type KelvinGPTMessagesDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the KelvinGPTMessages
+     */
+    select?: KelvinGPTMessagesSelect | null
+    /**
+     * Filter which KelvinGPTMessages to delete.
+     */
+    where: KelvinGPTMessagesWhereUniqueInput
+  }
+
+
+  /**
+   * KelvinGPTMessages deleteMany
+   */
+  export type KelvinGPTMessagesDeleteManyArgs = {
+    /**
+     * Filter which KelvinGPTMessages to delete
+     */
+    where?: KelvinGPTMessagesWhereInput
+  }
+
+
+  /**
+   * KelvinGPTMessages without action
+   */
+  export type KelvinGPTMessagesArgs = {
+    /**
+     * Select specific fields to fetch from the KelvinGPTMessages
+     */
+    select?: KelvinGPTMessagesSelect | null
+  }
+
+
+
+  /**
    * Enums
    */
 
@@ -9378,6 +10335,19 @@ export namespace Prisma {
   };
 
   export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
+
+
+  export const KelvinGPTMessagesScalarFieldEnum: {
+    id: 'id',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    chatId: 'chatId',
+    message: 'message',
+    role: 'role',
+    who: 'who'
+  };
+
+  export type KelvinGPTMessagesScalarFieldEnum = (typeof KelvinGPTMessagesScalarFieldEnum)[keyof typeof KelvinGPTMessagesScalarFieldEnum]
 
 
   export const ModDownloadScalarFieldEnum: {
@@ -10005,6 +10975,61 @@ export namespace Prisma {
     modId?: IntNullableWithAggregatesFilter | number | null
   }
 
+  export type KelvinGPTMessagesWhereInput = {
+    AND?: Enumerable<KelvinGPTMessagesWhereInput>
+    OR?: Enumerable<KelvinGPTMessagesWhereInput>
+    NOT?: Enumerable<KelvinGPTMessagesWhereInput>
+    id?: IntFilter | number
+    createdAt?: DateTimeFilter | Date | string
+    updatedAt?: DateTimeFilter | Date | string
+    chatId?: StringFilter | string
+    message?: StringFilter | string
+    role?: StringFilter | string
+    who?: StringFilter | string
+  }
+
+  export type KelvinGPTMessagesOrderByWithRelationInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    chatId?: SortOrder
+    message?: SortOrder
+    role?: SortOrder
+    who?: SortOrder
+  }
+
+  export type KelvinGPTMessagesWhereUniqueInput = {
+    id?: number
+  }
+
+  export type KelvinGPTMessagesOrderByWithAggregationInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    chatId?: SortOrder
+    message?: SortOrder
+    role?: SortOrder
+    who?: SortOrder
+    _count?: KelvinGPTMessagesCountOrderByAggregateInput
+    _avg?: KelvinGPTMessagesAvgOrderByAggregateInput
+    _max?: KelvinGPTMessagesMaxOrderByAggregateInput
+    _min?: KelvinGPTMessagesMinOrderByAggregateInput
+    _sum?: KelvinGPTMessagesSumOrderByAggregateInput
+  }
+
+  export type KelvinGPTMessagesScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<KelvinGPTMessagesScalarWhereWithAggregatesInput>
+    OR?: Enumerable<KelvinGPTMessagesScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<KelvinGPTMessagesScalarWhereWithAggregatesInput>
+    id?: IntWithAggregatesFilter | number
+    createdAt?: DateTimeWithAggregatesFilter | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter | Date | string
+    chatId?: StringWithAggregatesFilter | string
+    message?: StringWithAggregatesFilter | string
+    role?: StringWithAggregatesFilter | string
+    who?: StringWithAggregatesFilter | string
+  }
+
   export type UserCreateInput = {
     email: string
     password: string
@@ -10605,6 +11630,73 @@ export namespace Prisma {
     modId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
+  export type KelvinGPTMessagesCreateInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chatId: string
+    message: string
+    role: string
+    who: string
+  }
+
+  export type KelvinGPTMessagesUncheckedCreateInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chatId: string
+    message: string
+    role: string
+    who: string
+  }
+
+  export type KelvinGPTMessagesUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    who?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type KelvinGPTMessagesUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    who?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type KelvinGPTMessagesCreateManyInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chatId: string
+    message: string
+    role: string
+    who: string
+  }
+
+  export type KelvinGPTMessagesUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    who?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type KelvinGPTMessagesUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    who?: StringFieldUpdateOperationsInput | string
+  }
+
   export type IntFilter = {
     equals?: number
     in?: Enumerable<number>
@@ -11174,6 +12266,44 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     modId?: SortOrder
+  }
+
+  export type KelvinGPTMessagesCountOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    chatId?: SortOrder
+    message?: SortOrder
+    role?: SortOrder
+    who?: SortOrder
+  }
+
+  export type KelvinGPTMessagesAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type KelvinGPTMessagesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    chatId?: SortOrder
+    message?: SortOrder
+    role?: SortOrder
+    who?: SortOrder
+  }
+
+  export type KelvinGPTMessagesMinOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    chatId?: SortOrder
+    message?: SortOrder
+    role?: SortOrder
+    who?: SortOrder
+  }
+
+  export type KelvinGPTMessagesSumOrderByAggregateInput = {
+    id?: SortOrder
   }
 
   export type ModCreateNestedManyWithoutUserInput = {

@@ -126,3 +126,14 @@ model ModFavorite {
   mod   Mod? @relation(fields: [modId], references: [id])
   modId Int?
 }
+
+model KelvinGPTMessages {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chatId  String
+  message String
+  role    String
+  who     String
+}

@@ -1,13 +1,23 @@
 import { Context } from "https://deno.land/x/oak@v11.1.0/mod.ts";
-import { kelvinPrompt } from "../util/kelvin-gpt.ts";
+import { closest } from "https://deno.land/x/fastest_levenshtein@1.0.10/mod.ts";
+import { kelvinPrompt, commands } from "../util/kelvin-gpt.ts";
 import { sanitizeInput } from "../util/sanitize.ts";
-
+import { prisma } from "../services/prisma.ts";
 
 export default {
-    prompt: async function (context: Context) {
+  prompt: async function (context: Context) {
     const text = context.request.url.searchParams.get("text");
-    const id = context.request.url.searchParams.get("id");
     const robbyContext = context.request.url.searchParams.get("context") + "";
+    const chatId = (context.request.url.searchParams.get("chat_id") + "").trim();
+    const messages = chatId ? (await prisma.kelvinGPTMessages.findMany({
+      where: {
+        chatId
+      },
+      orderBy: {
+        updatedAt: "desc"
+      }
+    })) : [];
+
     if (!text) {
       context.response.body = "|My eyes are blurry, Sorry I can't read that.";
       return;
@@ -16,18 +26,23 @@ export default {
       context.response.body = "|Thats too much text, I can't read that.";
       return;
     }
-  
+
     const sanitizedText = sanitizeInput(text);
-  
+
     await Promise.resolve();
     const prompt = kelvinPrompt(sanitizeInput(robbyContext));
-  
     const raw = JSON.stringify({
       "env": "chatbot",
       "session": "N/A",
       "prompt": prompt,
       "context": prompt,
-      "messages": [],
+      "messages": messages.map(msg => ({
+        "id": msg.id,
+        "role": msg.role,
+        "content": msg.message,
+        "who": msg.who,
+        "html": ""
+      })),
       "newMessage": sanitizedText,
       "userName": "",
       "aiName": "",
@@ -41,28 +56,53 @@ export default {
       "stop": "",
       "clientId": "t5l15gkth",
     });
-  
+
     try {
-      const r = await fetch(Deno.env.get("KELVINGPT_API")+"", {
+      const r = await fetch(Deno.env.get("KELVINGPT_API") + "", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "authority": Deno.env.get("KELVINGPT_API_AUTHORITY")+"",
+          "authority": Deno.env.get("KELVINGPT_API_AUTHORITY") + "",
         },
         body: raw,
         redirect: "follow",
       });
       const response = await r.json();
-      console.log({response});
+      console.log({ response });
+      let command = "";
       let answer = "";
       if (response.answer.includes("|")) {
-        answer = response.answer.split("|")[0] + "|" + sanitizeInput(response.answer.split("|")[1]);
+        command = response.answer.split("|")[0].trim();
+        if (command) {
+          console.log({ command, parsedTo: closest(command, commands) });
+          command = closest(command, commands);
+        }
+        answer = sanitizeInput(response.answer.split("|")[1]).trim();
       } else {
-        answer = "|" + response.answer;
+        command = ""
+        answer = response.answer.trim();
       }
-      console.log({ id, sanitizedText, answer, robbyContext: sanitizeInput(robbyContext) });
-      context.response.body = answer;
+      await Promise.all([
+        prisma.kelvinGPTMessages.create({
+          data: {
+            chatId,
+            message: sanitizedText,
+            role: "user",
+            who: "User: ",
+          }
+        }),
+        prisma.kelvinGPTMessages.create({
+          data: {
+            chatId,
+            message: answer,
+            role: "assistant",
+            who: "AI: ",
+          }
+        })
+      ]);
+      console.log({ chatId, sanitizedText, answer, messages, robbyContext: sanitizeInput(robbyContext) });
+      context.response.body = command + "|" + answer;
     } catch (error) {
       console.log({ sanitizedText });
       console.log("error", error);

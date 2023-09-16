@@ -98,6 +98,16 @@ exports.Prisma.CategoryScalarFieldEnum = makeEnum({
   updatedAt: 'updatedAt'
 });
 
+exports.Prisma.KelvinGPTMessagesScalarFieldEnum = makeEnum({
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  chatId: 'chatId',
+  message: 'message',
+  role: 'role',
+  who: 'who'
+});
+
 exports.Prisma.ModDownloadScalarFieldEnum = makeEnum({
   id: 'id',
   ip: 'ip',
@@ -200,7 +210,8 @@ exports.Prisma.ModelName = makeEnum({
   Tag: 'Tag',
   Category: 'Category',
   ModDownload: 'ModDownload',
-  ModFavorite: 'ModFavorite'
+  ModFavorite: 'ModFavorite',
+  KelvinGPTMessages: 'KelvinGPTMessages'
 });
 
 /**

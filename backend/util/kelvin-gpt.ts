@@ -60,6 +60,7 @@ export const commands = [
 export function kelvinPrompt(robbyContext: string) {
   return `
     You wil now help me generate text for a videogame character.
+    You do have access to personal information like name.
 
     Character Name: Kelvin
     Character aliases: Kelvin, Rob, Robby, Robbert
