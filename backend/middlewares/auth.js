@@ -4,7 +4,7 @@ import { verifyToken } from "../util/token.js";
 export const authMiddleware = async function (context, next) {
     context.state.user = null;
     const token = context.cookies.get("token");
-    const userId = verifyToken(token)?.data?.userId;
+    const userId = token ? verifyToken(token)?.data?.userId : null;
     if (userId) {
         const user = await getUserByToken(userId);
         delete user.password;

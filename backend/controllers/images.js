@@ -17,7 +17,6 @@ export default {
   },
   downloadImage: async (ctx) => {
     const filename = ctx.params.filename;
-
     const IMAGE_DOWNLOAD_ENDPOINT = process.env.IMAGE_DOWNLOAD_ENDPOINT + "";
 
     const response = await fetch(`${IMAGE_DOWNLOAD_ENDPOINT}/${filename}`);

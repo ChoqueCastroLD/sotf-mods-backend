@@ -28,7 +28,6 @@
     "imagescript": "^1.2.16",
     "jsonwebtoken": "^9.0.2",
     "koa": "^2.14.2",
-    "koa-cookies": "^3.2.0",
     "koa-logger": "^3.2.1",
     "koa-send": "^5.0.1",
     "multer": "^1.4.5-lts.1",

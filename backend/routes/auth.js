@@ -1,12 +1,11 @@
 import Router from "@koa/router";
-import { clearCookie, setCookie } from "koa-cookies";
 import { registerUser, loginUser } from "../services/users.js";
 
 export const router = new Router();
 
 router.post("/user/register", async (context) => {
     try {
-        const { email, username, password, confirm_password } = await context.request.body;
+        const { email, username, password, confirm_password } = context.request.body;
         const { errors, status } = await registerUser(email, username, password, confirm_password);
 
         context.response.status = errors.length > 0 ? 400 : 201;
@@ -20,10 +19,10 @@ router.post("/user/register", async (context) => {
 
 router.post("/user/login", async (context) => {
     try {
-        const { email, password } = await context.request.body;
+        const { email, password } = context.request.body;
         const { errors, status, token } = await loginUser(email, password);
 
-        setCookie("token", token)(context);
+        context.cookies.set("token", token, { httpOnly: false });
 
         context.response.status = errors.length > 0 ? 400 : 201;
         context.response.body = { errors, status, token };
@@ -35,6 +34,6 @@ router.post("/user/login", async (context) => {
 });
 
 router.get("/user/logout", (context) => {
-    clearCookie("token")(context);
+    context.cookies.set("token", "", { httpOnly: false });
     context.response.redirect("/");
 });

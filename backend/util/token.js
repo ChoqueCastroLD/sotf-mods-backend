@@ -21,6 +21,9 @@ export function generateToken(userId) {
 }
 
 export function verifyToken(token) {
+  if (!token) {
+    throw new Error("Token is required");
+  }
   const payload = verify(token, JWT_SECRET);
   if (!payload) {
     throw new Error("Failed to verify token");

@@ -3,6 +3,7 @@ import Koa from "koa";
 import { HttpError } from "koa";
 import logger from "koa-logger";
 import cors from "@koa/cors";
+import bodyParser from "@koa/bodyparser";
 import { staticAssetsMiddleware } from "./middlewares/static.js";
 import { router } from "./routes/router.js";
 
@@ -10,6 +11,7 @@ export async function startServer(port = 8000) {
   const app = new Koa();
   
   app.use(cors());
+  app.use(bodyParser());
 
   app.use(async (context, next) => {
     try {
