@@ -9,7 +9,7 @@ import { router } from "./routes/router.js";
 export async function startServer(port = 8000) {
   const app = new Koa();
   
-  // app.use(cors());
+  app.use(cors());
 
   app.use(async (context, next) => {
     try {
